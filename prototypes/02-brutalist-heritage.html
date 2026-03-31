@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>АИС eSport — Heritage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=PT+Mono&family=Manrope:wght@300;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f1e9d2;
+    --black: #0d0c0a;
+    --red: #c11a1a;
+    --sun: #e8a534;
+    --line: #0d0c0a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--cream); color: var(--black); font-family: 'Manrope', sans-serif; overflow-x: hidden; }
+
+  /* Tunduk pattern (Kyrgyz emblem) — used as decorative SVG bg */
+  .tunduk-bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.06;
+    background-image:
+      radial-gradient(circle at 50% 50%, var(--black) 1px, transparent 1.5px);
+    background-size: 28px 28px;
+  }
+
+  /* Top utility bar */
+  .util {
+    background: var(--black); color: var(--cream);
+    padding: 10px 32px; display: flex; justify-content: space-between;
+    font-family: 'PT Mono', monospace; font-size: 12px; letter-spacing: 0.04em;
+    position: relative; z-index: 2;
+  }
+  .util .l, .util .r { display: flex; gap: 24px; align-items: center; }
+  .util a { color: var(--cream); text-decoration: none; }
+  .util .lang span { padding: 2px 6px; }
+  .util .lang .on { background: var(--red); color: var(--cream); }
+
+  /* Header */
+  .header {
+    position: relative; z-index: 2;
+    border-bottom: 6px solid var(--black);
+    background: var(--cream);
+  }
+  .header-inner {
+    padding: 22px 32px; display: flex; align-items: center; justify-content: space-between; gap: 30px;
+  }
+  .brand { display: flex; align-items: center; gap: 18px; }
+  .emblem {
+    width: 64px; height: 64px; flex-shrink: 0;
+  }
+  .brand-name { font-family: 'Bowlby One', sans-serif; font-size: 38px; line-height: 0.9; letter-spacing: -0.02em; }
+  .brand-sub { font-family: 'PT Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; margin-top: 4px; color: #555; }
+  .nav { display: flex; gap: 4px; flex-wrap: wrap; }
+  .nav a {
+    padding: 10px 14px; background: var(--cream); color: var(--black); text-decoration: none;
+    font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em;
+    border: 2px solid var(--black); transition: all 0.15s;
+  }
+  .nav a:hover, .nav a.active { background: var(--red); color: var(--cream); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--black); }
+  .login {
+    padding: 14px 22px; background: var(--black); color: var(--cream); border: 2px solid var(--black);
+    font-family: 'Bowlby One', sans-serif; font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase;
+    text-decoration: none; flex-shrink: 0;
+  }
+  .login:hover { background: var(--sun); color: var(--black); }
+
+  /* Hero */
+  .hero {
+    position: relative; z-index: 2;
+    padding: 0; display: grid; grid-template-columns: 1.4fr 1fr;
+    border-bottom: 6px solid var(--black);
+  }
+  .hero-text {
+    padding: 70px 50px; border-right: 6px solid var(--black); position: relative;
+  }
+  .hero-tag {
+    display: inline-block; background: var(--black); color: var(--sun);
+    padding: 6px 12px; font-family: 'PT Mono', monospace; font-size: 12px; letter-spacing: 0.18em;
+    margin-bottom: 28px;
+  }
+  .hero h1 {
+    font-family: 'Bowlby One', sans-serif; font-size: clamp(56px, 8vw, 142px); line-height: 0.85;
+    letter-spacing: -0.025em; text-transform: uppercase;
+  }
+  .hero h1 .red { color: var(--red); }
+  .hero h1 .strike { position: relative; }
+  .hero h1 .strike::after {
+    content: ''; position: absolute; left: -2%; right: -2%; top: 52%; height: 14px;
+    background: var(--sun); z-index: -1; transform: rotate(-1deg);
+  }
+  .hero p {
+    font-size: 19px; line-height: 1.5; max-width: 560px; margin-top: 36px;
+  }
+  .hero-cta { margin-top: 40px; display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-pri, .btn-sec {
+    padding: 18px 28px; font-family: 'Bowlby One', sans-serif; font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em;
+    text-decoration: none; border: 3px solid var(--black); display: inline-flex; align-items: center; gap: 10px;
+    transition: transform 0.15s;
+  }
+  .btn-pri { background: var(--red); color: var(--cream); }
+  .btn-sec { background: var(--cream); color: var(--black); }
+  .btn-pri:hover, .btn-sec:hover { transform: translate(-3px,-3px); box-shadow: 6px 6px 0 var(--black); }
+
+  .hero-art {
+    background: var(--red); position: relative; overflow: hidden; min-height: 600px;
+  }
+  .hero-art svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero-art .stat-card {
+    position: absolute; background: var(--cream); border: 4px solid var(--black); padding: 16px 20px;
+    box-shadow: 8px 8px 0 var(--black);
+  }
+  .hero-art .sc1 { top: 50px; left: 40px; }
+  .hero-art .sc2 { bottom: 70px; right: 40px; }
+  .hero-art .sc3 { top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-3deg); background: var(--sun); }
+  .stat-card .n { font-family: 'Bowlby One', sans-serif; font-size: 56px; line-height: 0.9; letter-spacing: -0.03em; }
+  .stat-card .l { font-family: 'PT Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; margin-top: 4px; }
+
+  /* Sections grid (modules) */
+  .modules {
+    position: relative; z-index: 2;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border-bottom: 6px solid var(--black);
+  }
+  .mod {
+    padding: 40px 32px; border-right: 4px solid var(--black);
+    background: var(--cream); transition: background 0.2s;
+    display: flex; flex-direction: column; gap: 12px; min-height: 320px;
+  }
+  .mod:last-child { border-right: none; }
+  .mod:nth-child(2) { background: var(--sun); }
+  .mod:hover { background: var(--black); color: var(--cream); }
+  .mod:hover .mod-num { color: var(--red); }
+  .mod-num {
+    font-family: 'Bowlby One', sans-serif; font-size: 84px; line-height: 0.85; color: var(--red);
+  }
+  .mod h3 { font-family: 'Bowlby One', sans-serif; font-size: 26px; text-transform: uppercase; letter-spacing: -0.01em; }
+  .mod p { font-size: 16px; line-height: 1.5; flex: 1; }
+  .mod .more { font-family: 'PT Mono', monospace; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; margin-top: auto; }
+
+  /* News marquee */
+  .marquee {
+    position: relative; z-index: 2;
+    background: var(--black); color: var(--cream); padding: 18px 0; overflow: hidden;
+    border-bottom: 6px solid var(--black);
+  }
+  .marquee-track {
+    display: flex; gap: 60px; animation: scroll 40s linear infinite; white-space: nowrap;
+    font-family: 'Bowlby One', sans-serif; font-size: 22px; text-transform: uppercase; letter-spacing: 0.02em;
+  }
+  .marquee-track span { display: inline-flex; align-items: center; gap: 60px; }
+  .marquee-track .dot { color: var(--sun); }
+  @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* Big news */
+  .news {
+    position: relative; z-index: 2;
+    padding: 80px 32px;
+    border-bottom: 6px solid var(--black);
+  }
+  .news h2 {
+    font-family: 'Bowlby One', sans-serif; font-size: clamp(48px, 6vw, 96px); line-height: 0.9;
+    text-transform: uppercase; letter-spacing: -0.025em; margin-bottom: 50px;
+  }
+  .news h2 .acc { color: var(--red); }
+  .news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+  .ncard {
+    background: var(--cream); border: 4px solid var(--black); padding: 28px;
+    display: flex; flex-direction: column; gap: 14px;
+    transition: transform 0.2s;
+  }
+  .ncard:hover { transform: translate(-4px,-4px); box-shadow: 10px 10px 0 var(--black); }
+  .ncard .tag {
+    align-self: flex-start; padding: 4px 10px; background: var(--red); color: var(--cream);
+    font-family: 'PT Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  .ncard .tag.ev { background: var(--sun); color: var(--black); }
+  .ncard .tag.rg { background: var(--black); color: var(--cream); }
+  .ncard h4 { font-family: 'Bowlby One', sans-serif; font-size: 24px; line-height: 1.05; text-transform: uppercase; letter-spacing: -0.01em; }
+  .ncard p { font-size: 15px; line-height: 1.5; color: #333; }
+  .ncard .meta { font-family: 'PT Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #777; padding-top: 10px; border-top: 2px dashed var(--black); }
+
+  /* Footer */
+  footer {
+    position: relative; z-index: 2;
+    background: var(--black); color: var(--cream); padding: 50px 32px 30px;
+  }
+  .foot-grid { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 40px; padding-bottom: 30px; border-bottom: 2px solid #333; }
+  footer h5 { font-family: 'Bowlby One', sans-serif; font-size: 16px; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 14px; color: var(--sun); }
+  footer ul { list-style: none; }
+  footer li { padding: 4px 0; font-size: 14px; color: #ccc; }
+  footer .fbrand { font-family: 'Bowlby One', sans-serif; font-size: 48px; line-height: 0.9; }
+  footer .fbrand .red { color: var(--red); }
+  footer .fbrand .sun { color: var(--sun); }
+  footer .legal { padding-top: 20px; font-family: 'PT Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #777; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+
+  @media (max-width: 900px) {
+    .hero, .modules, .news-grid, .foot-grid { grid-template-columns: 1fr; }
+    .hero-text { border-right: none; border-bottom: 6px solid var(--black); }
+    .mod { border-right: none; border-bottom: 4px solid var(--black); }
+    .nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="tunduk-bg"></div>
+
+<div class="util">
+  <div class="l">
+    <span>★ ГАФКиС</span>
+    <span>СРД, 29 АПР 2026</span>
+    <a href="#">Версия для слабовидящих</a>
+  </div>
+  <div class="r">
+    <div class="lang"><span class="on">КЫР</span><span>РУС</span><span>ENG</span></div>
+    <a href="#">⌖ Войти через Түндүк</a>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <svg class="emblem" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="30" fill="#c11a1a" stroke="#0d0c0a" stroke-width="3"/>
+        <circle cx="32" cy="32" r="14" fill="#e8a534" stroke="#0d0c0a" stroke-width="2"/>
+        <g stroke="#0d0c0a" stroke-width="2" fill="none">
+          <path d="M32 18 L32 46"/>
+          <path d="M18 32 L46 32"/>
+          <path d="M22 22 L42 42"/>
+          <path d="M42 22 L22 42"/>
+        </g>
+        <circle cx="32" cy="32" r="4" fill="#0d0c0a"/>
+      </svg>
+      <div>
+        <div class="brand-name">eSport.kg</div>
+        <div class="brand-sub">ГАФКиС · АИС</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="#" class="active">Главная</a>
+      <a href="#">Реестры</a>
+      <a href="#">Календарь</a>
+      <a href="#">Новости</a>
+      <a href="#">Услуги</a>
+      <a href="#">QR</a>
+    </nav>
+    <a href="#" class="login">Личный кабинет ⌖</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-text">
+    <div class="hero-tag">// ВЕРСИЯ 1.0 · 2026</div>
+    <h1>Спорт <span class="red">страны</span> —<br>в <span class="strike">единой</span><br>системе.</h1>
+    <p>Реестры спортсменов, тренеров и судей. Календарь мероприятий, онлайн-заявления, QR-проверка документов. Всё, что нужно для профессионального и любительского спорта Кыргызстана.</p>
+    <div class="hero-cta">
+      <a class="btn-pri" href="#">Открыть реестр →</a>
+      <a class="btn-sec" href="#">Подать заявление</a>
+    </div>
+  </div>
+  <div class="hero-art">
+    <svg viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="kp" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M30 0 L60 30 L30 60 L0 30 Z" fill="none" stroke="#0d0c0a" stroke-width="1.2" opacity="0.35"/>
+          <circle cx="30" cy="30" r="4" fill="#0d0c0a" opacity="0.4"/>
+        </pattern>
+      </defs>
+      <rect width="600" height="600" fill="url(#kp)"/>
+      <g transform="translate(300 300)">
+        <circle r="180" fill="none" stroke="#0d0c0a" stroke-width="3"/>
+        <circle r="120" fill="#e8a534" stroke="#0d0c0a" stroke-width="3"/>
+        <g stroke="#0d0c0a" stroke-width="2" fill="none">
+          <path d="M-120 0 L120 0"/>
+          <path d="M0 -120 L0 120"/>
+          <path d="M-85 -85 L85 85"/>
+          <path d="M85 -85 L-85 85"/>
+        </g>
+        <circle r="30" fill="#c11a1a" stroke="#0d0c0a" stroke-width="3"/>
+      </g>
+    </svg>
+    <div class="stat-card sc1"><div class="n">12 480</div><div class="l">Спортсменов</div></div>
+    <div class="stat-card sc2"><div class="n">847</div><div class="l">Тренеров</div></div>
+    <div class="stat-card sc3"><div class="n">63</div><div class="l">Видов спорта</div></div>
+  </div>
+</section>
+
+<section class="modules">
+  <div class="mod">
+    <div class="mod-num">01</div>
+    <h3>Реестры</h3>
+    <p>Спортсмены, тренеры, судьи, организации, объекты и инвентарь — всё в одной базе с проверкой по СМЭВ Түндүк.</p>
+    <div class="more">— Открыть базу ⟶</div>
+  </div>
+  <div class="mod">
+    <div class="mod-num">02</div>
+    <h3>Заявления</h3>
+    <p>Спортзвание, тренерский сертификат, судейская категория, восстановление документов — приём, маршрут, выдача.</p>
+    <div class="more">— Подать ⟶</div>
+  </div>
+  <div class="mod">
+    <div class="mod-num">03</div>
+    <h3>Карта объектов</h3>
+    <p>WMS геосервис: спортшколы, стадионы, манежи, бассейны. Расписание доступности и оснащение объекта.</p>
+    <div class="more">— Найти ⟶</div>
+  </div>
+</section>
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span>★ Сборная по дзюдо — 4 золота в Анкаре <span class="dot">●</span></span>
+    <span>Открыта аттестация судей по вольной борьбе <span class="dot">●</span></span>
+    <span>Тренерский сертификат — теперь полностью онлайн <span class="dot">●</span></span>
+    <span>Календарь мероприятий май 2026 опубликован <span class="dot">●</span></span>
+    <span>★ Сборная по дзюдо — 4 золота в Анкаре <span class="dot">●</span></span>
+    <span>Открыта аттестация судей по вольной борьбе <span class="dot">●</span></span>
+    <span>Тренерский сертификат — теперь полностью онлайн <span class="dot">●</span></span>
+    <span>Календарь мероприятий май 2026 опубликован <span class="dot">●</span></span>
+  </div>
+</div>
+
+<section class="news">
+  <h2>Новости. <span class="acc">Свежее.</span></h2>
+  <div class="news-grid">
+    <article class="ncard">
+      <span class="tag">Главное</span>
+      <h4>Сборная по дзюдо взяла 4 золота на турнире в Анкаре</h4>
+      <p>Делегация ГАФКиС вернулась с международного турнира с рекордным результатом. Подробный разбор выступлений и интервью с главным тренером.</p>
+      <div class="meta">28.04.2026 · спорт</div>
+    </article>
+    <article class="ncard">
+      <span class="tag ev">Событие</span>
+      <h4>Открыта запись на аттестацию судей по вольной борьбе</h4>
+      <p>Подача заявок до 12 мая. Категории: II, I, республиканская. Документы принимаются онлайн через личный кабинет.</p>
+      <div class="meta">27.04.2026 · реестр</div>
+    </article>
+    <article class="ncard">
+      <span class="tag rg">Регламент</span>
+      <h4>Тренерский сертификат — полностью онлайн</h4>
+      <p>Импорт документов из СМЭВ Түндүк по ИНН. Выдача — в электронном виде с QR-кодом для проверки подлинности.</p>
+      <div class="meta">26.04.2026 · услуги</div>
+    </article>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-grid">
+    <div>
+      <div class="fbrand">e<span class="red">·</span><span class="sun">S</span>port</div>
+      <p style="margin-top:14px;color:#aaa;font-size:14px;line-height:1.5;max-width:340px;">Государственное агентство физической культуры и спорта Кыргызской Республики. АИС версия 1.0.</p>
+    </div>
+    <div><h5>Разделы</h5><ul><li>О ГАФКиС</li><li>НПА</li><li>Бюджет</li><li>Структура</li></ul></div>
+    <div><h5>Реестры</h5><ul><li>Спортсмены</li><li>Тренеры</li><li>Судьи</li><li>Объекты</li></ul></div>
+    <div><h5>Контакты</h5><ul><li>Бишкек, пр. Чуй 162</li><li>+996 312 62 03 03</li><li>info@gafkis.gov.kg</li></ul></div>
+  </div>
+  <div class="legal">
+    <span>© 2026 ГАФКиС</span>
+    <span>Постановления КР № 760, № 762 от 21.11.2017</span>
+    <span>Прототип II — Heritage / Brutalist</span>
+  </div>
+</footer>
+
+</body>
+</html>

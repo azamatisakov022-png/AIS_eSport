@@ -1,0 +1,52 @@
+/* ============================================================
+   Cabinet Layout — Responsive
+   ============================================================ */
+
+.cab-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.cab-layout__main {
+    flex: 1;
+    margin-left: 240px;
+    background: var(--bg-secondary);
+    display: flex;
+    flex-direction: column;
+}
+
+.cab-layout__content {
+    flex: 1;
+    padding: 32px 36px;
+}
+
+/* ── Tablet ── */
+@media (max-width: 1024px) {
+    .cab-layout__main {
+        margin-left: 240px;
+    }
+
+    .cab-layout__content {
+        padding: 24px 20px;
+    }
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+    .cab-layout__main {
+        margin-left: 0;
+    }
+    .cab-layout__content {
+        padding: 16px 12px;
+    }
+
+    /* Cabinet Sidebar mobile overlay */
+    .cab-sidebar {
+        transform: translateX(-100%) !important;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .cab-sidebar.cab-sidebar--open {
+        transform: translateX(0) !important;
+    }
+}

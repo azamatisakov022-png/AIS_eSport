@@ -1,0 +1,533 @@
+/* ============================================================
+   АИС eSport — Design System
+   ============================================================ */
+
+:root {
+  /* ── Background ── */
+  --bg-body: #F5F5F7;
+  --bg-primary: #ffffff;
+  --bg-secondary: #F5F5F7;
+  --bg-panel: #EDEDF0;
+  --bg-card: #ffffff;
+  --bg-sidebar: #F5F5F7;
+
+  /* ── Accent Colors ── */
+  --accent: #0071E3;
+  --accent-light: #EDF2FC;
+  --accent-dark: #0059B3;
+  --green: #248A3D;
+  --green-light: #EEF5F0;
+  --violet: #6B4FA0;
+  --violet-light: #F0EDF5;
+  --amber: #B25000;
+  --amber-light: #F5F0EA;
+  --rose: #D12B47;
+  --rose-light: #F5EDEE;
+  --teal: #0C7B74;
+  --teal-light: #ECF3F2;
+
+  /* ── Extended Palette ── */
+  --cyan: #0EA5E9;
+  --cyan-light: #EDF5FA;
+  --purple: #7C3AED;
+  --purple-light: #F0EDF5;
+
+  /* ── Badge Colors ── */
+  --badge-gray-bg: #f3f4f6;
+  --badge-gray-text: #6b7280;
+  --badge-gray-border: #d1d5db;
+  --badge-blue-bg: #EDF2FC;
+  --badge-blue-text: #1d4ed8;
+  --badge-blue-border: #B0C4DE;
+  --badge-purple-bg: #F0EDF5;
+  --badge-purple-text: #7C3AED;
+  --badge-purple-border: #C4BADA;
+  --badge-amber-bg: #F5F0EA;
+  --badge-amber-text: #b45309;
+  --badge-amber-border: #D4C4A0;
+  --badge-red-bg: #fee2e2;
+  --badge-red-text: #ef4444;
+  --badge-red-border: #FECACA;
+  --badge-orange-bg: #fff7ed;
+  --badge-orange-text: #ea580c;
+  --badge-orange-border: #fdba74;
+  --badge-gold-bg: linear-gradient(135deg, #F5E6C8, #E8D5A8);
+  --badge-gold-text: #8B6914;
+
+  /* ── Semantic Blocks ── */
+  --info-bg: #EFF6FF;
+  --info-border: #B0C4DE;
+  --info-text: #1d4ed8;
+  --warning-bg: #FFFBEB;
+  --warning-border: #D4C4A0;
+  --warning-text: #92400e;
+  --doc-ok-bg: #f0fdf4;
+  --doc-ok-border: #bbf7d0;
+
+  /* ── Hover Dark Shades ── */
+  --green-dark: #047857;
+  --amber-dark: #b45309;
+  --rose-dark: #be123c;
+
+  /* ── Gradients ── */
+  --gradient-sidebar: linear-gradient(180deg, #F5F5F7 0%, #EDEDF0 100%);
+  --gradient-accent: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+
+  /* ── Text Colors ── */
+  --text-primary: #1A1D23;
+  --text-secondary: #6B7280;
+  --text-muted: #9CA3AF;
+  --text-inverse: #ffffff;
+
+  /* ── Border ── */
+  --border-color: #D2D2D7;
+  --border-hover: #C7C7CC;
+
+  /* ── Sizing ── */
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 68px;
+  --header-height: 64px;
+
+  /* ── Breakpoints (reference only, use numbers in @media) ── */
+  /* Mobile: max-width 768px */
+  /* Tablet: max-width 1024px */
+  /* Desktop: min-width 1025px */
+
+  /* ── Typography ── */
+  --font-body: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Source Serif 4', 'Source Sans 3', serif;
+
+  /* ── Shadows ── */
+  --shadow-xs: 0 0.5px 1px rgba(0, 0, 0, 0.03);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04);
+
+  /* ── Radius ── */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* ── Transitions ── */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.4s ease;
+}
+
+/* ── Dark Theme Overrides ── */
+[data-theme="dark"] {
+  --bg-body: #000000;
+  --bg-primary: #1C1C1E;
+  --bg-secondary: #000000;
+  --bg-panel: #2C2C2E;
+  --bg-card: #1C1C1E;
+  --bg-sidebar: #0a0a0a;
+
+  --accent: #0A84FF;
+  --accent-light: rgba(10, 132, 255, 0.22);
+  --accent-dark: #409CFF;
+
+  --green: #30D158;
+  --green-light: rgba(48, 209, 88, 0.22);
+  --violet: #BF5AF2;
+  --violet-light: rgba(191, 90, 242, 0.22);
+  --amber: #FF9F0A;
+  --amber-light: rgba(255, 159, 10, 0.22);
+  --rose: #FF453A;
+  --rose-light: rgba(255, 69, 58, 0.22);
+  --teal: #64D2FF;
+  --teal-light: rgba(100, 210, 255, 0.22);
+
+  --gradient-sidebar: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
+  --gradient-accent: linear-gradient(135deg, #0A84FF 0%, #5E5CE6 100%);
+
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(235, 235, 245, 0.65);
+  --text-muted: rgba(235, 235, 245, 0.5);
+  --text-inverse: #000000;
+
+  --border-color: #48484A;
+  --border-hover: #58585A;
+
+  /* ── Extended Palette (dark) ── */
+  --cyan: #22D3EE;
+  --cyan-light: rgba(34, 211, 238, 0.22);
+  --purple: #A78BFA;
+  --purple-light: rgba(167, 139, 250, 0.22);
+
+  /* ── Badge Colors (dark) ── */
+  --badge-gray-bg: rgba(156, 163, 175, 0.18);
+  --badge-gray-text: #9CA3AF;
+  --badge-gray-border: rgba(156, 163, 175, 0.3);
+  --badge-blue-bg: rgba(59, 130, 246, 0.18);
+  --badge-blue-text: #60A5FA;
+  --badge-blue-border: rgba(59, 130, 246, 0.3);
+  --badge-purple-bg: rgba(167, 139, 250, 0.18);
+  --badge-purple-text: #A78BFA;
+  --badge-purple-border: rgba(167, 139, 250, 0.3);
+  --badge-amber-bg: rgba(255, 159, 10, 0.18);
+  --badge-amber-text: #FBBF24;
+  --badge-amber-border: rgba(255, 159, 10, 0.3);
+  --badge-red-bg: rgba(255, 69, 58, 0.18);
+  --badge-red-text: #FF6961;
+  --badge-red-border: rgba(255, 69, 58, 0.3);
+  --badge-orange-bg: rgba(251, 146, 60, 0.18);
+  --badge-orange-text: #FB923C;
+  --badge-orange-border: rgba(251, 146, 60, 0.3);
+  --badge-gold-bg: linear-gradient(135deg, #5C4A1E, #4A3B15);
+  --badge-gold-text: #D4A843;
+
+  /* ── Semantic Blocks (dark) ── */
+  --info-bg: rgba(59, 130, 246, 0.12);
+  --info-border: rgba(59, 130, 246, 0.25);
+  --info-text: #60A5FA;
+  --warning-bg: rgba(251, 191, 36, 0.12);
+  --warning-border: rgba(251, 191, 36, 0.25);
+  --warning-text: #FBBF24;
+  --doc-ok-bg: rgba(48, 209, 88, 0.12);
+  --doc-ok-border: rgba(48, 209, 88, 0.25);
+
+  /* ── Hover Dark Shades (dark — brighter) ── */
+  --green-dark: #22C55E;
+  --amber-dark: #F59E0B;
+  --rose-dark: #FB7185;
+
+  --shadow-xs: 0 0.5px 1px rgba(255, 255, 255, 0.04);
+  --shadow-sm: 0 1px 2px rgba(255, 255, 255, 0.05);
+  --shadow-md: 0 1px 3px rgba(255, 255, 255, 0.05);
+  --shadow-lg: 0 2px 4px rgba(255, 255, 255, 0.06);
+  --shadow-card: 0 1px 2px rgba(255, 255, 255, 0.05);
+}
+
+/* ── Global Reset ── */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-body);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: auto;
+}
+
+#root { min-height: 100vh; }
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--accent-dark);
+}
+
+/* ── Scrollbar Styling ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ── Animations ── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Responsive Utilities ── */
+.hide-mobile { display: initial; }
+.hide-desktop { display: none !important; }
+.hide-tablet-down { display: initial; }
+
+@media (max-width: 1024px) {
+  .hide-tablet-down { display: none !important; }
+}
+
+@media (max-width: 768px) {
+  .hide-mobile { display: none !important; }
+  .hide-desktop { display: initial; }
+}
+
+/* ── Overlay Backdrop ── */
+.overlay-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+  animation: fadeIn 0.2s ease;
+}
+
+.overlay-backdrop.active {
+  display: block;
+}
+
+/* ══════════════════════════════════════════════════
+   Micro-Animations
+   ══════════════════════════════════════════════════ */
+
+/* ── Card Hover Lift ── */
+/* NOTE: exclude BEM children (__) and container plurals (s) to avoid nested transforms */
+[class*='-metric']:not([class*='__']):not([class$='metrics']),
+[class*='-card']:not(.toast):not([class*='__']):not([class$='cards']),
+[class*='settings-card']:not([class*='__']) {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[class*='-metric']:not([class*='__']):not([class$='metrics']):hover,
+[class*='settings-card']:not([class*='__']):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Table Row Hover ── */
+[class*='-table'] tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+[class*='-table'] tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.015);
+}
+
+/* ── Button Press Feedback ── */
+button,
+[class*='-btn'] {
+  transition: transform 0.1s ease,
+              opacity 0.15s ease,
+              background-color var(--transition-fast),
+              color var(--transition-fast),
+              border-color var(--transition-fast),
+              box-shadow var(--transition-fast);
+}
+
+button:active,
+[class*='-btn']:active {
+  transform: scale(0.97);
+}
+
+/* ── Tab Underline Slide ── */
+[class*='-tab'] {
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+/* ── Drawer / Modal Entrance ── */
+@keyframes drawerSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes modalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes overlayFadeIn {
+  from { background-color: rgba(0, 0, 0, 0); }
+  to { background-color: rgba(0, 0, 0, 0.3); }
+}
+
+/* ── Badge subtle pulse (for status indicators) ── */
+@keyframes subtlePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ── Skeleton Loading ── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-panel) 50%, var(--bg-secondary) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Focus Visible (Accessibility) ── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Smooth Scrollbar Transition ── */
+* {
+  scroll-behavior: smooth;
+}
+
+/* ══════════════════════════════════════════════════
+   Global Drawer & Modal Animation Application
+   ══════════════════════════════════════════════════ */
+
+/* ── All modals: scale-in entrance ── */
+[class$='-modal'] {
+  animation: modalScaleIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── All modal overlays: fade-in ── */
+[class$='-modal-overlay'] {
+  animation: fadeIn 0.2s ease;
+}
+
+/* ── All drawers: slide-in from right ── */
+[class$='-drawer'] {
+  animation: drawerSlideIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── All drawer overlays: fade-in ── */
+[class$='-drawer-overlay'] {
+  animation: fadeIn 0.2s ease;
+}
+
+/* ══════════════════════════════════════════════════
+   Empty State Component
+   ══════════════════════════════════════════════════ */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  text-align: center;
+}
+
+.empty-state__icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  color: var(--text-muted);
+}
+
+.empty-state__icon svg {
+  width: 36px;
+  height: 36px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.empty-state__title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 6px;
+}
+
+.empty-state__desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 320px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ══════════════════════════════════════════════════
+   Breadcrumbs
+   ══════════════════════════════════════════════════ */
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.breadcrumbs__item {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+  cursor: pointer;
+}
+
+.breadcrumbs__item:hover {
+  color: var(--accent);
+}
+
+.breadcrumbs__separator {
+  color: var(--border-color);
+  font-size: 11px;
+  user-select: none;
+}
+
+.breadcrumbs__current {
+  color: var(--text-primary);
+  font-weight: 500;
+}

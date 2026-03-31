@@ -1,0 +1,239 @@
+/* ============================================================
+   Shared Effects
+   Applied to ALL cabinets (internal + public)
+   ============================================================ */
+
+/* ── 1. Card Hover (simple) ── */
+.db-metric,
+.db-card,
+.an-kpi,
+.an-card,
+.db-alert,
+.cab-card {
+    transition: background-color 0.2s ease,
+                opacity 0.2s ease,
+                border-color 0.2s ease;
+}
+
+/* ── 2. Ripple Effect on Buttons ── */
+.db-quick-btn,
+.db-alert__btn,
+.db-table__action,
+.an-btn,
+.an-export-btn,
+.header__logout-btn,
+.header__lang-btn,
+.cab-logout-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.db-quick-btn::after,
+.db-alert__btn::after,
+.db-table__action::after,
+.an-btn::after,
+.an-export-btn::after,
+.header__logout-btn::after,
+.header__lang-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: width 0.5s ease, height 0.5s ease, opacity 0.3s ease;
+}
+
+.db-quick-btn:active::after,
+.db-alert__btn:active::after,
+.db-table__action:active::after,
+.an-btn:active::after,
+.an-export-btn:active::after,
+.header__logout-btn:active::after,
+.header__lang-btn:active::after {
+    width: 300px;
+    height: 300px;
+    opacity: 1;
+    transition: width 0s, height 0s, opacity 0s;
+}
+
+/* ── 3. Custom Scrollbar ── */
+.layout__content::-webkit-scrollbar,
+.cab-layout__content::-webkit-scrollbar,
+.sidebar__nav::-webkit-scrollbar {
+    width: 5px;
+}
+
+.layout__content::-webkit-scrollbar-track,
+.cab-layout__content::-webkit-scrollbar-track,
+.sidebar__nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.layout__content::-webkit-scrollbar-thumb,
+.cab-layout__content::-webkit-scrollbar-thumb,
+.sidebar__nav::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 10px;
+}
+
+.layout__content::-webkit-scrollbar-thumb:hover,
+.cab-layout__content::-webkit-scrollbar-thumb:hover,
+.sidebar__nav::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* ── 4. Smooth Page Entry ── */
+.layout__content > *,
+.cab-layout__content > * {
+    animation: smoothFadeInUp 0.5s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+@keyframes smoothFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── 5. Sidebar Link Hover ── */
+.sidebar__link {
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+/* ── 6. Table Row Animation ── */
+.db-table tbody tr,
+.an-table tbody tr {
+    animation: rowSlideIn 0.4s ease both;
+}
+
+.db-table tbody tr:nth-child(1) { animation-delay: 0.02s; }
+.db-table tbody tr:nth-child(2) { animation-delay: 0.04s; }
+.db-table tbody tr:nth-child(3) { animation-delay: 0.06s; }
+.db-table tbody tr:nth-child(4) { animation-delay: 0.08s; }
+.db-table tbody tr:nth-child(5) { animation-delay: 0.10s; }
+.db-table tbody tr:nth-child(6) { animation-delay: 0.12s; }
+.db-table tbody tr:nth-child(7) { animation-delay: 0.14s; }
+.db-table tbody tr:nth-child(8) { animation-delay: 0.16s; }
+
+.an-table tbody tr:nth-child(1) { animation-delay: 0.02s; }
+.an-table tbody tr:nth-child(2) { animation-delay: 0.04s; }
+.an-table tbody tr:nth-child(3) { animation-delay: 0.06s; }
+.an-table tbody tr:nth-child(4) { animation-delay: 0.08s; }
+.an-table tbody tr:nth-child(5) { animation-delay: 0.10s; }
+
+@keyframes rowSlideIn {
+    from { opacity: 0; transform: translateX(-12px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── 7. Bar Chart ── */
+.db-bar-row__fill {
+    opacity: 0.85;
+    border-radius: 8px;
+}
+
+/* ── 8. Focus Ring (Accessibility) ── */
+.db-table__action:focus-visible,
+.db-quick-btn:focus-visible,
+.an-btn:focus-visible,
+.sidebar__link:focus-visible {
+    outline: 3px solid rgba(37, 99, 235, 0.5);
+    outline-offset: 2px;
+}
+
+/* ── 9. Skeleton Loading ── */
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.skeleton {
+    background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-panel) 50%, var(--bg-secondary) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease infinite;
+    border-radius: var(--radius-sm);
+}
+
+/* ── 10. Global Mobile Responsive ── */
+
+/* ── Tablet ── */
+@media (max-width: 1024px) {
+    [class$='-metrics']:not([class*='__']) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+    /* Metrics: 1 column */
+    [class$='-metrics']:not([class*='__']) {
+        grid-template-columns: 1fr;
+    }
+
+    /* Filters: stack vertically */
+    [class$='-filters']:not([class*='__']) {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    [class$='-filters'] > * {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+    [class$='-filters'] > *:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Modals */
+    [class$='-modal']:not([class*='__']):not([class*='overlay']) {
+        width: calc(100vw - 32px) !important;
+        margin: 16px;
+        max-height: calc(100vh - 32px);
+    }
+    [class$='-modal__grid'] {
+        grid-template-columns: 1fr !important;
+    }
+    [class$='-modal__header'], [class$='-modal__body'], [class$='-modal__footer'] {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+
+    /* Drawers */
+    [class$='-drawer']:not([class*='__']):not([class*='overlay']) {
+        width: 100vw !important;
+    }
+    [class$='-info-grid'], [class$='-drawer__info'] {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Global fixes for layout padding */
+    .layout__content, .cab-layout__content {
+        padding: 16px 12px;
+    }
+
+    /* Tables horizontal scroll */
+    [class$='-table-wrap'] {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 8px !important;
+    }
+
+    table[class$='-table'] th,
+    table[class$='-table'] td {
+        white-space: nowrap;
+    }
+
+    /* Adjust Cards Grid */
+    [class$='-cards']:not([class*='__']),
+    [class$='-grid']:not([class*='__']) {
+        grid-template-columns: 1fr !important;
+    }
+}

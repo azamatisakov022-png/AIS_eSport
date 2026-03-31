@@ -1,0 +1,213 @@
+.ar-page {
+    padding: 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.ar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.ar-header__title {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.ar-header__badges {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.ar-header__actions {
+    display: flex;
+    gap: 12px;
+}
+
+.ar-btn {
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s;
+    font-family: inherit;
+}
+
+.ar-btn--outline {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.ar-btn--outline:hover {
+    background: var(--bg-secondary);
+}
+
+.ar-btn--green { background: var(--green); color: var(--text-inverse); }
+.ar-btn--green:hover { background: var(--green-dark); }
+.ar-btn--orange { background: var(--amber); color: var(--text-inverse); }
+.ar-btn--orange:hover { background: var(--amber-dark); }
+.ar-btn--red { background: var(--rose); color: var(--text-inverse); }
+.ar-btn--red:hover { background: var(--rose-dark); }
+
+.ar-split {
+    display: flex;
+    gap: 24px;
+    flex: 1;
+    min-height: 0;
+}
+
+.ar-pane {
+    flex: 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.ar-pane--right {
+    flex: 1.5;
+}
+
+.ar-pane-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text-primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ar-pane-content {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.ar-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.ar-info-item__label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.ar-info-item__value {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+/* Document list */
+.ar-doc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ar-doc-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg-card);
+}
+
+.ar-doc-card:hover { border-color: var(--accent); }
+.ar-doc-card--active { border-color: var(--accent); background: var(--info-bg); }
+.ar-doc-card--ok { border-left: 4px solid var(--green); }
+.ar-doc-card--no { border-left: 4px solid var(--rose); }
+
+.ar-doc-card__name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.ar-doc-card__meta {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.ar-viewer-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+}
+
+.ar-viewer-placeholder span {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.ar-viewer-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.ar-viewer-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.ar-decision-panel {
+    padding: 20px;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+}
+
+.ar-decision-textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    margin-bottom: 16px;
+    resize: vertical;
+    background: var(--bg-card);
+    color: var(--text-primary);
+}
+
+.ar-decision-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.ar-decision-actions .ar-btn {
+    flex: 1;
+}

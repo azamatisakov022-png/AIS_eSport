@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>АИС eSport — Liquid Modern</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geologica:wght@300;400;500;600;700&family=Spectral:ital,wght@0,300;0,500;1,300;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f7f1e6;
+    --cream-2: #ede4d3;
+    --terra: #c25c3e;
+    --terra-d: #a04528;
+    --sage: #8aa888;
+    --sage-d: #5e7c5e;
+    --ink: #1c1814;
+    --soft: #6b5e51;
+    --peach: #f2bf9d;
+    --gold: #c9923f;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--cream); color: var(--ink); font-family: 'Geologica', sans-serif; overflow-x: hidden; }
+
+  /* Animated gradient mesh background */
+  .mesh {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.6;
+  }
+  .mesh::before, .mesh::after {
+    content: ''; position: absolute; border-radius: 50%; filter: blur(80px);
+  }
+  .mesh::before {
+    top: -20%; left: -10%; width: 60%; height: 60%;
+    background: radial-gradient(circle, var(--peach), transparent 70%);
+    animation: drift1 20s ease-in-out infinite alternate;
+  }
+  .mesh::after {
+    bottom: -15%; right: -10%; width: 55%; height: 55%;
+    background: radial-gradient(circle, var(--sage), transparent 70%);
+    animation: drift2 24s ease-in-out infinite alternate;
+  }
+  @keyframes drift1 { from { transform: translate(0, 0) scale(1); } to { transform: translate(60px, 80px) scale(1.1); } }
+  @keyframes drift2 { from { transform: translate(0, 0) scale(1); } to { transform: translate(-80px, -50px) scale(1.05); } }
+
+  /* Navigation */
+  .nav-wrap { position: relative; z-index: 10; padding: 20px 32px; }
+  .nav {
+    max-width: 1320px; margin: 0 auto;
+    background: rgba(247, 241, 230, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(28, 24, 20, 0.08); border-radius: 100px;
+    padding: 10px 12px 10px 28px;
+    display: flex; justify-content: space-between; align-items: center; gap: 24px;
+  }
+  .brand {
+    font-family: 'Spectral', serif; font-size: 22px; font-weight: 500; letter-spacing: -0.02em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .brand em { font-style: italic; color: var(--terra); }
+  .brand .blob {
+    width: 28px; height: 28px; background: var(--terra); border-radius: 60% 40% 55% 45% / 50% 50% 50% 50%;
+    animation: morph 6s ease-in-out infinite;
+  }
+  @keyframes morph {
+    0%, 100% { border-radius: 60% 40% 55% 45% / 50% 50% 50% 50%; }
+    33% { border-radius: 40% 60% 45% 55% / 55% 50% 50% 45%; }
+    66% { border-radius: 50% 50% 60% 40% / 45% 55% 50% 50%; }
+  }
+  .nav-links { display: flex; gap: 6px; font-size: 14px; }
+  .nav-links a {
+    padding: 8px 14px; color: var(--ink); text-decoration: none; border-radius: 100px; transition: all 0.2s;
+  }
+  .nav-links a:hover { background: rgba(28, 24, 20, 0.06); }
+  .nav-links a.on { background: var(--ink); color: var(--cream); }
+  .nav-right { display: flex; gap: 10px; align-items: center; }
+  .lang-mini { font-size: 12px; color: var(--soft); }
+  .lang-mini b { color: var(--ink); font-weight: 600; }
+  .login-btn {
+    background: var(--terra); color: var(--cream); padding: 11px 20px; border-radius: 100px;
+    font-size: 14px; font-weight: 500; text-decoration: none; transition: all 0.2s;
+  }
+  .login-btn:hover { background: var(--terra-d); }
+
+  /* Container */
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 2; }
+
+  /* HERO */
+  .hero { padding: 60px 0 100px; position: relative; z-index: 2; }
+  .hero-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 60px; align-items: center; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px;
+    background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(10px);
+    border: 1px solid rgba(28, 24, 20, 0.1); border-radius: 100px;
+    font-size: 13px; color: var(--soft);
+  }
+  .pill .d { width: 7px; height: 7px; background: var(--sage-d); border-radius: 50%; }
+  .hero h1 {
+    font-size: clamp(64px, 9vw, 152px); line-height: 0.95; letter-spacing: -0.045em;
+    font-weight: 400; margin: 28px 0; max-width: 900px;
+  }
+  .hero h1 em {
+    font-family: 'Spectral', serif; font-style: italic; font-weight: 300; color: var(--terra);
+    display: inline-block; transform: rotate(-3deg);
+  }
+  .hero h1 .blob-word {
+    background: var(--ink); color: var(--cream); padding: 0 0.18em; border-radius: 0.5em 0.2em 0.5em 0.2em;
+    display: inline-block;
+  }
+  .hero p {
+    font-size: 19px; line-height: 1.55; max-width: 540px; color: var(--soft); font-weight: 400;
+  }
+  .hero p .accent { color: var(--ink); font-weight: 500; }
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 36px; }
+  .btn {
+    padding: 16px 26px; border-radius: 100px; font-size: 15px; font-weight: 500;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+    transition: all 0.2s;
+  }
+  .btn-pri { background: var(--ink); color: var(--cream); }
+  .btn-pri:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(28, 24, 20, 0.2); }
+  .btn-sec { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(10px); color: var(--ink); border: 1px solid rgba(28, 24, 20, 0.12); }
+  .btn-sec:hover { background: rgba(255, 255, 255, 0.9); }
+
+  .hero-art { position: relative; aspect-ratio: 1; }
+  .hero-art .blob-1 {
+    position: absolute; inset: 0; background: var(--terra);
+    border-radius: 60% 40% 55% 45% / 50% 50% 50% 50%;
+    animation: morph 8s ease-in-out infinite;
+  }
+  .hero-art .blob-2 {
+    position: absolute; inset: 60px; background: var(--sage);
+    border-radius: 40% 60% 45% 55% / 55% 50% 50% 45%;
+    animation: morph 10s ease-in-out infinite reverse;
+    mix-blend-mode: multiply;
+  }
+  .hero-art .blob-3 {
+    position: absolute; inset: 120px; background: var(--gold);
+    border-radius: 50% 50% 60% 40% / 45% 55% 50% 50%;
+    animation: morph 12s ease-in-out infinite;
+  }
+  .hero-art .blob-text {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-family: 'Spectral', serif; font-style: italic; font-size: 96px; color: var(--cream); font-weight: 300;
+  }
+
+  /* Stats */
+  .stats {
+    padding: 60px 0; position: relative; z-index: 2;
+  }
+  .stats-card {
+    background: rgba(247, 241, 230, 0.6); backdrop-filter: blur(20px);
+    border: 1px solid rgba(28, 24, 20, 0.08); border-radius: 32px;
+    padding: 40px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+  }
+  .stat-cell {
+    padding: 0 32px; border-right: 1px solid rgba(28, 24, 20, 0.1);
+  }
+  .stat-cell:first-child { padding-left: 0; }
+  .stat-cell:last-child { padding-right: 0; border-right: none; }
+  .stat-cell .l { font-size: 13px; color: var(--soft); margin-bottom: 14px; }
+  .stat-cell .v {
+    font-family: 'Spectral', serif; font-weight: 300; font-size: 72px; line-height: 1; letter-spacing: -0.04em;
+  }
+  .stat-cell .v em { font-style: italic; color: var(--terra); }
+  .stat-cell .d { font-size: 12px; color: var(--sage-d); margin-top: 8px; }
+
+  /* Modules */
+  .modules { padding: 100px 0; position: relative; z-index: 2; }
+  .head-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 60px; align-items: end; }
+  .head-wrap h2 {
+    font-size: clamp(48px, 7vw, 112px); line-height: 0.95; letter-spacing: -0.04em; font-weight: 400;
+  }
+  .head-wrap h2 em { font-family: 'Spectral', serif; font-style: italic; font-weight: 300; color: var(--terra); }
+  .head-wrap p { font-size: 18px; line-height: 1.55; color: var(--soft); max-width: 460px; }
+
+  .mod-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .m {
+    background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(20px);
+    border: 1px solid rgba(28, 24, 20, 0.08); border-radius: 28px;
+    padding: 36px 32px; min-height: 280px;
+    display: flex; flex-direction: column; gap: 16px; transition: all 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .m:hover { transform: translateY(-4px); background: rgba(255, 255, 255, 0.75); }
+  .m h3 {
+    font-size: 28px; line-height: 1.1; letter-spacing: -0.025em; font-weight: 500;
+  }
+  .m h3 em { font-family: 'Spectral', serif; font-style: italic; font-weight: 300; color: var(--terra); }
+  .m p { font-size: 15px; line-height: 1.55; color: var(--soft); flex: 1; }
+  .m .arr { font-size: 20px; align-self: flex-start; transition: transform 0.2s; color: var(--terra); }
+  .m:hover .arr { transform: translate(6px, -6px); }
+  .m .num {
+    font-family: 'Spectral', serif; font-style: italic; font-size: 40px; color: var(--terra); font-weight: 300;
+  }
+  .m-wide { grid-column: span 2; background: var(--terra); color: var(--cream); border-color: var(--terra); }
+  .m-wide:hover { background: var(--terra-d); }
+  .m-wide h3 { font-size: 40px; }
+  .m-wide h3 em { color: var(--peach); }
+  .m-wide p { color: rgba(247, 241, 230, 0.8); }
+  .m-wide .num, .m-wide .arr { color: var(--peach); }
+  .m-wide::after {
+    content: ''; position: absolute; right: -60px; bottom: -60px; width: 240px; height: 240px;
+    background: var(--peach); border-radius: 60% 40% 55% 45% / 50% 50% 50% 50%;
+    opacity: 0.3; animation: morph 9s ease-in-out infinite;
+  }
+
+  .m-dark { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  .m-dark:hover { background: #2a241e; }
+  .m-dark p { color: rgba(247, 241, 230, 0.7); }
+  .m-dark .arr, .m-dark .num { color: var(--gold); }
+  .m-dark h3 em { color: var(--gold); }
+
+  .m-sage { background: var(--sage); color: var(--ink); border-color: var(--sage); }
+  .m-sage:hover { background: var(--sage-d); color: var(--cream); }
+  .m-sage:hover p { color: rgba(247, 241, 230, 0.8); }
+
+  /* Featured story */
+  .feature { padding: 80px 0; position: relative; z-index: 2; }
+  .feat-card {
+    border-radius: 40px; padding: 60px; min-height: 500px; position: relative; overflow: hidden;
+    background: var(--ink); color: var(--cream);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: end;
+  }
+  .feat-card .bg-orb {
+    position: absolute; top: -100px; right: -100px; width: 500px; height: 500px;
+    background: radial-gradient(circle, var(--terra), transparent 70%);
+    border-radius: 50%; filter: blur(40px); opacity: 0.7;
+  }
+  .feat-card .bg-orb-2 {
+    position: absolute; bottom: -150px; left: -50px; width: 400px; height: 400px;
+    background: radial-gradient(circle, var(--gold), transparent 70%);
+    border-radius: 50%; filter: blur(50px); opacity: 0.4;
+  }
+  .feat-card > * { position: relative; z-index: 2; }
+  .feat-card .pill { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.15); color: var(--cream); }
+  .feat-card h3 {
+    font-size: clamp(40px, 5vw, 84px); line-height: 1; letter-spacing: -0.04em; font-weight: 400; margin-top: 24px;
+  }
+  .feat-card h3 em { font-family: 'Spectral', serif; font-style: italic; font-weight: 300; color: var(--peach); }
+  .feat-card p { font-size: 18px; line-height: 1.55; color: rgba(247, 241, 230, 0.7); margin-top: 24px; max-width: 520px; }
+  .feat-card .read { margin-top: 36px; align-self: flex-start; }
+  .feat-vis-card {
+    background: rgba(247, 241, 230, 0.08); backdrop-filter: blur(10px);
+    border: 1px solid rgba(247, 241, 230, 0.15); border-radius: 24px;
+    padding: 32px; display: flex; flex-direction: column; gap: 20px;
+  }
+  .feat-vis-card .row { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 0; border-bottom: 1px dashed rgba(247, 241, 230, 0.15); }
+  .feat-vis-card .row:last-child { border-bottom: none; }
+  .feat-vis-card .row .l { font-size: 14px; color: rgba(247, 241, 230, 0.65); }
+  .feat-vis-card .row .v { font-family: 'Spectral', serif; font-size: 36px; font-weight: 400; }
+  .feat-vis-card .row .v em { font-style: italic; color: var(--peach); }
+
+  /* News */
+  .news { padding: 100px 0; position: relative; z-index: 2; }
+  .news-list { display: flex; flex-direction: column; gap: 12px; }
+  .nrow {
+    background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(20px);
+    border: 1px solid rgba(28, 24, 20, 0.08); border-radius: 24px; padding: 28px 32px;
+    display: grid; grid-template-columns: 100px 140px 1fr auto; gap: 28px; align-items: center;
+    transition: all 0.2s; text-decoration: none; color: inherit;
+  }
+  .nrow:hover { background: rgba(255, 255, 255, 0.85); transform: translateX(4px); }
+  .nrow .date { font-family: 'Spectral', serif; font-style: italic; font-size: 22px; color: var(--terra); }
+  .nrow .cat { font-size: 12px; color: var(--soft); padding: 4px 12px; background: rgba(28, 24, 20, 0.06); border-radius: 100px; width: fit-content; }
+  .nrow .ttl {
+    font-size: 19px; line-height: 1.3; letter-spacing: -0.015em; font-weight: 500;
+  }
+  .nrow .ttl small { display: block; margin-top: 4px; font-size: 14px; color: var(--soft); font-weight: 400; }
+  .nrow .arr { font-size: 22px; color: var(--terra); }
+
+  /* Footer */
+  footer { padding: 80px 0 30px; position: relative; z-index: 2; }
+  .foot-card {
+    background: var(--ink); color: var(--cream); border-radius: 40px; padding: 60px;
+    position: relative; overflow: hidden;
+  }
+  .foot-card::before {
+    content: ''; position: absolute; top: -100px; right: -100px; width: 400px; height: 400px;
+    background: radial-gradient(circle, var(--terra), transparent 70%); border-radius: 50%; filter: blur(40px); opacity: 0.5;
+  }
+  .foot-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 32px; padding-bottom: 36px; border-bottom: 1px solid rgba(247, 241, 230, 0.1); position: relative; z-index: 2; }
+  .foot-brand {
+    font-family: 'Spectral', serif; font-size: 56px; line-height: 0.9; letter-spacing: -0.03em; font-weight: 300;
+  }
+  .foot-brand em { font-style: italic; color: var(--peach); }
+  .foot-top p { color: rgba(247, 241, 230, 0.6); font-size: 14px; line-height: 1.55; margin-top: 16px; max-width: 320px; }
+  footer h5 { font-size: 12px; color: var(--peach); margin-bottom: 14px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  footer ul { list-style: none; }
+  footer li { padding: 5px 0; font-size: 14px; color: rgba(247, 241, 230, 0.85); }
+  footer li a { color: inherit; text-decoration: none; }
+  .foot-legal { padding-top: 24px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; font-size: 12px; color: rgba(247, 241, 230, 0.5); position: relative; z-index: 2; }
+
+  @media (max-width: 1100px) {
+    .hero-grid, .head-wrap, .feat-card, .stats-card { grid-template-columns: 1fr; }
+    .stats-card { gap: 24px; }
+    .stat-cell { border-right: none; border-bottom: 1px solid rgba(28, 24, 20, 0.1); padding: 0 0 24px; }
+    .stat-cell:last-child { border-bottom: none; }
+    .mod-grid { grid-template-columns: 1fr; }
+    .m-wide { grid-column: span 1; }
+    .nrow { grid-template-columns: 1fr; gap: 12px; }
+    .nav-links { display: none; }
+    .foot-top { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="mesh"></div>
+
+<div class="nav-wrap">
+  <nav class="nav">
+    <div class="brand"><span class="blob"></span>e<em>·</em>Sport</div>
+    <div class="nav-links">
+      <a href="#" class="on">Главная</a>
+      <a href="#">Реестры</a>
+      <a href="#">Сервисы</a>
+      <a href="#">Календарь</a>
+      <a href="#">Объекты</a>
+      <a href="#">Новости</a>
+      <a href="#">О ГАФКиС</a>
+    </div>
+    <div class="nav-right">
+      <span class="lang-mini"><b>КЫР</b> · РУС · EN</span>
+      <a href="#" class="login-btn">Войти →</a>
+    </div>
+  </nav>
+</div>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <span class="pill"><span class="d"></span>АИС eSport · версия 1.0 · 2026</span>
+        <h1>Спорт <em>дышит</em><br>как государство <span class="blob-word">слышит</span> его.</h1>
+        <p><span class="accent">Цифровой портал ГАФКиС</span> для спортсменов, тренеров и судей Кыргызстана. Документы, заявления, реестры и календарь — в одном месте, с авторизацией через Түндүк.</p>
+        <div class="cta-row">
+          <a class="btn btn-pri" href="#">Личный кабинет →</a>
+          <a class="btn btn-sec" href="#">Подать заявление</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <div class="blob-1"></div>
+        <div class="blob-2"></div>
+        <div class="blob-3"></div>
+        <div class="blob-text">eS</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="wrap">
+    <div class="stats-card">
+      <div class="stat-cell">
+        <div class="l">Спортсменов в реестре</div>
+        <div class="v"><em>12,480</em></div>
+        <div class="d">↑ +142 за неделю</div>
+      </div>
+      <div class="stat-cell">
+        <div class="l">Тренеров с лицензией</div>
+        <div class="v">847</div>
+        <div class="d">↑ +12 за неделю</div>
+      </div>
+      <div class="stat-cell">
+        <div class="l">Видов спорта</div>
+        <div class="v">63</div>
+        <div class="d">официальные федерации</div>
+      </div>
+      <div class="stat-cell">
+        <div class="l">Объектов на карте</div>
+        <div class="v"><em>1,218</em></div>
+        <div class="d">WMS геосервис · 7 областей</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="modules">
+  <div class="wrap">
+    <div class="head-wrap">
+      <h2>Сервисы,<br>что <em>работают.</em></h2>
+      <p>Семь ключевых разделов в личном кабинете и публичной части портала. Подача документов, проверка подлинности, доступ к реестрам — без бюрократии.</p>
+    </div>
+    <div class="mod-grid">
+      <div class="m m-wide">
+        <span class="num">01</span>
+        <h3>Личный кабинет — паспорт спортсмена, <em>тренера, судьи</em>.</h3>
+        <p>Биография, разряды, медсправки, мероприятия, медали, аккредитации. Подача заявлений и отслеживание маршрута согласования.</p>
+        <span class="arr">→</span>
+      </div>
+      <div class="m m-dark">
+        <span class="num">02</span>
+        <h3>10 реестров. <em>Один источник.</em></h3>
+        <p>Спортсмены, тренеры, судьи, мероприятия, объекты, инвентарь, медсправки.</p>
+        <span class="arr">→</span>
+      </div>
+      <div class="m">
+        <span class="num">03</span>
+        <h3>QR проверка<br>документа</h3>
+        <p>Подлинность сертификата за 2 секунды.</p>
+        <span class="arr">→</span>
+      </div>
+      <div class="m m-sage">
+        <span class="num">04</span>
+        <h3>Карта объектов · WMS</h3>
+        <p>Стадионы, манежи, бассейны, школы. Расписание и оснащение.</p>
+        <span class="arr">→</span>
+      </div>
+      <div class="m">
+        <span class="num">05</span>
+        <h3>Календарь<br><em>мероприятий</em></h3>
+        <p>Турниры, сборы, аттестации с фильтром по виду спорта.</p>
+        <span class="arr">→</span>
+      </div>
+      <div class="m">
+        <span class="num">06</span>
+        <h3>Заявления онлайн</h3>
+        <p>Звания, лицензии, восстановление. Импорт документов через Түндүк по ИНН.</p>
+        <span class="arr">→</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="feature">
+  <div class="wrap">
+    <div class="feat-card">
+      <div class="bg-orb"></div>
+      <div class="bg-orb-2"></div>
+      <div>
+        <span class="pill">★ Главное · 28 апреля 2026</span>
+        <h3>Анкара. Татами. <em>Четыре золота.</em></h3>
+        <p>Сборная Кыргызской Республики по дзюдо вернулась с международного турнира с рекордным результатом. Подробный разбор выступлений, протоколы и интервью с главным тренером — в материале выпуска.</p>
+        <a class="btn btn-sec read" href="#" style="background:rgba(247,241,230,0.1);color:var(--cream);border-color:rgba(247,241,230,0.2);">Читать материал →</a>
+      </div>
+      <div class="feat-vis-card">
+        <div class="row"><span class="l">Золото</span><span class="v"><em>4×</em></span></div>
+        <div class="row"><span class="l">Серебро</span><span class="v">2×</span></div>
+        <div class="row"><span class="l">Бронза</span><span class="v">1×</span></div>
+        <div class="row"><span class="l">Спортсменов</span><span class="v">12</span></div>
+        <div class="row"><span class="l">Место в командном зачёте</span><span class="v"><em>II</em></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="news">
+  <div class="wrap">
+    <div class="head-wrap">
+      <h2>Записи<br><em>хроники.</em></h2>
+      <p>Свежие новости, регламенты, объявления. Обновляется ежедневно в рабочие часы. Подписка по виду спорта — в личном кабинете.</p>
+    </div>
+    <div class="news-list">
+      <a class="nrow" href="#">
+        <span class="date">28.04</span>
+        <span class="cat">Сборные</span>
+        <span class="ttl">Сборная по дзюдо взяла четыре золота на международном турнире в Анкаре<small>Делегация ГАФКиС вернулась с рекордным результатом.</small></span>
+        <span class="arr">→</span>
+      </a>
+      <a class="nrow" href="#">
+        <span class="date">27.04</span>
+        <span class="cat">Реестр · Судьи</span>
+        <span class="ttl">Открыта запись на аттестацию судей по вольной борьбе<small>Подача заявок до 12 мая. Категории II, I, республиканская.</small></span>
+        <span class="arr">→</span>
+      </a>
+      <a class="nrow" href="#">
+        <span class="date">26.04</span>
+        <span class="cat">Госуслуги</span>
+        <span class="ttl">Тренерский сертификат — теперь полностью онлайн<small>Импорт документов из СМЭВ Түндүк по ИНН. Электронная выдача с QR.</small></span>
+        <span class="arr">→</span>
+      </a>
+      <a class="nrow" href="#">
+        <span class="date">24.04</span>
+        <span class="cat">Бюджет</span>
+        <span class="ttl">Опубликован программный бюджет на II квартал 2026<small>Распределение по областным управлениям и спортшколам.</small></span>
+        <span class="arr">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-card">
+      <div class="foot-top">
+        <div>
+          <div class="foot-brand">e<em>·</em>Sport</div>
+          <p>Государственное агентство физической культуры и спорта Кыргызской Республики. АИС версия 1.0 · 2026.</p>
+        </div>
+        <div><h5>Система</h5><ul><li><a href="#">О ГАФКиС</a></li><li><a href="#">Структура</a></li><li><a href="#">НПА</a></li><li><a href="#">Бюджет</a></li></ul></div>
+        <div><h5>Реестры</h5><ul><li><a href="#">Спортсмены</a></li><li><a href="#">Тренеры</a></li><li><a href="#">Судьи</a></li><li><a href="#">Объекты</a></li></ul></div>
+        <div><h5>Услуги</h5><ul><li><a href="#">Заявления</a></li><li><a href="#">QR проверка</a></li><li><a href="#">Антидопинг</a></li><li><a href="#">Тендеры</a></li></ul></div>
+        <div><h5>Контакты</h5><ul><li>Бишкек, пр. Чуй 162</li><li>+996 312 62 03 03</li><li>info@gafkis.gov.kg</li></ul></div>
+      </div>
+      <div class="foot-legal">
+        <span>© 2026 ГАФКиС</span>
+        <span>Постановления КР № 760 / № 762</span>
+        <span>Прототип VII · Liquid Modern</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

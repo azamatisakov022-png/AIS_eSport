@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>АИС eSport — Vibrant Modern</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,700;12..96,800&family=Geist+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fafaf7;
+    --ink: #14110e;
+    --soft: #5e574c;
+    --line: #e8e3d6;
+    --pink: #ff4e88;
+    --lime: #cdf564;
+    --navy: #1a2e6b;
+    --tang: #ff6b1a;
+    --mint: #c8efe2;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--ink); font-family: 'Bricolage Grotesque', sans-serif; font-variation-settings: 'opsz' 14; overflow-x: hidden; }
+
+  /* Subtle noise overlay */
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.025;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  /* Navigation */
+  .nav-outer {
+    position: sticky; top: 16px; z-index: 50; padding: 0 16px;
+  }
+  .nav {
+    max-width: 1320px; margin: 0 auto;
+    background: rgba(20, 17, 14, 0.92); backdrop-filter: blur(12px);
+    border-radius: 999px; padding: 8px 8px 8px 24px;
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    color: var(--bg);
+  }
+  .brand {
+    font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 18px;
+    letter-spacing: -0.025em; display: flex; align-items: center; gap: 8px;
+  }
+  .brand .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--lime); }
+  .nav-links { display: flex; gap: 4px; font-size: 14px; }
+  .nav-links a {
+    padding: 8px 14px; color: rgba(250, 250, 247, 0.75); text-decoration: none; border-radius: 999px; transition: all 0.15s;
+  }
+  .nav-links a:hover { color: var(--bg); background: rgba(255, 255, 255, 0.08); }
+  .nav-right { display: flex; gap: 8px; align-items: center; }
+  .lang-mini { font-family: 'Geist Mono', monospace; font-size: 11px; color: rgba(250, 250, 247, 0.6); padding: 0 6px; }
+  .lang-mini b { color: var(--bg); }
+  .nav .login {
+    background: var(--lime); color: var(--ink); padding: 10px 18px; border-radius: 999px;
+    font-weight: 500; font-size: 14px; text-decoration: none;
+  }
+  .nav .login:hover { background: #b8e248; }
+
+  /* Container */
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 0 32px; }
+
+  /* HERO */
+  .hero {
+    padding: 80px 0 100px; position: relative;
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px;
+    background: var(--bg); border: 1px solid var(--line); border-radius: 999px;
+    font-family: 'Geist Mono', monospace; font-size: 12px;
+  }
+  .pill .new { background: var(--pink); color: var(--bg); padding: 2px 8px; border-radius: 999px; font-weight: 700; }
+  .hero h1 {
+    font-size: clamp(64px, 9vw, 156px); line-height: 0.92; letter-spacing: -0.045em;
+    font-weight: 500; margin-top: 28px; max-width: 1100px;
+    font-variation-settings: 'opsz' 96;
+  }
+  .hero h1 .star {
+    display: inline-block; vertical-align: -0.04em; margin: 0 0.04em;
+    width: 0.85em; height: 0.85em; background: var(--pink); border-radius: 28%;
+    transform: rotate(8deg);
+  }
+  .hero h1 .pillword {
+    background: var(--ink); color: var(--bg); padding: 0 0.18em; border-radius: 0.18em;
+    display: inline-block; transform: rotate(-1.5deg); margin: 0 0.04em;
+  }
+  .hero h1 .lime { color: var(--navy); -webkit-text-stroke: 2px var(--ink); }
+  .hero h1 em {
+    font-style: italic; font-weight: 400; font-family: 'Bricolage Grotesque', serif;
+    background: linear-gradient(90deg, var(--tang), var(--pink));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero-sub {
+    display: grid; grid-template-columns: 2fr 1fr; gap: 60px; align-items: end;
+    margin-top: 56px; padding-top: 36px; border-top: 1px solid var(--line);
+  }
+  .hero-sub p {
+    font-size: 20px; line-height: 1.45; max-width: 620px; color: var(--soft);
+  }
+  .hero-sub p strong { color: var(--ink); font-weight: 500; }
+  .hero-cta { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    padding: 14px 22px; border-radius: 999px; font-size: 14px; font-weight: 500;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+    transition: all 0.15s;
+  }
+  .btn-pri { background: var(--ink); color: var(--bg); }
+  .btn-pri:hover { background: var(--navy); }
+  .btn-sec { background: var(--lime); color: var(--ink); }
+  .btn-sec:hover { background: #b8e248; }
+
+  /* Mini stats strip */
+  .strip {
+    background: var(--ink); color: var(--bg); padding: 32px 0; overflow: hidden;
+    border-radius: 28px;
+    margin: 0 32px;
+  }
+  .strip-inner {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    padding: 0 40px;
+  }
+  .strip-cell {
+    padding: 0 30px; border-right: 1px solid rgba(255,255,255,0.1);
+  }
+  .strip-cell:last-child { border-right: none; }
+  .strip-cell .l {
+    font-family: 'Geist Mono', monospace; font-size: 11px; color: rgba(250, 250, 247, 0.55);
+    text-transform: uppercase; letter-spacing: 0.12em;
+  }
+  .strip-cell .v {
+    font-size: 64px; line-height: 1; letter-spacing: -0.04em; font-weight: 500;
+    margin-top: 10px;
+  }
+  .strip-cell .v .acc { color: var(--lime); }
+  .strip-cell .v .acc-2 { color: var(--pink); }
+  .strip-cell .v .acc-3 { color: var(--tang); }
+
+  /* Modules — bold mixed cards */
+  .modules { padding: 100px 0; }
+  .head-wrap { display: grid; grid-template-columns: auto 1fr; gap: 40px; align-items: end; margin-bottom: 50px; }
+  .head-wrap h2 {
+    font-size: clamp(48px, 6vw, 96px); line-height: 0.95; letter-spacing: -0.035em; font-weight: 500;
+    font-variation-settings: 'opsz' 80;
+  }
+  .head-wrap h2 em { font-style: italic; font-weight: 400; }
+  .head-wrap .right {
+    text-align: right; padding-bottom: 12px;
+    font-family: 'Geist Mono', monospace; font-size: 13px; color: var(--soft);
+  }
+  .mod-grid {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px;
+  }
+  .m {
+    border-radius: 24px; padding: 32px; min-height: 260px;
+    display: flex; flex-direction: column; gap: 14px; position: relative; overflow: hidden;
+    transition: transform 0.2s;
+  }
+  .m:hover { transform: translateY(-4px); }
+  .m h3 { font-size: 28px; line-height: 1.05; letter-spacing: -0.02em; font-weight: 600; }
+  .m p { font-size: 15px; line-height: 1.5; }
+  .m .arr { font-size: 20px; margin-top: auto; align-self: flex-start; }
+  .m-num { font-family: 'Geist Mono', monospace; font-size: 12px; opacity: 0.7; }
+
+  .m-1 { grid-column: span 7; background: var(--navy); color: var(--bg); min-height: 380px; }
+  .m-1 h3 { font-size: 56px; line-height: 1; max-width: 500px; }
+  .m-1 svg { position: absolute; right: -40px; bottom: -40px; width: 280px; opacity: 0.9; }
+
+  .m-2 { grid-column: span 5; background: var(--lime); }
+  .m-2 .big { font-size: 96px; font-weight: 700; line-height: 0.9; letter-spacing: -0.04em; margin-top: auto; }
+
+  .m-3 { grid-column: span 4; background: var(--ink); color: var(--bg); }
+  .m-4 { grid-column: span 4; background: var(--mint); }
+  .m-5 { grid-column: span 4; background: var(--bg); border: 1px solid var(--line); }
+
+  .m-6 { grid-column: span 6; background: var(--tang); color: var(--bg); }
+  .m-7 { grid-column: span 6; background: var(--pink); color: var(--bg); }
+
+  /* Featured story */
+  .feature { padding: 80px 0; }
+  .feat-card {
+    background: var(--ink); color: var(--bg); border-radius: 28px; padding: 56px;
+    display: grid; grid-template-columns: 1.5fr 1fr; gap: 56px; align-items: end; position: relative; overflow: hidden;
+  }
+  .feat-card::before {
+    content: ''; position: absolute; top: -100px; right: -100px; width: 360px; height: 360px;
+    background: radial-gradient(circle, var(--pink), transparent 70%); opacity: 0.5;
+  }
+  .feat-card .info { position: relative; z-index: 2; }
+  .feat-card .pill { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: var(--bg); }
+  .feat-card h3 {
+    font-size: clamp(40px, 5vw, 76px); line-height: 1; letter-spacing: -0.035em; margin-top: 20px; font-weight: 500;
+  }
+  .feat-card h3 em { font-style: italic; color: var(--lime); }
+  .feat-card p { font-size: 17px; line-height: 1.55; color: rgba(250, 250, 247, 0.7); margin-top: 24px; max-width: 540px; }
+  .feat-card .vis {
+    position: relative; z-index: 2; display: flex; flex-direction: column; gap: 14px; align-items: end;
+  }
+  .feat-card .medal {
+    background: var(--lime); color: var(--ink); padding: 18px 22px; border-radius: 18px;
+    display: flex; flex-direction: column; gap: 4px; min-width: 240px;
+  }
+  .feat-card .medal .n { font-size: 56px; font-weight: 700; line-height: 1; }
+  .feat-card .medal .l { font-size: 12px; font-family: 'Geist Mono', monospace; }
+
+  /* News */
+  .news { padding: 100px 0; }
+  .news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .ncard {
+    background: var(--bg); border: 1px solid var(--line); border-radius: 20px; padding: 28px;
+    display: flex; flex-direction: column; gap: 14px; transition: all 0.2s;
+    text-decoration: none; color: inherit;
+  }
+  .ncard:hover { border-color: var(--ink); transform: translateY(-3px); }
+  .ncard.hot { background: var(--ink); color: var(--bg); border-color: var(--ink); grid-column: span 1; }
+  .ncard.alt { background: var(--lime); }
+  .ncard .meta { display: flex; justify-content: space-between; font-family: 'Geist Mono', monospace; font-size: 11px; opacity: 0.7; }
+  .ncard h4 { font-size: 24px; line-height: 1.15; letter-spacing: -0.015em; font-weight: 500; flex: 1; }
+  .ncard.hot h4 em { color: var(--lime); font-style: italic; }
+  .ncard p { font-size: 14px; line-height: 1.5; opacity: 0.8; }
+  .ncard .read { font-family: 'Geist Mono', monospace; font-size: 12px; }
+
+  /* Footer */
+  footer { background: var(--ink); color: var(--bg); padding: 80px 0 40px; border-radius: 28px 28px 0 0; }
+  .foot-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .foot-brand {
+    font-size: 64px; line-height: 0.9; letter-spacing: -0.04em; font-weight: 500;
+  }
+  .foot-brand .lime { color: var(--lime); }
+  .foot-top p { color: rgba(250, 250, 247, 0.55); font-size: 14px; line-height: 1.55; margin-top: 18px; max-width: 360px; }
+  footer h5 { font-family: 'Geist Mono', monospace; font-size: 11px; color: rgba(250, 250, 247, 0.55); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.16em; }
+  footer ul { list-style: none; }
+  footer li { padding: 5px 0; font-size: 14px; color: rgba(250, 250, 247, 0.85); }
+  footer li a { color: inherit; text-decoration: none; }
+  .foot-legal {
+    padding-top: 24px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px;
+    font-family: 'Geist Mono', monospace; font-size: 11px; color: rgba(250, 250, 247, 0.5); text-transform: uppercase; letter-spacing: 0.12em;
+  }
+
+  @media (max-width: 1100px) {
+    .hero h1 { font-size: 64px; }
+    .hero-sub, .head-wrap, .feat-card { grid-template-columns: 1fr; gap: 24px; }
+    .strip-inner, .news-grid, .foot-top { grid-template-columns: repeat(2, 1fr); }
+    .mod-grid > * { grid-column: span 12 !important; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="nav-outer">
+  <nav class="nav">
+    <div class="brand"><span class="dot"></span>eSport · ГАФКиС</div>
+    <div class="nav-links">
+      <a href="#">Сервисы</a>
+      <a href="#">Реестры</a>
+      <a href="#">Календарь</a>
+      <a href="#">Спортсмены</a>
+      <a href="#">Объекты</a>
+      <a href="#">Новости</a>
+    </div>
+    <div class="nav-right">
+      <span class="lang-mini"><b>КЫР</b> / РУС / EN</span>
+      <a href="#" class="login">Войти →</a>
+    </div>
+  </nav>
+</div>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="pill"><span class="new">NEW</span>v1.0 · АИС запущена в эксплуатацию</span>
+    <h1>Спорт <span class="star"></span><br><span class="pillword">страны</span> работает <em>на коде.</em><br><span class="lime">eSport</span> — портал ГАФКиС.</h1>
+    <div class="hero-sub">
+      <p><strong>Один цифровой портал</strong> для спортсменов, тренеров, судей и федераций Кыргызстана. Реестры, заявления, рейтинги, карта объектов — всё в одной системе с авторизацией через Түндүк и проверкой документов по QR.</p>
+      <div class="hero-cta">
+        <a class="btn btn-pri" href="#">Открыть кабинет →</a>
+        <a class="btn btn-sec" href="#">Что нового?</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="strip">
+  <div class="strip-inner">
+    <div class="strip-cell"><div class="l">Спортсменов</div><div class="v"><span class="acc">12,480</span></div></div>
+    <div class="strip-cell"><div class="l">Тренеров</div><div class="v">847</div></div>
+    <div class="strip-cell"><div class="l">Судей</div><div class="v"><span class="acc-2">324</span></div></div>
+    <div class="strip-cell"><div class="l">Объектов на карте</div><div class="v"><span class="acc-3">1,218</span></div></div>
+  </div>
+</section>
+
+<section class="modules">
+  <div class="wrap">
+    <div class="head-wrap">
+      <h2>Что умеет<br>портал, <em>и зачем.</em></h2>
+      <div class="right">— 7 ключевых сервисов<br>в одном личном кабинете</div>
+    </div>
+    <div class="mod-grid">
+      <div class="m m-1">
+        <span class="m-num">// 01</span>
+        <h3>Личный кабинет — для спортсмена, тренера, судьи.</h3>
+        <p style="opacity:0.7;max-width:480px;">Биография, разряды, медсправки, мероприятия, медали, аккредитации, заявления — в едином профиле.</p>
+        <span class="arr">→</span>
+        <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg">
+          <g stroke="#cdf564" stroke-width="1" fill="none" opacity="0.6">
+            <circle cx="140" cy="120" r="80"/><circle cx="140" cy="120" r="50"/><circle cx="140" cy="120" r="20"/>
+          </g>
+          <g fill="#cdf564"><circle cx="140" cy="40" r="4"/><circle cx="220" cy="120" r="4"/><circle cx="140" cy="200" r="4"/><circle cx="60" cy="120" r="4"/></g>
+        </svg>
+      </div>
+      <div class="m m-2">
+        <span class="m-num">// 02</span>
+        <h3>10 реестров. Один источник правды.</h3>
+        <p>Спортсмены, тренеры, судьи, объекты, мероприятия, инвентарь, медсправки и далее.</p>
+        <div class="big">10+</div>
+      </div>
+      <div class="m m-3">
+        <span class="m-num">// 03</span>
+        <h3>QR проверка документа</h3>
+        <p style="opacity:0.7;">Подлинность сертификата за 2 секунды.</p>
+        <span class="arr">→</span>
+      </div>
+      <div class="m m-4">
+        <span class="m-num">// 04</span>
+        <h3>Карта объектов</h3>
+        <p>WMS геосервис: стадионы, манежи, школы.</p>
+        <span class="arr">→</span>
+      </div>
+      <div class="m m-5">
+        <span class="m-num">// 05</span>
+        <h3>Заявления онлайн</h3>
+        <p style="color:var(--soft);">Звания, лицензии, восстановление документов.</p>
+        <span class="arr">→</span>
+      </div>
+      <div class="m m-6">
+        <span class="m-num">// 06</span>
+        <h3>Календарь мероприятий — фильтр по спорту, региону и сезону.</h3>
+        <p style="opacity:0.85;">Турниры, сборы, аттестации. Подписка по виду спорта.</p>
+        <span class="arr">→</span>
+      </div>
+      <div class="m m-7">
+        <span class="m-num">// 07</span>
+        <h3>Антидопинг и регламенты</h3>
+        <p style="opacity:0.85;">Программы контроля, образовательные материалы, реестр санкций.</p>
+        <span class="arr">→</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="feature">
+  <div class="wrap">
+    <div class="feat-card">
+      <div class="info">
+        <span class="pill">★ Главная история · 28.04.2026</span>
+        <h3>Сборная по дзюдо: четыре <em>золота</em> на турнире в Анкаре.</h3>
+        <p>Делегация ГАФКиС вернулась с международного турнира с рекордным результатом. Подробный разбор выступлений, протоколы, интервью с главным тренером — в материале.</p>
+        <a class="btn btn-sec" style="margin-top:32px;" href="#">Читать материал →</a>
+      </div>
+      <div class="vis">
+        <div class="medal"><div class="n">4×</div><div class="l">ЗОЛОТО · АНКАРА 2026</div></div>
+        <div class="medal" style="background:var(--pink);color:var(--bg);"><div class="n">2×</div><div class="l">СЕРЕБРО · -73, -90 КГ</div></div>
+        <div class="medal" style="background:var(--bg);"><div class="n">12</div><div class="l">СПОРТСМЕНОВ В ДЕЛЕГАЦИИ</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="news">
+  <div class="wrap">
+    <div class="head-wrap">
+      <h2>Новости.<br><em>Свежее.</em></h2>
+      <div class="right">— Обновляется ежедневно<br>в рабочие часы</div>
+    </div>
+    <div class="news-grid">
+      <a class="ncard alt" href="#">
+        <div class="meta"><span>Реестр</span><span>27.04.26</span></div>
+        <h4>Аттестация судей по вольной борьбе</h4>
+        <p>Подача заявок до 12 мая. Категории II, I, республиканская.</p>
+        <span class="read">Читать →</span>
+      </a>
+      <a class="ncard hot" href="#">
+        <div class="meta"><span>★ Услуги</span><span>26.04.26</span></div>
+        <h4>Тренерский сертификат — теперь <em>полностью онлайн.</em></h4>
+        <p>Импорт документов из СМЭВ Түндүк по ИНН. Электронная выдача с QR-кодом.</p>
+        <span class="read">Читать →</span>
+      </a>
+      <a class="ncard" href="#">
+        <div class="meta"><span>Бюджет</span><span>24.04.26</span></div>
+        <h4>Программный бюджет ГАФКиС на II квартал 2026</h4>
+        <p>Распределение по областным управлениям и спортшколам.</p>
+        <span class="read">Читать →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-brand">e<span class="lime">·</span>Sport.</div>
+        <p>Государственное агентство физической культуры и спорта Кыргызской Республики. АИС версия 1.0 · 2026.</p>
+      </div>
+      <div><h5>Система</h5><ul><li><a href="#">О ГАФКиС</a></li><li><a href="#">Структура</a></li><li><a href="#">НПА</a></li><li><a href="#">Бюджет</a></li></ul></div>
+      <div><h5>Реестры</h5><ul><li><a href="#">Спортсмены</a></li><li><a href="#">Тренеры</a></li><li><a href="#">Судьи</a></li><li><a href="#">Объекты</a></li></ul></div>
+      <div><h5>Услуги</h5><ul><li><a href="#">Заявления</a></li><li><a href="#">QR проверка</a></li><li><a href="#">Антидопинг</a></li><li><a href="#">Тендеры</a></li></ul></div>
+      <div><h5>Контакты</h5><ul><li>Бишкек, пр. Чуй 162</li><li>+996 312 62 03 03</li><li>info@gafkis.gov.kg</li></ul></div>
+    </div>
+    <div class="foot-legal">
+      <span>© 2026 ГАФКиС</span>
+      <span>Постановления КР № 760 / № 762</span>
+      <span>Прототип VI · Vibrant Modern</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+/* ============================================================
+   Public Pages — Responsive Overrides
+   ============================================================ */
+
+/* ── Tablet ── */
+@media (max-width: 1024px) {
+    .pub-header {
+        padding: 0 16px !important;
+    }
+
+    .pub-actions {
+        gap: 8px !important;
+    }
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+    .pub-header {
+        padding: 0 12px !important;
+        height: 52px !important;
+    }
+
+    .pub-brand-text {
+        display: none;
+    }
+
+    .pub-actions {
+        gap: 6px !important;
+    }
+
+    .pub-logout-btn {
+        padding: 6px 8px !important;
+    }
+
+    .pub-body {
+        flex-direction: column !important;
+        overflow: auto !important;
+    }
+
+    /* PublicCabinet sidebar on mobile — becomes horizontal top nav or hidden */
+    .pub-cab-sidebar {
+        width: 100% !important;
+        height: auto !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        flex-direction: row !important;
+        border-right: none !important;
+        border-bottom: 1px solid var(--border-color) !important;
+        padding: 8px !important;
+    }
+
+    .pub-cab-sidebar nav {
+        flex-direction: row !important;
+        gap: 4px !important;
+        overflow-x: auto !important;
+    }
+
+    .pub-cab-sidebar a {
+        white-space: nowrap !important;
+        font-size: 12px !important;
+        padding: 8px 12px !important;
+    }
+
+    .pub-cab-content {
+        padding: 16px 12px !important;
+    }
+
+    /* PublicAthletes cards */
+    .pub-athletes-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Generic responsive grid overrides */
+    .pub-grid-3 {
+        grid-template-columns: 1fr !important;
+    }
+
+    .pub-grid-2 {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+    .pub-athletes-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .pub-grid-3 {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}

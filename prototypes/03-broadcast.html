@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>АИС eSport — Broadcast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;500;700&family=Space+Mono:wght@400;700&family=Days+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060810;
+    --bg2: #0d1322;
+    --ink: #e8f0ff;
+    --dim: #6a7894;
+    --acid: #c6ff3a;
+    --cyan: #00e5ff;
+    --hot: #ff2e63;
+    --grid: rgba(0, 229, 255, 0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--bg); color: var(--ink); font-family: 'Space Mono', monospace; overflow-x: hidden; }
+
+  /* Scanlines + grid bg */
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 3px);
+    mix-blend-mode: overlay;
+  }
+  body::after {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse at top, black 50%, transparent 90%);
+  }
+
+  /* HUD top bar */
+  .hud {
+    position: relative; z-index: 3;
+    border-bottom: 1px solid rgba(0, 229, 255, 0.3);
+    padding: 8px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    background: rgba(6, 8, 16, 0.7); backdrop-filter: blur(6px);
+  }
+  .hud .l, .hud .r { display: flex; gap: 22px; align-items: center; }
+  .hud .live::before { content: ''; display: inline-block; width: 8px; height: 8px; background: var(--hot); border-radius: 50%; margin-right: 6px; animation: blink 1.4s infinite; }
+  @keyframes blink { 50% { opacity: 0.2; } }
+  .hud a { color: var(--cyan); text-decoration: none; }
+  .hud .lang span { padding: 2px 6px; }
+  .hud .lang .on { background: var(--acid); color: var(--bg); }
+
+  /* Header */
+  header.main {
+    position: relative; z-index: 3;
+    padding: 18px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+    background: linear-gradient(180deg, rgba(13, 19, 34, 0.8), transparent);
+  }
+  .logo {
+    font-family: 'Days One', sans-serif; font-size: 32px; line-height: 1; letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+  .logo .sq { display: inline-block; width: 28px; height: 28px; background: var(--acid); margin-right: 10px; vertical-align: middle; transform: rotate(45deg); position: relative; }
+  .logo .sq::after { content: ''; position: absolute; inset: 6px; background: var(--bg); transform: rotate(0deg); }
+  .logo span { color: var(--acid); }
+  nav.main {
+    display: flex; gap: 4px; flex-wrap: wrap;
+  }
+  nav.main a {
+    padding: 10px 14px; color: var(--dim); text-decoration: none;
+    font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; text-transform: uppercase; letter-spacing: 0.12em;
+    border: 1px solid transparent; transition: all 0.15s; position: relative;
+  }
+  nav.main a:hover { color: var(--ink); border-color: var(--cyan); }
+  nav.main a.on { color: var(--acid); border-color: var(--acid); }
+  .auth-btn {
+    padding: 12px 20px; background: var(--acid); color: var(--bg);
+    font-family: 'Days One', sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em;
+    text-decoration: none; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .auth-btn:hover { background: var(--cyan); }
+
+  /* HERO */
+  .hero {
+    position: relative; z-index: 2;
+    padding: 70px 24px 50px;
+    display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; align-items: end;
+    border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+  }
+  .hero-left .timestamp {
+    font-size: 11px; letter-spacing: 0.2em; color: var(--cyan); margin-bottom: 18px;
+    display: flex; gap: 14px; align-items: center;
+  }
+  .hero h1 {
+    font-family: 'Oswald', sans-serif; font-weight: 700; font-size: clamp(56px, 8vw, 130px);
+    line-height: 0.92; letter-spacing: -0.02em; text-transform: uppercase;
+  }
+  .hero h1 .acid { color: var(--acid); text-shadow: 0 0 30px rgba(198, 255, 58, 0.4); }
+  .hero h1 .glitch { position: relative; }
+  .hero h1 .glitch::before, .hero h1 .glitch::after {
+    content: attr(data-text); position: absolute; top: 0; left: 0; opacity: 0.8;
+  }
+  .hero h1 .glitch::before { color: var(--cyan); transform: translate(-3px, 0); mix-blend-mode: screen; }
+  .hero h1 .glitch::after { color: var(--hot); transform: translate(3px, 0); mix-blend-mode: screen; }
+  .hero p {
+    font-size: 16px; line-height: 1.6; color: var(--dim); max-width: 540px; margin-top: 30px;
+  }
+  .hero-cta { margin-top: 36px; display: flex; gap: 14px; flex-wrap: wrap; }
+  .cta {
+    padding: 16px 24px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14px;
+    letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 10px; transition: all 0.2s;
+  }
+  .cta-pri { background: var(--acid); color: var(--bg); }
+  .cta-sec { color: var(--ink); border: 1px solid var(--cyan); }
+  .cta-pri:hover { background: var(--cyan); }
+  .cta-sec:hover { background: var(--cyan); color: var(--bg); }
+
+  /* Right HUD panel */
+  .hud-panel {
+    background: linear-gradient(180deg, rgba(13, 19, 34, 0.9), rgba(6, 8, 16, 0.9));
+    border: 1px solid rgba(0, 229, 255, 0.4); padding: 28px;
+    position: relative;
+    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+  }
+  .hud-panel::before {
+    content: ''; position: absolute; top: -1px; right: -1px; width: 60px; height: 4px; background: var(--acid);
+  }
+  .hud-panel .ph {
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); margin-bottom: 18px;
+    display: flex; justify-content: space-between;
+  }
+  .hud-panel .ph::after { content: '⌖ LIVE'; color: var(--hot); }
+  .stat-row { display: flex; align-items: baseline; justify-content: space-between; padding: 14px 0; border-bottom: 1px dashed rgba(106, 120, 148, 0.3); }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-row .l { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; }
+  .stat-row .v { font-family: 'Days One', sans-serif; font-size: 32px; line-height: 1; color: var(--ink); letter-spacing: -0.02em; }
+  .stat-row .v.acid { color: var(--acid); }
+  .stat-row .delta { font-size: 11px; color: var(--acid); margin-left: 8px; }
+  .stat-row .delta.dn { color: var(--hot); }
+
+  /* Bento modules */
+  .bento {
+    position: relative; z-index: 2;
+    padding: 60px 24px;
+    display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 200px; gap: 14px;
+    border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+  }
+  .bento h2 {
+    grid-column: 1 / -1; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 64px;
+    line-height: 0.9; letter-spacing: -0.02em; text-transform: uppercase; margin-bottom: 10px;
+  }
+  .bento h2 .acid { color: var(--acid); font-weight: 700; }
+  .tile {
+    background: linear-gradient(180deg, rgba(13, 19, 34, 0.6), rgba(6, 8, 16, 0.6));
+    border: 1px solid rgba(106, 120, 148, 0.25);
+    padding: 22px; position: relative; overflow: hidden;
+    transition: all 0.25s;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .tile::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 16px; height: 16px;
+    border-top: 2px solid var(--acid); border-left: 2px solid var(--acid);
+  }
+  .tile::after {
+    content: ''; position: absolute; bottom: 0; right: 0; width: 16px; height: 16px;
+    border-bottom: 2px solid var(--cyan); border-right: 2px solid var(--cyan);
+  }
+  .tile:hover { border-color: var(--cyan); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0, 229, 255, 0.15); }
+  .tile-id { font-size: 10px; letter-spacing: 0.2em; color: var(--cyan); }
+  .tile h3 { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 26px; line-height: 1.05; text-transform: uppercase; letter-spacing: -0.01em; margin-top: 8px; }
+  .tile p { font-size: 13px; line-height: 1.5; color: var(--dim); }
+  .tile .arr { font-family: 'Days One', sans-serif; color: var(--acid); }
+
+  .tile-wide { grid-column: span 2; grid-row: span 2; }
+  .tile-tall { grid-row: span 2; }
+  .tile-acid { background: linear-gradient(135deg, var(--acid), #8eff00); color: var(--bg); }
+  .tile-acid::before, .tile-acid::after { border-color: var(--bg); }
+  .tile-acid p { color: rgba(6, 8, 16, 0.8); }
+  .tile-acid .tile-id, .tile-acid .arr { color: var(--bg); }
+  .tile .big-num {
+    font-family: 'Days One', sans-serif; font-size: 96px; line-height: 0.9; letter-spacing: -0.04em;
+  }
+  .tile .big-num small { font-size: 0.3em; }
+
+  /* Live ticker */
+  .ticker {
+    position: relative; z-index: 2;
+    padding: 18px 0;
+    background: var(--acid); color: var(--bg);
+    overflow: hidden; border-top: 2px solid var(--bg); border-bottom: 2px solid var(--bg);
+  }
+  .ticker-track {
+    display: flex; gap: 50px; animation: tk 30s linear infinite; white-space: nowrap;
+    font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px; text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .ticker-track span { display: inline-flex; align-items: center; gap: 50px; }
+  .ticker-track .sep { width: 8px; height: 8px; background: var(--bg); border-radius: 50%; }
+  @keyframes tk { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* News */
+  .news {
+    position: relative; z-index: 2;
+    padding: 60px 24px;
+    border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+  }
+  .news h2 { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: clamp(44px, 5.5vw, 88px); line-height: 0.9; letter-spacing: -0.02em; text-transform: uppercase; margin-bottom: 36px; }
+  .news h2 .acid { color: var(--acid); }
+  .nf { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 18px; }
+  .ncard {
+    background: linear-gradient(180deg, rgba(13, 19, 34, 0.7), rgba(6, 8, 16, 0.7));
+    border: 1px solid rgba(106, 120, 148, 0.3); padding: 26px;
+    position: relative;
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+    transition: border-color 0.2s;
+  }
+  .ncard:hover { border-color: var(--acid); }
+  .ncard .tag {
+    display: inline-block; padding: 3px 8px; font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase; background: var(--cyan); color: var(--bg); margin-bottom: 16px;
+  }
+  .ncard .tag.hot { background: var(--hot); color: var(--ink); }
+  .ncard .tag.acid { background: var(--acid); color: var(--bg); }
+  .ncard h4 { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 22px; line-height: 1.1; text-transform: uppercase; letter-spacing: -0.01em; margin-bottom: 10px; }
+  .ncard.lead h4 { font-size: 36px; }
+  .ncard p { font-size: 14px; line-height: 1.55; color: var(--dim); }
+  .ncard .ts { font-size: 11px; letter-spacing: 0.18em; color: var(--cyan); margin-top: 16px; padding-top: 12px; border-top: 1px dashed rgba(106, 120, 148, 0.3); }
+
+  /* Footer */
+  footer {
+    position: relative; z-index: 2;
+    padding: 50px 24px 24px;
+    background: var(--bg2); border-top: 2px solid var(--acid);
+  }
+  .ftop { display: grid; grid-template-columns: 1.5fr repeat(4, 1fr); gap: 36px; padding-bottom: 28px; border-bottom: 1px solid rgba(106, 120, 148, 0.3); }
+  footer h5 { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 12px; color: var(--cyan); }
+  footer ul { list-style: none; }
+  footer li { padding: 4px 0; font-size: 13px; color: var(--dim); }
+  footer .fbrand { font-family: 'Days One', sans-serif; font-size: 36px; line-height: 1; }
+  footer .fbrand span { color: var(--acid); }
+  footer .legal { padding-top: 18px; font-size: 11px; letter-spacing: 0.16em; color: var(--dim); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; text-transform: uppercase; }
+
+  @media (max-width: 900px) {
+    .hero, .nf, .ftop { grid-template-columns: 1fr; }
+    .bento { grid-template-columns: repeat(2, 1fr); }
+    .tile-wide { grid-column: span 2; }
+    nav.main { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hud">
+  <div class="l">
+    <span class="live">LIVE</span>
+    <span>SYS://eSport.gafkis.kg</span>
+    <span>NODE 03 · STABLE</span>
+  </div>
+  <div class="r">
+    <span>29.04.2026 · 14:32:08 BSH</span>
+    <a href="#">A11Y</a>
+    <div class="lang"><span class="on">КЫР</span><span>РУС</span><span>ENG</span></div>
+  </div>
+</div>
+
+<header class="main">
+  <div class="logo"><span class="sq"></span>e<span>·</span>SPORT</div>
+  <nav class="main">
+    <a href="#" class="on">Главная</a>
+    <a href="#">Реестры</a>
+    <a href="#">Спортсмены</a>
+    <a href="#">Тренеры</a>
+    <a href="#">Сборные</a>
+    <a href="#">Календарь</a>
+    <a href="#">Услуги</a>
+    <a href="#">Карта</a>
+    <a href="#">QR</a>
+  </nav>
+  <a href="#" class="auth-btn">⌬ TÜNDÜK LOGIN</a>
+</header>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="timestamp">
+      <span>● TRANSMISSION 042</span>
+      <span>// 29.04.2026</span>
+      <span>// CHANNEL: PUBLIC</span>
+    </div>
+    <h1><span class="acid">SPORT</span><br><span class="glitch" data-text="DATA-DRIVEN.">DATA-DRIVEN.</span><br>СТРАНА В ЭФИРЕ.</h1>
+    <p>Цифровая инфраструктура для спорта Кыргызстана. Реестры, заявления, рейтинги и трансляции — в реальном времени. Авторизация через Түндүк, проверка документов по QR.</p>
+    <div class="hero-cta">
+      <a class="cta cta-pri" href="#">ВОЙТИ В СИСТЕМУ ⟶</a>
+      <a class="cta cta-sec" href="#">// ОТКРЫТЬ ДЕМО</a>
+    </div>
+  </div>
+  <div class="hud-panel">
+    <div class="ph">SYSTEM TELEMETRY</div>
+    <div class="stat-row"><div class="l">Спортсменов</div><div class="v acid">12 480 <span class="delta">▲ 142</span></div></div>
+    <div class="stat-row"><div class="l">Тренеров</div><div class="v">847 <span class="delta">▲ 12</span></div></div>
+    <div class="stat-row"><div class="l">Судей</div><div class="v">324 <span class="delta">▲ 4</span></div></div>
+    <div class="stat-row"><div class="l">Объектов</div><div class="v">1 218 <span class="delta dn">▼ 2</span></div></div>
+    <div class="stat-row"><div class="l">Мероприятий 04/26</div><div class="v acid">19</div></div>
+    <div class="stat-row"><div class="l">Заявлений в очереди</div><div class="v">37</div></div>
+  </div>
+</section>
+
+<section class="bento">
+  <h2>Каналы. <span class="acid">Возможности.</span></h2>
+  <div class="tile tile-wide tile-acid">
+    <div>
+      <div class="tile-id">// 01 — РЕЕСТРЫ</div>
+      <h3 style="color:var(--bg);">Единая база</h3>
+      <p>Спортсмены, тренеры, судьи, организации. Импорт из Е-Кызмат, медсправки из Минздрава по ИНН.</p>
+    </div>
+    <div class="big-num">10<small>+</small></div>
+    <div style="display:flex;justify-content:space-between;align-items:end;">
+      <span style="font-size:12px;letter-spacing:0.16em;text-transform:uppercase;">Реестров</span>
+      <span class="arr">⟶</span>
+    </div>
+  </div>
+  <div class="tile">
+    <div>
+      <div class="tile-id">// 02</div>
+      <h3>QR проверка</h3>
+    </div>
+    <p>Подлинность документа за 2 секунды.</p>
+    <div class="arr">⟶</div>
+  </div>
+  <div class="tile">
+    <div>
+      <div class="tile-id">// 03</div>
+      <h3>Заявления онлайн</h3>
+    </div>
+    <p>Звания, лицензии, восстановление.</p>
+    <div class="arr">⟶</div>
+  </div>
+  <div class="tile tile-tall">
+    <div>
+      <div class="tile-id">// 04 — КАРТА</div>
+      <h3>Спортивные объекты</h3>
+      <p>WMS-геосервис: стадионы, манежи, бассейны, школы. Расписание и оснащение.</p>
+    </div>
+    <svg viewBox="0 0 200 100" style="width:100%;">
+      <g stroke="var(--cyan)" fill="none" stroke-width="0.5" opacity="0.6">
+        <path d="M0 50 Q40 20 80 50 T160 50 T240 50"/>
+        <path d="M0 60 Q40 40 80 60 T160 60 T240 60"/>
+      </g>
+      <g fill="var(--acid)">
+        <circle cx="40" cy="40" r="3"/><circle cx="90" cy="55" r="3"/><circle cx="140" cy="35" r="3"/><circle cx="170" cy="60" r="3"/>
+      </g>
+    </svg>
+    <div class="arr">⟶</div>
+  </div>
+  <div class="tile">
+    <div>
+      <div class="tile-id">// 05</div>
+      <h3>Календарь</h3>
+    </div>
+    <p>Турниры, сборы, аттестации.</p>
+    <div class="arr">⟶</div>
+  </div>
+  <div class="tile">
+    <div>
+      <div class="tile-id">// 06</div>
+      <h3>Антидопинг</h3>
+    </div>
+    <p>Регламенты и контроль.</p>
+    <div class="arr">⟶</div>
+  </div>
+  <div class="tile tile-wide">
+    <div>
+      <div class="tile-id">// 07 — РЕЙТИНГ</div>
+      <h3>Международные позиции</h3>
+      <p>Актуальные места кыргызских спортсменов в мировых рейтингах по видам спорта. Обновление еженедельно.</p>
+    </div>
+    <div style="display:flex;gap:24px;align-items:end;">
+      <div><div class="big-num" style="color:var(--acid);">14</div><div style="font-size:11px;letter-spacing:0.18em;color:var(--dim);text-transform:uppercase;margin-top:4px;">Топ-10 мира</div></div>
+      <div><div class="big-num">63</div><div style="font-size:11px;letter-spacing:0.18em;color:var(--dim);text-transform:uppercase;margin-top:4px;">Видов спорта</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="ticker">
+  <div class="ticker-track">
+    <span>★ СБОРНАЯ ПО ДЗЮДО — 4 ЗОЛОТА В АНКАРЕ <span class="sep"></span></span>
+    <span>АТТЕСТАЦИЯ СУДЕЙ ОТКРЫТА · ДО 12 МАЯ <span class="sep"></span></span>
+    <span>ТРЕНЕРСКИЙ СЕРТИФИКАТ — ПОЛНОСТЬЮ ОНЛАЙН <span class="sep"></span></span>
+    <span>КАЛЕНДАРЬ МАЙ 2026 ОПУБЛИКОВАН <span class="sep"></span></span>
+    <span>★ СБОРНАЯ ПО ДЗЮДО — 4 ЗОЛОТА В АНКАРЕ <span class="sep"></span></span>
+    <span>АТТЕСТАЦИЯ СУДЕЙ ОТКРЫТА · ДО 12 МАЯ <span class="sep"></span></span>
+  </div>
+</div>
+
+<section class="news">
+  <h2>Лента. <span class="acid">Прямой эфир.</span></h2>
+  <div class="nf">
+    <article class="ncard lead">
+      <span class="tag hot">★ Главное</span>
+      <h4>Сборная по дзюдо: 4 золота на международном турнире в Анкаре</h4>
+      <p>Делегация ГАФКиС вернулась с международного турнира с рекордным результатом. Подробный разбор выступлений, протоколы и интервью с главным тренером — на сайте.</p>
+      <div class="ts">28.04.2026 · 22:40 // СПОРТ</div>
+    </article>
+    <article class="ncard">
+      <span class="tag acid">Реестр</span>
+      <h4>Аттестация судей по вольной борьбе</h4>
+      <p>Подача заявок до 12 мая. Категории: II, I, республиканская.</p>
+      <div class="ts">27.04.2026 · 11:05</div>
+    </article>
+    <article class="ncard">
+      <span class="tag">Услуги</span>
+      <h4>Тренерский сертификат — онлайн</h4>
+      <p>Импорт из СМЭВ Түндүк по ИНН. Выдача в электронном виде с QR.</p>
+      <div class="ts">26.04.2026 · 16:18</div>
+    </article>
+  </div>
+</section>
+
+<footer>
+  <div class="ftop">
+    <div>
+      <div class="fbrand">e<span>·</span>SPORT</div>
+      <p style="margin-top:14px;color:var(--dim);font-size:13px;line-height:1.55;max-width:340px;">// АИС ГАФКиС · v1.0.42 · NODE 03<br>// PostgreSQL ↔ REST API ↔ TÜNDÜK<br>// БИШКЕК · КЫРГЫЗСКАЯ РЕСПУБЛИКА</p>
+    </div>
+    <div><h5>// СИСТЕМА</h5><ul><li>О ГАФКиС</li><li>Структура</li><li>НПА</li><li>Бюджет</li></ul></div>
+    <div><h5>// РЕЕСТРЫ</h5><ul><li>Спортсмены</li><li>Тренеры</li><li>Судьи</li><li>Объекты</li></ul></div>
+    <div><h5>// API</h5><ul><li>Документация</li><li>OAuth · Түндүк</li><li>Е-Кызмат</li><li>WMS · Карта</li></ul></div>
+    <div><h5>// КОНТАКТ</h5><ul><li>Бишкек, пр. Чуй 162</li><li>+996 312 62 03 03</li><li>info@gafkis.gov.kg</li></ul></div>
+  </div>
+  <div class="legal">
+    <span>© 2026 ГАФКиС</span>
+    <span>UTC+6 · UTF-8 · TLS 1.3</span>
+    <span>Прототип III · Broadcast</span>
+  </div>
+</footer>
+
+</body>
+</html>

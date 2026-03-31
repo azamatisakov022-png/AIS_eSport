@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>АИС eSport — Swiss</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #ffffff;
+    --ink: #0a0a0a;
+    --rule: #0a0a0a;
+    --soft: #6e6e6e;
+    --tint: #f5f3ee;
+    --accent: #2b4a35;   /* deep forest — kyrgyz mountains green */
+    --gold: #b89757;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--paper); color: var(--ink); font-family: 'Manrope', sans-serif; font-weight: 300; overflow-x: hidden; }
+
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+
+  /* Top utility */
+  .top {
+    border-bottom: 1px solid var(--rule);
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .top-inner {
+    display: flex; justify-content: space-between; align-items: center; padding: 12px 0;
+  }
+  .top a { color: var(--ink); text-decoration: none; }
+  .top .l, .top .r { display: flex; gap: 24px; align-items: center; }
+  .lang span { padding: 0 4px; }
+  .lang .on { font-weight: 700; }
+
+  /* Header */
+  header.main {
+    border-bottom: 1px solid var(--rule);
+  }
+  .header-inner {
+    padding: 32px 0; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 50px;
+  }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo svg { width: 38px; height: 38px; }
+  .logo .wm {
+    font-family: 'Fraunces', serif; font-weight: 400; font-size: 30px; letter-spacing: -0.03em; line-height: 1;
+  }
+  .logo .wm em { font-style: italic; color: var(--accent); }
+  .logo .sub { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--soft); margin-top: 4px; }
+  nav.main {
+    display: flex; gap: 28px; justify-content: center;
+    font-size: 13px; letter-spacing: 0.04em;
+  }
+  nav.main a { color: var(--ink); text-decoration: none; padding-bottom: 3px; border-bottom: 1px solid transparent; transition: border 0.2s; }
+  nav.main a:hover, nav.main a.on { border-bottom-color: var(--accent); }
+  .login-link {
+    font-size: 13px; letter-spacing: 0.04em; color: var(--ink); text-decoration: none;
+    padding: 12px 22px; border: 1px solid var(--rule); transition: all 0.2s;
+  }
+  .login-link:hover { background: var(--ink); color: var(--paper); }
+
+  /* Hero */
+  .hero {
+    padding: 100px 0 80px; border-bottom: 1px solid var(--rule);
+  }
+  .hero-grid {
+    display: grid; grid-template-columns: 1fr 5fr 2fr; gap: 32px; align-items: end;
+  }
+  .hero .meta {
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--soft);
+    writing-mode: vertical-rl; transform: rotate(180deg); align-self: stretch;
+    border-right: 1px solid var(--rule); padding: 20px 0;
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif; font-weight: 300; font-size: clamp(72px, 10vw, 168px);
+    line-height: 0.92; letter-spacing: -0.045em;
+  }
+  .hero h1 em { font-style: italic; font-weight: 400; color: var(--accent); }
+  .hero h1 .small { font-size: 0.5em; vertical-align: top; color: var(--gold); margin-left: 12px; font-weight: 400; }
+  .hero .lede {
+    font-size: 17px; line-height: 1.55; max-width: 320px; color: #333;
+    padding-bottom: 16px;
+  }
+  .hero .lede small {
+    display: block; margin-top: 18px; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--soft);
+  }
+
+  /* Subline */
+  .subline {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .subline > div {
+    padding: 32px 24px; border-right: 1px solid var(--rule);
+  }
+  .subline > div:last-child { border-right: none; }
+  .subline .label {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--soft); margin-bottom: 14px;
+  }
+  .subline .figure {
+    font-family: 'Fraunces', serif; font-weight: 300; font-size: 56px; line-height: 1; letter-spacing: -0.03em;
+  }
+  .subline .figure em { font-style: italic; color: var(--accent); font-weight: 400; }
+  .subline .desc {
+    font-size: 13px; color: var(--soft); margin-top: 8px; line-height: 1.4;
+  }
+
+  /* Modules */
+  .mod-section {
+    padding: 100px 0; border-bottom: 1px solid var(--rule);
+  }
+  .mod-head {
+    display: grid; grid-template-columns: 2fr 3fr; gap: 60px; margin-bottom: 70px; align-items: end;
+  }
+  .mod-head .small {
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px;
+  }
+  .mod-head h2 {
+    font-family: 'Fraunces', serif; font-weight: 300; font-size: clamp(48px, 6vw, 88px); line-height: 0.95; letter-spacing: -0.03em;
+  }
+  .mod-head h2 em { font-style: italic; }
+  .mod-head p {
+    font-size: 16px; line-height: 1.6; max-width: 460px; color: #444;
+  }
+  .mod-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 0;
+    border-top: 1px solid var(--rule); border-left: 1px solid var(--rule);
+  }
+  .mod-item {
+    padding: 50px 40px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+    display: grid; grid-template-columns: 60px 1fr auto; gap: 30px; align-items: start;
+    transition: background 0.2s;
+  }
+  .mod-item:hover { background: var(--tint); }
+  .mod-item .num {
+    font-family: 'Fraunces', serif; font-weight: 300; font-size: 36px; line-height: 1; color: var(--accent);
+    border-top: 1px solid var(--rule); padding-top: 8px;
+  }
+  .mod-item .body h3 {
+    font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 22px; line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 12px;
+  }
+  .mod-item .body p { font-size: 15px; line-height: 1.55; color: #555; }
+  .mod-item .arr {
+    font-family: 'Fraunces', serif; font-style: italic; font-size: 18px; color: var(--accent);
+    align-self: center;
+  }
+
+  /* Featured story */
+  .feature {
+    padding: 100px 0; border-bottom: 1px solid var(--rule);
+  }
+  .feat-grid {
+    display: grid; grid-template-columns: 5fr 7fr; gap: 60px; align-items: stretch;
+  }
+  .feat-vis {
+    background: var(--accent); position: relative; overflow: hidden; min-height: 460px;
+    display: flex; align-items: flex-end; padding: 40px;
+    color: var(--paper);
+  }
+  .feat-vis svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.4; }
+  .feat-vis .lbl {
+    position: relative; z-index: 2;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  }
+  .feat-vis .lbl em { font-style: italic; color: var(--gold); font-family: 'Fraunces', serif; }
+  .feat-body {
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .feat-body .kicker {
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px;
+  }
+  .feat-body h3 {
+    font-family: 'Fraunces', serif; font-weight: 300; font-size: clamp(40px, 5vw, 72px); line-height: 1; letter-spacing: -0.03em;
+    margin-bottom: 28px;
+  }
+  .feat-body h3 em { font-style: italic; color: var(--accent); }
+  .feat-body p { font-size: 17px; line-height: 1.65; color: #333; max-width: 520px; }
+  .feat-body .read {
+    margin-top: 36px; font-size: 13px; letter-spacing: 0.06em;
+    text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--ink); padding-bottom: 4px;
+    align-self: flex-start;
+  }
+
+  /* News list */
+  .news {
+    padding: 100px 0; border-bottom: 1px solid var(--rule);
+  }
+  .news h2 {
+    font-family: 'Fraunces', serif; font-weight: 300; font-size: clamp(48px, 6vw, 88px); line-height: 0.95; letter-spacing: -0.03em;
+    margin-bottom: 50px;
+  }
+  .news h2 em { font-style: italic; color: var(--accent); }
+  .news-list {
+    border-top: 1px solid var(--rule);
+  }
+  .news-row {
+    padding: 28px 0; border-bottom: 1px solid var(--rule);
+    display: grid; grid-template-columns: 100px 120px 1fr auto; gap: 40px; align-items: baseline;
+    transition: padding 0.2s;
+  }
+  .news-row:hover { padding-left: 16px; padding-right: 16px; background: var(--tint); }
+  .news-row .date {
+    font-family: 'Fraunces', serif; font-style: italic; font-size: 18px; color: var(--accent);
+  }
+  .news-row .cat {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--soft);
+  }
+  .news-row .ttl {
+    font-family: 'Fraunces', serif; font-weight: 400; font-size: 22px; line-height: 1.25; letter-spacing: -0.01em;
+  }
+  .news-row .ttl small {
+    display: block; margin-top: 6px; font-family: 'Manrope', sans-serif; font-size: 14px; color: #555; letter-spacing: 0;
+  }
+  .news-row .arr { font-family: 'Fraunces', serif; font-style: italic; color: var(--accent); }
+
+  /* Footer */
+  footer {
+    padding: 80px 0 30px; background: var(--ink); color: var(--paper);
+  }
+  .foot-top {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 50px; border-bottom: 1px solid #333;
+  }
+  footer h5 {
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 16px; color: var(--gold); font-weight: 700;
+  }
+  footer ul { list-style: none; }
+  footer li { padding: 5px 0; font-size: 14px; color: #aaa; font-weight: 300; }
+  footer .fbrand {
+    font-family: 'Fraunces', serif; font-weight: 300; font-size: 56px; line-height: 0.9; letter-spacing: -0.03em;
+  }
+  footer .fbrand em { font-style: italic; color: var(--gold); }
+  footer .desc { margin-top: 18px; color: #999; font-size: 14px; line-height: 1.6; max-width: 320px; }
+  .foot-legal {
+    padding-top: 24px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px;
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #777;
+  }
+
+  @media (max-width: 900px) {
+    .header-inner, .hero-grid, .subline, .mod-head, .mod-grid, .feat-grid, .news-row, .foot-top { grid-template-columns: 1fr; }
+    .hero .meta { writing-mode: horizontal-tb; transform: none; border-right: none; border-bottom: 1px solid var(--rule); padding: 0 0 14px; }
+    .subline > div, .mod-item { border-right: none; }
+    nav.main { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="container">
+    <div class="top-inner">
+      <div class="l">
+        <span>Бишкек · 29.IV.2026</span>
+        <a href="#">Доступная версия</a>
+      </div>
+      <div class="r">
+        <div class="lang"><span class="on">КЫР</span> · <span>РУС</span> · <span>ENG</span></div>
+        <a href="#">Войти через Түндүк →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<header class="main">
+  <div class="container">
+    <div class="header-inner">
+      <a href="#" class="logo" style="text-decoration:none;color:inherit;">
+        <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="19" fill="none" stroke="#0a0a0a" stroke-width="1"/>
+          <circle cx="20" cy="20" r="11" fill="none" stroke="#2b4a35" stroke-width="1"/>
+          <path d="M20 6 L20 34 M6 20 L34 20" stroke="#0a0a0a" stroke-width="0.7"/>
+          <circle cx="20" cy="20" r="3" fill="#b89757"/>
+        </svg>
+        <div>
+          <div class="wm">e<em>·</em>Sport</div>
+          <div class="sub">ГАФКиС · АИС</div>
+        </div>
+      </a>
+      <nav class="main">
+        <a href="#" class="on">Главная</a>
+        <a href="#">О ГАФКиС</a>
+        <a href="#">Реестры</a>
+        <a href="#">Календарь</a>
+        <a href="#">Новости</a>
+        <a href="#">Услуги</a>
+        <a href="#">Карта</a>
+      </nav>
+      <a href="#" class="login-link">Личный кабинет →</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="meta">№ 042 · Том I · 2026</div>
+      <h1>Спорт <em>как</em><br>устройство<br>государства<span class="small">.</span></h1>
+      <div class="lede">
+        Единая информационная система ГАФКиС: реестры, мероприятия, документы, рейтинги.
+        <small>— Прозрачность · Доступность · Достоинство</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="subline">
+  <div>
+    <div class="label">Спортсменов</div>
+    <div class="figure"><em>12,480</em></div>
+    <div class="desc">Активных профилей в реестре</div>
+  </div>
+  <div>
+    <div class="label">Тренеров</div>
+    <div class="figure">847</div>
+    <div class="desc">С действующей лицензией</div>
+  </div>
+  <div>
+    <div class="label">Видов спорта</div>
+    <div class="figure">63</div>
+    <div class="desc">Официальные федерации</div>
+  </div>
+  <div>
+    <div class="label">Объектов на карте</div>
+    <div class="figure">1,218</div>
+    <div class="desc">WMS геосервис · вся страна</div>
+  </div>
+</section>
+
+<section class="mod-section">
+  <div class="container">
+    <div class="mod-head">
+      <div>
+        <div class="small">— Возможности системы</div>
+        <h2>Десять реестров.<br><em>Один портал.</em></h2>
+      </div>
+      <p>АИС «eSport» объединяет процессы управления профессиональным и любительским спортом Кыргызстана. Сотрудники ГАФКиС работают во внутреннем портале; спортсмены, тренеры и судьи — в личном кабинете.</p>
+    </div>
+    <div class="mod-grid">
+      <div class="mod-item">
+        <div class="num">01</div>
+        <div class="body">
+          <h3>Паспорт спортсмена</h3>
+          <p>Биография, спортивное звание, медсправки, тренер, сборная, медали и аккредитации в едином профиле.</p>
+        </div>
+        <div class="arr">→</div>
+      </div>
+      <div class="mod-item">
+        <div class="num">02</div>
+        <div class="body">
+          <h3>Онлайн заявления</h3>
+          <p>Спортивное звание, тренерский сертификат, судейская категория, восстановление документов.</p>
+        </div>
+        <div class="arr">→</div>
+      </div>
+      <div class="mod-item">
+        <div class="num">03</div>
+        <div class="body">
+          <h3>Календарь мероприятий</h3>
+          <p>Турниры, сборы и аттестации с фильтром по виду спорта и региону.</p>
+        </div>
+        <div class="arr">→</div>
+      </div>
+      <div class="mod-item">
+        <div class="num">04</div>
+        <div class="body">
+          <h3>Карта объектов</h3>
+          <p>WMS-геосервис: спортшколы, стадионы, манежи. Расписание и оснащение.</p>
+        </div>
+        <div class="arr">→</div>
+      </div>
+      <div class="mod-item">
+        <div class="num">05</div>
+        <div class="body">
+          <h3>Проверка документа</h3>
+          <p>QR-код подлинности диплома, сертификата или лицензии.</p>
+        </div>
+        <div class="arr">→</div>
+      </div>
+      <div class="mod-item">
+        <div class="num">06</div>
+        <div class="body">
+          <h3>Антидопинговая деятельность</h3>
+          <p>Регламенты, программы контроля, образовательные материалы.</p>
+        </div>
+        <div class="arr">→</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="feature">
+  <div class="container">
+    <div class="feat-grid">
+      <div class="feat-vis">
+        <svg viewBox="0 0 400 460" preserveAspectRatio="xMidYMid slice">
+          <g stroke="#ffffff" fill="none" stroke-width="0.6">
+            <path d="M0 360 Q100 200 200 280 T400 220" />
+            <path d="M0 380 Q100 240 200 300 T400 260" />
+            <path d="M0 400 Q100 280 200 320 T400 300" />
+          </g>
+          <g fill="#b89757">
+            <circle cx="80" cy="320" r="3"/>
+            <circle cx="180" cy="270" r="3"/>
+            <circle cx="280" cy="240" r="3"/>
+            <circle cx="350" cy="225" r="3"/>
+          </g>
+        </svg>
+        <div class="lbl">Главная история · <em>номер 042</em></div>
+      </div>
+      <div class="feat-body">
+        <div class="kicker">— 28 апреля · Анкара</div>
+        <h3>Четыре золота.<br><em>Один турнир.</em><br>Одна страна.</h3>
+        <p>Сборная Кыргызской Республики по дзюдо вернулась с международного турнира в Анкаре с рекордным результатом. В материале выпуска: протоколы, интервью с главным тренером и разбор ключевых поединков.</p>
+        <a class="read" href="#">Читать полностью →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="news">
+  <div class="container">
+    <h2>Хроника. <em>Свежие записи.</em></h2>
+    <div class="news-list">
+      <a class="news-row" href="#" style="text-decoration:none;color:inherit;">
+        <div class="date">28.04</div>
+        <div class="cat">Сборные</div>
+        <div class="ttl">Сборная по дзюдо взяла четыре золота на турнире в Анкаре<small>Делегация ГАФКиС вернулась с рекордным результатом международного турнира.</small></div>
+        <div class="arr">→</div>
+      </a>
+      <a class="news-row" href="#" style="text-decoration:none;color:inherit;">
+        <div class="date">27.04</div>
+        <div class="cat">Реестр · Судьи</div>
+        <div class="ttl">Открыта запись на аттестацию судей по вольной борьбе<small>Подача заявок до 12 мая. Категории: II, I, республиканская.</small></div>
+        <div class="arr">→</div>
+      </a>
+      <a class="news-row" href="#" style="text-decoration:none;color:inherit;">
+        <div class="date">26.04</div>
+        <div class="cat">Госуслуги</div>
+        <div class="ttl">Тренерский сертификат — теперь полностью онлайн<small>Импорт документов из СМЭВ Түндүк по ИНН. Выдача в электронном виде.</small></div>
+        <div class="arr">→</div>
+      </a>
+      <a class="news-row" href="#" style="text-decoration:none;color:inherit;">
+        <div class="date">24.04</div>
+        <div class="cat">Бюджет</div>
+        <div class="ttl">Опубликован программный бюджет на II квартал 2026<small>Распределение по областным управлениям и спортивным школам.</small></div>
+        <div class="arr">→</div>
+      </a>
+      <a class="news-row" href="#" style="text-decoration:none;color:inherit;">
+        <div class="date">22.04</div>
+        <div class="cat">Объявления</div>
+        <div class="ttl">Тендер: оснащение спортзала ДЮСШ № 4, Ош<small>Срок подачи заявок — до 15 мая. Документы — в личном кабинете.</small></div>
+        <div class="arr">→</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot-top">
+      <div>
+        <div class="fbrand">e<em>·</em>Sport</div>
+        <p class="desc">Государственное агентство физической культуры и спорта Кыргызской Республики. АИС версия 1.0 — март 2026.</p>
+      </div>
+      <div><h5>Система</h5><ul><li>О ГАФКиС</li><li>Структура</li><li>НПА</li><li>Бюджет</li></ul></div>
+      <div><h5>Реестры</h5><ul><li>Спортсмены</li><li>Тренеры</li><li>Судьи</li><li>Объекты</li></ul></div>
+      <div><h5>Услуги</h5><ul><li>Заявления</li><li>QR проверка</li><li>Антидопинг</li><li>Тендеры</li></ul></div>
+      <div><h5>Контакты</h5><ul><li>Бишкек, пр. Чуй 162</li><li>+996 312 62 03 03</li><li>info@gafkis.gov.kg</li></ul></div>
+    </div>
+    <div class="foot-legal">
+      <span>© 2026 ГАФКиС</span>
+      <span>Постановления КР № 760 / № 762</span>
+      <span>Прототип IV — Swiss · Minimal</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

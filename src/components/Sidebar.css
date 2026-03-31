@@ -1,0 +1,257 @@
+/* ============================================================
+   Sidebar Component — Apple Pro (CabinetSidebar Style)
+   ============================================================ */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: var(--bg-sidebar);
+    box-shadow: 1px 0 8px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    padding: 24px 16px;
+}
+
+/* ── User Header (avatar + name + role) ── */
+.sidebar__user-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 8px;
+}
+
+.sidebar__avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7EB6F6, #B8A9EE);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 12px rgba(126,182,246,0.3);
+}
+
+.sidebar__user-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+}
+
+.sidebar__user-role {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    text-align: center;
+}
+
+/* ── Navigation ── */
+.sidebar__nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow-y: auto;
+    padding-top: 4px;
+}
+
+.sidebar__group {
+    margin-bottom: 6px;
+}
+
+.sidebar__group-label {
+    padding: 10px 14px 6px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+}
+
+.sidebar__link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+
+.sidebar__link:hover {
+    background: rgba(120, 120, 128, 0.08); /* Apple systemGray hover equivalent */
+}
+
+.sidebar__link.active {
+    color: var(--accent);
+    font-weight: 600;
+    background: var(--accent-light);
+}
+
+/* Blue accent bar on left of active link */
+.sidebar__accent-bar {
+    position: absolute;
+    left: 0;
+    top: 20%;
+    bottom: 20%;
+    width: 3px;
+    border-radius: 2px;
+    background: var(--accent);
+}
+
+.sidebar__link-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+/* ── Logout Button ── */
+.sidebar__logout-wrap {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+}
+
+.sidebar__logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--rose);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s ease;
+}
+
+.sidebar__logout-btn:hover {
+    background: var(--rose-light);
+}
+
+/* ── Footer (version — hidden now) ── */
+.sidebar__footer {
+    display: none;
+}
+
+/* ── Tablet: Collapsed sidebar (icons only) ── */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .sidebar {
+        width: var(--sidebar-collapsed-width);
+        padding: 16px 8px;
+        transition: width 0.2s ease;
+    }
+
+    .sidebar__user-header {
+        padding-bottom: 12px;
+    }
+
+    .sidebar__user-name,
+    .sidebar__user-role,
+    .sidebar__group-label,
+    .sidebar__logout-btn span:not(:first-child) {
+        display: none;
+    }
+
+    .sidebar__avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 13px;
+    }
+
+    .sidebar__link {
+        justify-content: center;
+        padding: 12px;
+        font-size: 0;
+        gap: 0;
+    }
+
+    .sidebar__link-icon {
+        font-size: 20px;
+    }
+
+    .sidebar__accent-bar {
+        display: none;
+    }
+
+    .sidebar__logout-btn {
+        justify-content: center;
+        font-size: 0;
+    }
+
+    /* Expand on hover */
+    .sidebar:hover {
+        width: var(--sidebar-width);
+        padding: 24px 16px;
+    }
+
+    .sidebar:hover .sidebar__user-name,
+    .sidebar:hover .sidebar__user-role,
+    .sidebar:hover .sidebar__group-label {
+        display: block;
+    }
+
+    .sidebar:hover .sidebar__avatar {
+        width: 52px;
+        height: 52px;
+        font-size: 18px;
+    }
+
+    .sidebar:hover .sidebar__link {
+        justify-content: flex-start;
+        padding: 10px 14px;
+        font-size: 13px;
+        gap: 10px;
+    }
+
+    .sidebar:hover .sidebar__accent-bar {
+        display: block;
+    }
+
+    .sidebar:hover .sidebar__logout-btn {
+        justify-content: flex-start;
+        font-size: 13px;
+    }
+
+    .sidebar:hover .sidebar__logout-btn span:not(:first-child) {
+        display: inline;
+    }
+}
+
+/* ── Mobile: Off-canvas sidebar ── */
+@media (max-width: 768px) {
+    .sidebar {
+        width: var(--sidebar-width);
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sidebar.sidebar--open {
+        transform: translateX(0);
+    }
+}

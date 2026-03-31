@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>АИС eSport — Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1733;             /* deep blueprint indigo */
+    --bg-2: #122142;
+    --paper: #f3efe5;          /* warm off-white for inversions */
+    --line: rgba(243, 239, 229, 0.2);
+    --line-2: rgba(243, 239, 229, 0.5);
+    --ink: #f3efe5;
+    --soft: rgba(243, 239, 229, 0.55);
+    --cyan: #6dd0d6;           /* drafting cyan */
+    --orange: #ff9241;         /* warm signal */
+    --signal: #ffd54a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--bg); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; overflow-x: hidden; font-weight: 300; }
+
+  /* Blueprint grid background */
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.4;
+    background-image:
+      linear-gradient(rgba(243, 239, 229, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(243, 239, 229, 0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  body::after {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.15;
+    background-image:
+      linear-gradient(rgba(243, 239, 229, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(243, 239, 229, 0.06) 1px, transparent 1px);
+    background-size: 128px 128px;
+  }
+
+  /* Drafting corner marks */
+  .corner {
+    position: fixed; width: 24px; height: 24px; pointer-events: none; z-index: 5;
+    border-color: var(--cyan); opacity: 0.7;
+  }
+  .corner.tl { top: 16px; left: 16px; border-top: 1px solid; border-left: 1px solid; }
+  .corner.tr { top: 16px; right: 16px; border-top: 1px solid; border-right: 1px solid; }
+  .corner.bl { bottom: 16px; left: 16px; border-bottom: 1px solid; border-left: 1px solid; }
+  .corner.br { bottom: 16px; right: 16px; border-bottom: 1px solid; border-right: 1px solid; }
+
+  /* Title block (top header — like a drafting title block) */
+  .title-block {
+    position: relative; z-index: 4;
+    border-bottom: 1px solid var(--line);
+    display: grid; grid-template-columns: auto 1fr auto auto;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  }
+  .tb-cell {
+    padding: 14px 20px; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 4px;
+  }
+  .tb-cell:last-child { border-right: none; }
+  .tb-cell .lbl { color: var(--soft); font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; }
+  .tb-cell .val { font-weight: 500; }
+  .tb-brand { padding: 14px 24px; display: flex; align-items: center; gap: 14px; }
+  .tb-brand .glyph {
+    width: 38px; height: 38px; border: 1.5px solid var(--cyan); position: relative;
+    transform: rotate(45deg);
+  }
+  .tb-brand .glyph::before {
+    content: ''; position: absolute; inset: 6px; border: 1px solid var(--cyan); transform: rotate(0);
+  }
+  .tb-brand .glyph::after {
+    content: ''; position: absolute; inset: 0; background: var(--orange); transform: scale(0.2); border-radius: 50%;
+  }
+  .tb-brand .name { font-family: 'IBM Plex Sans', sans-serif; font-size: 18px; font-weight: 500; letter-spacing: -0.01em; }
+  .tb-brand .name span { color: var(--cyan); }
+  .tb-brand .sub { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--soft); letter-spacing: 0.14em; text-transform: uppercase; }
+  .tb-actions { display: flex; align-items: center; padding: 0 16px; gap: 12px; }
+  .lang { display: flex; gap: 0; font-family: 'IBM Plex Mono', monospace; font-size: 10px; }
+  .lang span { padding: 4px 8px; border: 1px solid var(--line); }
+  .lang span.on { background: var(--paper); color: var(--bg); border-color: var(--paper); }
+  .login-btn {
+    padding: 10px 16px; background: var(--paper); color: var(--bg); text-decoration: none;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    border: 1px solid var(--paper);
+  }
+  .login-btn:hover { background: var(--cyan); border-color: var(--cyan); }
+
+  /* Secondary nav */
+  .secondary-nav {
+    position: relative; z-index: 4;
+    border-bottom: 1px solid var(--line); padding: 10px 24px;
+    display: flex; gap: 28px; overflow-x: auto;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--soft);
+    text-transform: uppercase; letter-spacing: 0.12em;
+  }
+  .secondary-nav a { color: inherit; text-decoration: none; white-space: nowrap; padding: 4px 0; border-bottom: 1px solid transparent; transition: all 0.15s; }
+  .secondary-nav a:hover, .secondary-nav a.on { color: var(--ink); border-bottom-color: var(--cyan); }
+
+  /* Container */
+  .wrap { max-width: 1480px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 2; }
+
+  /* HERO */
+  .hero { padding: 60px 0 70px; position: relative; }
+  .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; min-height: 540px; }
+
+  .hero-doc {
+    border: 1px solid var(--line-2); padding: 36px 40px; position: relative;
+    background: rgba(13, 23, 51, 0.5); backdrop-filter: blur(4px);
+  }
+  .hero-doc::before, .hero-doc::after {
+    content: ''; position: absolute; width: 12px; height: 12px;
+    border-color: var(--cyan); pointer-events: none;
+  }
+  .hero-doc::before { top: -1px; left: -1px; border-top: 2px solid; border-left: 2px solid; }
+  .hero-doc::after { bottom: -1px; right: -1px; border-bottom: 2px solid; border-right: 2px solid; }
+
+  .doc-meta {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--soft);
+    display: flex; justify-content: space-between; padding-bottom: 16px; margin-bottom: 28px;
+    border-bottom: 1px dashed var(--line-2); letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .doc-meta .right { color: var(--cyan); }
+
+  .hero h1 {
+    font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; font-size: clamp(48px, 6vw, 96px);
+    line-height: 1; letter-spacing: -0.035em;
+  }
+  .hero h1 b {
+    font-weight: 600; color: var(--cyan);
+  }
+  .hero h1 em {
+    font-style: italic; font-weight: 400; color: var(--orange); font-family: 'IBM Plex Sans', serif;
+  }
+  .hero p {
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 16px; line-height: 1.6; color: var(--soft);
+    max-width: 520px; margin-top: 28px;
+  }
+  .dim-line {
+    margin-top: 36px; padding-top: 20px; border-top: 1px dashed var(--line-2);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--soft); letter-spacing: 0.08em;
+  }
+  .cta-row { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
+  .btn-pri, .btn-sec {
+    padding: 14px 22px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .btn-pri { background: var(--cyan); color: var(--bg); }
+  .btn-sec { color: var(--ink); border: 1px solid var(--line-2); }
+  .btn-pri:hover { background: var(--orange); }
+  .btn-sec:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  /* Hero technical drawing */
+  .hero-art { position: relative; aspect-ratio: 1; }
+  .hero-art svg { width: 100%; height: 100%; }
+
+  /* Stats — in technical drawing style */
+  .stats {
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    background: rgba(13, 23, 51, 0.5);
+    position: relative; z-index: 2;
+  }
+  .stats-row {
+    display: grid; grid-template-columns: 200px repeat(4, 1fr);
+    align-items: stretch;
+  }
+  .stats-label {
+    padding: 30px 24px; border-right: 1px solid var(--line);
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--cyan);
+    text-transform: uppercase; letter-spacing: 0.16em; display: flex; align-items: center;
+  }
+  .stat-cell {
+    padding: 30px 24px; border-right: 1px solid var(--line); position: relative;
+  }
+  .stat-cell:last-child { border-right: none; }
+  .stat-cell::before {
+    content: ''; position: absolute; top: 8px; left: 24px; width: 16px; height: 1px; background: var(--cyan);
+  }
+  .stat-cell::after {
+    content: ''; position: absolute; bottom: 8px; left: 24px; width: 16px; height: 1px; background: var(--cyan);
+  }
+  .stat-cell .l { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--soft); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 6px; }
+  .stat-cell .v {
+    font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; font-size: 56px; line-height: 1; letter-spacing: -0.04em;
+  }
+  .stat-cell .v b { font-weight: 600; color: var(--cyan); }
+  .stat-cell .delta { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--orange); margin-top: 8px; }
+
+  /* Modules — technical sheets */
+  .modules { padding: 80px 0; position: relative; z-index: 2; }
+  .section-head {
+    display: flex; justify-content: space-between; align-items: end; margin-bottom: 50px;
+    padding-bottom: 16px; border-bottom: 1px dashed var(--line-2);
+  }
+  .section-head h2 {
+    font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; font-size: clamp(40px, 5vw, 76px);
+    line-height: 1; letter-spacing: -0.03em;
+  }
+  .section-head h2 b { font-weight: 600; color: var(--cyan); }
+  .section-head .meta { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--soft); text-align: right; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .mod-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+  .sheet {
+    border: 1px solid var(--line-2); padding: 28px; min-height: 220px;
+    display: flex; flex-direction: column; gap: 12px; position: relative;
+    background: rgba(13, 23, 51, 0.4);
+    transition: all 0.2s;
+  }
+  .sheet:hover { border-color: var(--cyan); background: rgba(109, 208, 214, 0.05); }
+  .sheet::before, .sheet::after {
+    content: ''; position: absolute; width: 8px; height: 8px;
+    border-color: var(--cyan); pointer-events: none;
+  }
+  .sheet::before { top: -1px; left: -1px; border-top: 1px solid; border-left: 1px solid; }
+  .sheet::after { bottom: -1px; right: -1px; border-bottom: 1px solid; border-right: 1px solid; }
+  .sheet .id { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--cyan); letter-spacing: 0.1em; text-transform: uppercase; }
+  .sheet h3 {
+    font-family: 'IBM Plex Sans', sans-serif; font-weight: 400; font-size: 24px; line-height: 1.1; letter-spacing: -0.015em;
+  }
+  .sheet h3 b { font-weight: 600; color: var(--cyan); }
+  .sheet p { font-size: 14px; line-height: 1.55; color: var(--soft); flex: 1; }
+  .sheet .footer-line {
+    display: flex; justify-content: space-between;
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--soft); letter-spacing: 0.1em; text-transform: uppercase;
+    padding-top: 12px; border-top: 1px dashed var(--line);
+  }
+  .sheet .footer-line .arr { color: var(--orange); }
+
+  .s-1 { grid-column: span 6; min-height: 380px; }
+  .s-1 svg { margin-top: auto; width: 100%; }
+  .s-2 { grid-column: span 3; }
+  .s-3 { grid-column: span 3; }
+  .s-4 { grid-column: span 4; }
+  .s-5 { grid-column: span 4; }
+  .s-6 { grid-column: span 4; }
+
+  /* Featured */
+  .feature { padding: 80px 0; position: relative; z-index: 2; }
+  .feat-doc {
+    border: 1px solid var(--line-2); padding: 50px;
+    display: grid; grid-template-columns: 1.4fr 1fr; gap: 50px;
+    background: rgba(243, 239, 229, 0.03);
+    position: relative;
+  }
+  .feat-doc::before, .feat-doc::after {
+    content: ''; position: absolute; width: 20px; height: 20px;
+    border-color: var(--cyan);
+  }
+  .feat-doc::before { top: -1px; left: -1px; border-top: 2px solid; border-left: 2px solid; }
+  .feat-doc::after { bottom: -1px; right: -1px; border-bottom: 2px solid; border-right: 2px solid; }
+  .feat-doc h3 {
+    font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; font-size: clamp(36px, 4.5vw, 64px);
+    line-height: 1; letter-spacing: -0.03em; margin-top: 18px;
+  }
+  .feat-doc h3 b { font-weight: 600; color: var(--orange); }
+  .feat-doc p { font-size: 16px; line-height: 1.6; color: var(--soft); margin-top: 24px; max-width: 540px; }
+
+  .medals-table {
+    border: 1px solid var(--line); padding: 24px;
+    background: rgba(13, 23, 51, 0.6);
+  }
+  .medals-table .row {
+    display: grid; grid-template-columns: 60px 1fr auto; gap: 14px; align-items: center;
+    padding: 14px 0; border-bottom: 1px dashed var(--line);
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+  }
+  .medals-table .row:last-child { border-bottom: none; }
+  .medals-table .row .v { font-family: 'IBM Plex Sans', sans-serif; font-weight: 600; font-size: 32px; line-height: 1; }
+  .medals-table .row .l { color: var(--soft); letter-spacing: 0.06em; text-transform: uppercase; }
+  .medals-table .row.gold .v { color: var(--signal); }
+  .medals-table .row.silver .v { color: #d6d3c8; }
+  .medals-table .row.bronze .v { color: var(--orange); }
+
+  /* News */
+  .news { padding: 80px 0; position: relative; z-index: 2; }
+  .news-table { border-top: 1px solid var(--line); }
+  .news-table a {
+    display: grid; grid-template-columns: 80px 80px 160px 1fr auto; gap: 28px;
+    padding: 22px 0; border-bottom: 1px solid var(--line);
+    text-decoration: none; color: inherit; align-items: baseline;
+    transition: all 0.15s;
+  }
+  .news-table a:hover { background: rgba(109, 208, 214, 0.05); padding-left: 16px; padding-right: 16px; }
+  .news-table .id { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--cyan); letter-spacing: 0.06em; }
+  .news-table .date { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--soft); }
+  .news-table .cat {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--cyan); letter-spacing: 0.16em;
+    text-transform: uppercase; padding: 4px 10px; border: 1px solid var(--line-2); width: fit-content;
+  }
+  .news-table .ttl {
+    font-family: 'IBM Plex Sans', sans-serif; font-weight: 400; font-size: 18px; line-height: 1.3; letter-spacing: -0.005em;
+  }
+  .news-table .ttl small { display: block; font-size: 13px; color: var(--soft); margin-top: 4px; font-weight: 300; }
+  .news-table .arr { color: var(--cyan); font-family: 'IBM Plex Mono', monospace; font-size: 14px; }
+
+  /* Footer */
+  footer {
+    padding: 60px 0 30px; border-top: 1px solid var(--line); position: relative; z-index: 2;
+    background: rgba(13, 23, 51, 0.7);
+  }
+  .foot-grid { display: grid; grid-template-columns: 2fr repeat(4, 1fr); gap: 32px; padding-bottom: 36px; border-bottom: 1px solid var(--line); }
+  .foot-brand {
+    font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; font-size: 56px; line-height: 0.9; letter-spacing: -0.03em;
+  }
+  .foot-brand b { color: var(--cyan); font-weight: 600; }
+  .foot-grid p { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--soft); line-height: 1.6; margin-top: 16px; max-width: 320px; letter-spacing: 0.04em; }
+  footer h5 { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--cyan); margin-bottom: 14px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500; }
+  footer ul { list-style: none; }
+  footer li { padding: 5px 0; font-size: 13px; color: var(--soft); }
+  footer li a { color: inherit; text-decoration: none; }
+  footer li a:hover { color: var(--cyan); }
+  .foot-legal {
+    padding-top: 24px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--soft); letter-spacing: 0.14em; text-transform: uppercase;
+  }
+
+  @media (max-width: 1100px) {
+    .hero-grid, .feat-doc { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .stats-label { grid-column: span 2; border-right: none; border-bottom: 1px solid var(--line); }
+    .mod-grid > * { grid-column: span 12 !important; }
+    .news-table a { grid-template-columns: 1fr; gap: 8px; }
+    .foot-grid { grid-template-columns: 1fr 1fr; }
+    .title-block { grid-template-columns: 1fr; }
+    .tb-cell { border-right: none; border-bottom: 1px solid var(--line); }
+  }
+</style>
+</head>
+<body>
+
+<div class="corner tl"></div>
+<div class="corner tr"></div>
+<div class="corner bl"></div>
+<div class="corner br"></div>
+
+<header class="title-block">
+  <div class="tb-brand">
+    <div class="glyph"></div>
+    <div>
+      <div class="name">eSport <span>/ kg</span></div>
+      <div class="sub">АИС · ГАФКиС · v1.0</div>
+    </div>
+  </div>
+  <div class="tb-cell">
+    <span class="lbl">Drawing No.</span>
+    <span class="val">eSP-2026-042</span>
+  </div>
+  <div class="tb-cell">
+    <span class="lbl">Issued</span>
+    <span class="val">29.04.2026 · 14:32</span>
+  </div>
+  <div class="tb-cell">
+    <span class="lbl">Status</span>
+    <span class="val" style="color:var(--cyan);">● OPERATIONAL</span>
+  </div>
+  <div class="tb-actions">
+    <div class="lang"><span class="on">КЫР</span><span>РУС</span><span>EN</span></div>
+    <a class="login-btn" href="#">Войти · Түндүк</a>
+  </div>
+</header>
+
+<nav class="secondary-nav">
+  <a href="#" class="on">/ обзор</a>
+  <a href="#">/ реестры</a>
+  <a href="#">/ спортсмены</a>
+  <a href="#">/ тренеры</a>
+  <a href="#">/ судьи</a>
+  <a href="#">/ объекты_карта</a>
+  <a href="#">/ календарь</a>
+  <a href="#">/ услуги</a>
+  <a href="#">/ qr_проверка</a>
+  <a href="#">/ антидопинг</a>
+  <a href="#">/ нпа</a>
+  <a href="#">/ бюджет</a>
+  <a href="#">/ контакты</a>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-doc">
+        <div class="doc-meta">
+          <span>SCALE 1:1 · SHEET A-001</span>
+          <span class="right">— REV 1.0</span>
+        </div>
+        <h1>Архитектура<br>спорта <em>как</em><br><b>системы.</b></h1>
+        <p>АИС «eSport» — единая цифровая инфраструктура Государственного агентства физической культуры и спорта Кыргызской Республики. Реестры, регламенты, услуги — спроектированы как чертёж: с допусками, маршрутами и контрольными точками.</p>
+        <div class="cta-row">
+          <a class="btn-pri" href="#">→ Открыть кабинет</a>
+          <a class="btn-sec" href="#">→ Спецификация</a>
+        </div>
+        <div class="dim-line">
+          <span>↤ ВНЕШНИЙ ПОРТАЛ</span>
+          <span style="color:var(--cyan);">┄┄┄┄┄┄</span>
+          <span>ВНУТРЕННИЙ ПОРТАЛ ↦</span>
+        </div>
+      </div>
+
+      <div class="hero-art">
+        <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="g1" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(243,239,229,0.08)" stroke-width="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="500" height="500" fill="url(#g1)"/>
+
+          <!-- Stadium bird's eye view -->
+          <g transform="translate(250 250)">
+            <ellipse cx="0" cy="0" rx="180" ry="120" fill="none" stroke="#6dd0d6" stroke-width="1"/>
+            <ellipse cx="0" cy="0" rx="160" ry="100" fill="none" stroke="#6dd0d6" stroke-width="0.5" stroke-dasharray="3 3"/>
+            <ellipse cx="0" cy="0" rx="140" ry="80" fill="none" stroke="#6dd0d6" stroke-width="1"/>
+            <ellipse cx="0" cy="0" rx="120" ry="60" fill="none" stroke="rgba(243,239,229,0.3)" stroke-width="0.5"/>
+
+            <!-- Track lines -->
+            <line x1="-180" y1="0" x2="180" y2="0" stroke="rgba(243,239,229,0.2)" stroke-width="0.5" stroke-dasharray="2 4"/>
+            <line x1="0" y1="-120" x2="0" y2="120" stroke="rgba(243,239,229,0.2)" stroke-width="0.5" stroke-dasharray="2 4"/>
+
+            <!-- Center field -->
+            <rect x="-60" y="-30" width="120" height="60" fill="none" stroke="#ff9241" stroke-width="1"/>
+            <circle cx="0" cy="0" r="12" fill="none" stroke="#ff9241" stroke-width="1"/>
+            <circle cx="0" cy="0" r="3" fill="#ff9241"/>
+
+            <!-- Markers -->
+            <g fill="#ffd54a">
+              <circle cx="-140" cy="0" r="3"/><circle cx="140" cy="0" r="3"/>
+              <circle cx="0" cy="-80" r="3"/><circle cx="0" cy="80" r="3"/>
+            </g>
+          </g>
+
+          <!-- Dimension lines -->
+          <g stroke="#6dd0d6" stroke-width="0.5" fill="none">
+            <line x1="60" y1="450" x2="440" y2="450"/>
+            <line x1="60" y1="445" x2="60" y2="455"/>
+            <line x1="440" y1="445" x2="440" y2="455"/>
+          </g>
+          <text x="250" y="465" font-family="IBM Plex Mono" font-size="10" fill="#6dd0d6" text-anchor="middle">∅ 1218 OBJECTS · 7 OBLAST</text>
+
+          <g stroke="#6dd0d6" stroke-width="0.5" fill="none">
+            <line x1="40" y1="120" x2="40" y2="380"/>
+            <line x1="35" y1="120" x2="45" y2="120"/>
+            <line x1="35" y1="380" x2="45" y2="380"/>
+          </g>
+          <text x="30" y="250" font-family="IBM Plex Mono" font-size="10" fill="#6dd0d6" text-anchor="middle" transform="rotate(-90 30 250)">63 ВИДА СПОРТА</text>
+
+          <!-- Annotations -->
+          <g font-family="IBM Plex Mono" font-size="9" fill="rgba(243,239,229,0.55)">
+            <text x="250" y="80">⊙ ЗОНА А · СПОРТСМЕНЫ</text>
+            <text x="60" y="130">⊙ ЗОНА B · ТРЕНЕРЫ</text>
+            <text x="380" y="130">⊙ ЗОНА C · СУДЬИ</text>
+            <text x="60" y="370">⊙ ЗОНА D · ОБЪЕКТЫ</text>
+            <text x="380" y="370">⊙ ЗОНА E · СОБЫТИЯ</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="wrap">
+    <div class="stats-row">
+      <div class="stats-label">/ TELEMETRY · LIVE</div>
+      <div class="stat-cell">
+        <div class="l">// athletes</div>
+        <div class="v"><b>12,480</b></div>
+        <div class="delta">↑ +142 / 7d</div>
+      </div>
+      <div class="stat-cell">
+        <div class="l">// coaches</div>
+        <div class="v">847</div>
+        <div class="delta">↑ +12 / 7d</div>
+      </div>
+      <div class="stat-cell">
+        <div class="l">// referees</div>
+        <div class="v">324</div>
+        <div class="delta">↑ +4 / 7d</div>
+      </div>
+      <div class="stat-cell">
+        <div class="l">// pending applications</div>
+        <div class="v"><b>37</b></div>
+        <div class="delta" style="color:var(--cyan);">in route · approval</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="modules">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Спецификация<br><b>модулей системы.</b></h2>
+      <div class="meta">SHEET A-002 · 06 ITEMS<br>REV 1.0 · 29.04.2026</div>
+    </div>
+    <div class="mod-grid">
+      <div class="sheet s-1">
+        <span class="id">/ MODULE 01 — KEY</span>
+        <h3>Личный кабинет<br><b>трёх ролей.</b></h3>
+        <p>Спортсмен, тренер, судья — каждый видит свой профиль: разряды, лицензии, медсправки, мероприятия и медали. Подача заявлений и отслеживание маршрута согласования — внутри.</p>
+        <svg viewBox="0 0 500 100" preserveAspectRatio="none">
+          <line x1="20" y1="50" x2="480" y2="50" stroke="#6dd0d6" stroke-width="0.5" stroke-dasharray="4 4"/>
+          <g fill="#6dd0d6">
+            <circle cx="80" cy="50" r="5"/><circle cx="80" cy="50" r="12" fill="none" stroke="#6dd0d6" stroke-width="0.5"/>
+            <circle cx="250" cy="50" r="5"/><circle cx="250" cy="50" r="12" fill="none" stroke="#6dd0d6" stroke-width="0.5"/>
+            <circle cx="420" cy="50" r="5"/><circle cx="420" cy="50" r="12" fill="none" stroke="#6dd0d6" stroke-width="0.5"/>
+          </g>
+          <g font-family="IBM Plex Mono" font-size="9" fill="rgba(243,239,229,0.55)" text-anchor="middle">
+            <text x="80" y="80">A · СПОРТСМЕН</text>
+            <text x="250" y="80">B · ТРЕНЕР</text>
+            <text x="420" y="80">C · СУДЬЯ</text>
+          </g>
+        </svg>
+        <div class="footer-line"><span>// 03 ROLES · 1 PORTAL</span><span class="arr">→ OPEN_PROFILE</span></div>
+      </div>
+      <div class="sheet s-2">
+        <span class="id">/ MODULE 02</span>
+        <h3>Реестры · <b>10 видов</b></h3>
+        <p>Спортсмены, тренеры, судьи, организации, объекты, мероприятия, инвентарь, медсправки.</p>
+        <div class="footer-line"><span>// REG_DB</span><span class="arr">→</span></div>
+      </div>
+      <div class="sheet s-3">
+        <span class="id">/ MODULE 03</span>
+        <h3>QR · <b>проверка документа</b></h3>
+        <p>Подлинность сертификата за 2 секунды. Без авторизации.</p>
+        <div class="footer-line"><span>// VERIFY</span><span class="arr">→</span></div>
+      </div>
+      <div class="sheet s-4">
+        <span class="id">/ MODULE 04</span>
+        <h3>Карта объектов · <b>WMS</b></h3>
+        <p>Геосервис: стадионы, манежи, бассейны, ДЮСШ. Расписание и оснащение.</p>
+        <div class="footer-line"><span>// MAP_WMS</span><span class="arr">→</span></div>
+      </div>
+      <div class="sheet s-5">
+        <span class="id">/ MODULE 05</span>
+        <h3>Календарь<br><b>мероприятий</b></h3>
+        <p>Турниры, сборы, аттестации с фильтром по виду спорта и региону.</p>
+        <div class="footer-line"><span>// CAL</span><span class="arr">→</span></div>
+      </div>
+      <div class="sheet s-6">
+        <span class="id">/ MODULE 06</span>
+        <h3>Заявления онлайн</h3>
+        <p>Звания, лицензии, восстановление документов. Импорт через Түндүк.</p>
+        <div class="footer-line"><span>// FORMS</span><span class="arr">→</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="feature">
+  <div class="wrap">
+    <div class="feat-doc">
+      <div>
+        <span class="id" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--cyan);letter-spacing:0.16em;text-transform:uppercase;">/ FEATURED · SHEET A-003 · 28.04.2026</span>
+        <h3>Анкара 2026.<br><b>Протокол.</b></h3>
+        <p>Сборная Кыргызской Республики по дзюдо вернулась с международного турнира с рекордным результатом: четыре золотых, две серебряных и одна бронзовая медаль. Ниже — командный итог.</p>
+        <div class="cta-row" style="margin-top:32px;">
+          <a class="btn-pri" href="#">→ Полный протокол</a>
+          <a class="btn-sec" href="#">→ Видео церемонии</a>
+        </div>
+      </div>
+      <div class="medals-table">
+        <div class="row gold"><span class="v">04</span><span class="l">// gold · A-class</span><span style="color:var(--signal);">●●●●</span></div>
+        <div class="row silver"><span class="v">02</span><span class="l">// silver · A-class</span><span style="color:#d6d3c8;">●●</span></div>
+        <div class="row bronze"><span class="v">01</span><span class="l">// bronze · A-class</span><span style="color:var(--orange);">●</span></div>
+        <div class="row"><span class="v" style="color:var(--cyan);">12</span><span class="l">// athletes in delegation</span><span></span></div>
+        <div class="row"><span class="v" style="color:var(--cyan);">II</span><span class="l">// team standing</span><span></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="news">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Журнал<br><b>событий.</b></h2>
+      <div class="meta">SHEET A-004 · LATEST 05<br>SORT: DATE DESC</div>
+    </div>
+    <div class="news-table">
+      <a href="#">
+        <span class="id">№ 01</span>
+        <span class="date">28.04.26</span>
+        <span class="cat">★ Сборные</span>
+        <span class="ttl">Сборная по дзюдо взяла четыре золота на международном турнире в Анкаре<small>Подробный разбор выступлений и интервью с главным тренером.</small></span>
+        <span class="arr">→</span>
+      </a>
+      <a href="#">
+        <span class="id">№ 02</span>
+        <span class="date">27.04.26</span>
+        <span class="cat">Реестр</span>
+        <span class="ttl">Открыта запись на аттестацию судей по вольной борьбе<small>Подача заявок до 12 мая. Категории: II, I, республиканская.</small></span>
+        <span class="arr">→</span>
+      </a>
+      <a href="#">
+        <span class="id">№ 03</span>
+        <span class="date">26.04.26</span>
+        <span class="cat">Госуслуги</span>
+        <span class="ttl">Тренерский сертификат — теперь полностью онлайн<small>Импорт документов из СМЭВ Түндүк по ИНН. Электронная выдача с QR.</small></span>
+        <span class="arr">→</span>
+      </a>
+      <a href="#">
+        <span class="id">№ 04</span>
+        <span class="date">24.04.26</span>
+        <span class="cat">Бюджет</span>
+        <span class="ttl">Опубликован программный бюджет ГАФКиС на II квартал 2026<small>Распределение по областным управлениям и спортшколам.</small></span>
+        <span class="arr">→</span>
+      </a>
+      <a href="#">
+        <span class="id">№ 05</span>
+        <span class="date">22.04.26</span>
+        <span class="cat">Тендер</span>
+        <span class="ttl">Тендер: оснащение спортзала ДЮСШ № 4 в Оше<small>Срок подачи заявок — до 15 мая. Документы — в личном кабинете.</small></span>
+        <span class="arr">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand">e<b>·</b>Sport</div>
+        <p>// Государственное агентство физической культуры и спорта Кыргызской Республики · АИС v1.0 · 2026 · Бишкек</p>
+      </div>
+      <div><h5>/ system</h5><ul><li><a href="#">О ГАФКиС</a></li><li><a href="#">Структура</a></li><li><a href="#">НПА</a></li><li><a href="#">Бюджет</a></li></ul></div>
+      <div><h5>/ registries</h5><ul><li><a href="#">Спортсмены</a></li><li><a href="#">Тренеры</a></li><li><a href="#">Судьи</a></li><li><a href="#">Объекты</a></li></ul></div>
+      <div><h5>/ services</h5><ul><li><a href="#">Заявления</a></li><li><a href="#">QR проверка</a></li><li><a href="#">Антидопинг</a></li><li><a href="#">Тендеры</a></li></ul></div>
+      <div><h5>/ contact</h5><ul><li>Бишкек, пр. Чуй 162</li><li>+996 312 62 03 03</li><li>info@gafkis.gov.kg</li></ul></div>
+    </div>
+    <div class="foot-legal">
+      <span>© 2026 ГАФКиС</span>
+      <span>Постановления КР № 760 / № 762</span>
+      <span>Прототип VIII · Blueprint</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
