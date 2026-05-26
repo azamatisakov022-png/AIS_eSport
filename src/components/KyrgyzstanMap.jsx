@@ -41,6 +41,39 @@ const OBLAST_COLORS = {
     'Таласская область': '#10b981',
 }
 
+/* ── Popup HTML builder (used when marker has no custom popupHtml) ─── */
+function escapeHtml(s) {
+    if (s == null) return ''
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+}
+function buildPopupHtml(m) {
+    const muted = 'color:var(--theme-text-secondary, var(--text-secondary, #6e6e73));font-size:12px'
+    const label = 'color:var(--theme-text-secondary, var(--text-secondary, #6e6e73));font-size:11px;text-transform:uppercase;letter-spacing:0.3px;display:inline-block;width:18px'
+
+    const phoneNorm = m.phone ? String(m.phone).replace(/[^+\d]/g, '') : ''
+    const websiteUrl = m.website
+        ? (m.website.startsWith('http') ? m.website : `https://${m.website}`)
+        : ''
+
+    return `
+<div style="font-family:Inter,system-ui,sans-serif;min-width:240px;max-width:300px">
+    <div style="font-size:14px;font-weight:700;line-height:1.3;margin-bottom:4px;color:var(--theme-text-main, var(--text-primary, #1a1a1a))">${escapeHtml(m.name || '')}</div>
+    ${m.typeName ? `<div style="${muted};margin-bottom:8px">${escapeHtml(m.typeName)}</div>` : ''}
+    <div style="display:flex;flex-direction:column;gap:6px;margin:6px 0;">
+        ${m.address ? `<div style="${muted};line-height:1.4"><span style="${label}">📍</span> ${escapeHtml(m.address)}</div>` : ''}
+        ${phoneNorm ? `<div style="${muted};line-height:1.4"><span style="${label}">📞</span> <a href="tel:${escapeHtml(phoneNorm)}" style="color:inherit;text-decoration:none">${escapeHtml(m.phone)}</a></div>` : ''}
+        ${m.email ? `<div style="${muted};line-height:1.4"><span style="${label}">✉️</span> <a href="mailto:${escapeHtml(m.email)}" style="color:inherit;text-decoration:none">${escapeHtml(m.email)}</a></div>` : ''}
+        ${websiteUrl ? `<div style="${muted};line-height:1.4"><span style="${label}">🔗</span> <a href="${escapeHtml(websiteUrl)}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline">${escapeHtml(m.website)}</a></div>` : ''}
+        ${m.capacity ? `<div style="${muted};line-height:1.4"><span style="${label}">👥</span> ${escapeHtml(m.capacity)}</div>` : ''}
+        ${m.extra ? `<div style="${muted};line-height:1.4">${escapeHtml(m.extra)}</div>` : ''}
+    </div>
+</div>`.trim()
+}
+
 /* ── Marker type colors ── */
 const MARKER_COLORS = {
     dyush: '#16a34a',
@@ -191,16 +224,18 @@ export default function KyrgyzstanMap({
                 maxBounds: KG_MAX_BOUNDS,
                 maxBoundsViscosity: 0.8,
                 minZoom: 6,
-                maxZoom: 14,
+                maxZoom: 19,
                 zoomControl: false,
                 attributionControl: true,
             })
             initialViewRef.current = { type: 'bounds', bounds: KG_MAX_BOUNDS }
 
-            // ── CartoDB Positron light tile layer ──
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+            // ── CartoDB Positron light tile layer (with labels: cities, streets, road names) ──
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
                 subdomains: 'abcd',
+                maxNativeZoom: 19,
+                maxZoom: 19,
             }).addTo(map)
             L.control.zoom({ position: 'topright' }).addTo(map)
 
@@ -286,6 +321,29 @@ export default function KyrgyzstanMap({
                             })
                             layer.on('mouseout', function () {
                                 if (oblastLayer) oblastLayer.resetStyle(this)
+                            })
+
+                            // Smart click:
+                            //   1 marker  → flyTo that marker at street zoom + open its popup
+                            //   N markers → fitBounds on the oblast (gradual zoom-in)
+                            layer.on('click', function () {
+                                const oblastBounds = this.getBounds()
+                                const markersInOblast = markers.filter(m => oblastBounds.contains([m.lat, m.lng]))
+                                if (markersInOblast.length === 1) {
+                                    const m = markersInOblast[0]
+                                    map.flyTo([m.lat, m.lng], 17, { duration: 0.8 })
+                                    // Open popup after fly finishes
+                                    map.once('moveend', () => {
+                                        const key = m.id ?? `${m.name || 'marker'}-${markers.indexOf(m)}`
+                                        const circle = markerLayersRef.current.get(key)
+                                        if (circle && circle.openPopup) circle.openPopup()
+                                    })
+                                } else if (markersInOblast.length > 1) {
+                                    map.flyToBounds(oblastBounds, { padding: [40, 40], duration: 0.6 })
+                                } else {
+                                    // No markers — still zoom to oblast for orientation
+                                    map.flyToBounds(oblastBounds, { padding: [40, 40], duration: 0.6 })
+                                }
                             })
                         },
                     }).addTo(map)
@@ -397,17 +455,9 @@ export default function KyrgyzstanMap({
                 circle.__markerKey = markerKey
 
                 if (m.popupHtml) {
-                    circle.bindPopup(m.popupHtml, { maxWidth: 280 })
+                    circle.bindPopup(m.popupHtml, { maxWidth: 320 })
                 } else if (m.name) {
-                    circle.bindPopup(
-                        `<div style="font-family:Inter,system-ui,sans-serif;">
-                            <div style="font-size:14px;font-weight:700;margin-bottom:4px;color:var(--theme-text-main, var(--text-primary, #1a1a1a))">${m.name}</div>
-                            ${m.typeName ? `<div style="font-size:12px;color:var(--theme-text-secondary, var(--text-secondary, #6e6e73));margin-bottom:2px">${m.typeName}</div>` : ''}
-                            ${m.address ? `<div style="font-size:12px;color:var(--theme-text-secondary, var(--text-secondary, #6e6e73))">${m.address}</div>` : ''}
-                            ${m.capacity ? `<div style="font-size:12px;color:var(--theme-text-secondary, var(--text-secondary, #6e6e73));margin-top:2px">${m.capacity}</div>` : ''}
-                        </div>`,
-                        { maxWidth: 280 }
-                    )
+                    circle.bindPopup(buildPopupHtml(m), { maxWidth: 320 })
                 }
                 circle.on('mouseover', () => {
                     if (activeMarkerRef.current === markerKey) return
@@ -421,7 +471,18 @@ export default function KyrgyzstanMap({
                     if (activeMarkerRef.current === markerKey) return
                     circle.setStyle(getMarkerStyle(m, false))
                 })
-                circle.on('click', () => markerSelectRef.current?.(m))
+                circle.on('click', () => {
+                    markerSelectRef.current?.(m)
+                    // Smart zoom: if user is far away from this point, fly in to street level
+                    const currentZoom = map.getZoom()
+                    if (currentZoom < 13) {
+                        map.flyTo([m.lat, m.lng], 17, { duration: 0.8 })
+                        // Re-open popup after fly finishes (Leaflet auto-closes during animation)
+                        map.once('moveend', () => {
+                            if (circle.openPopup) circle.openPopup()
+                        })
+                    }
+                })
                 markerLayersRef.current.set(markerKey, circle)
                 markersLayer.addLayer(circle)
             })

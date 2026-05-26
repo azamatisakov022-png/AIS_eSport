@@ -3,6 +3,8 @@ import { Outlet, NavLink, Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import '../styles/public.css'
 import PublicSpotlight from './components/PublicSpotlight'
+import MobileDrawer from './components/MobileDrawer'
+import MobileBottomNav from './components/MobileBottomNav'
 
 /* Menu groups and breadcrumbs use translation keys - resolved in component */
 const menuGroupsDef = [
@@ -122,6 +124,11 @@ export default function PublicLayout() {
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }, [])
 
+    /* Mobile drawer */
+    const [menuOpen, setMenuOpen] = useState(false)
+    const openMenu = useCallback(() => setMenuOpen(true), [])
+    const closeMenu = useCallback(() => setMenuOpen(false), [])
+
     /* Dark mode */
     const [dark, setDark] = useState(() => localStorage.getItem('pub-dark') === '1')
     const toggleDark = useCallback(() => {
@@ -131,14 +138,6 @@ export default function PublicLayout() {
         })
     }, [])
 
-    /* A11Y mode */
-    const [a11y, setA11y] = useState(() => localStorage.getItem('pub-a11y') === '1')
-    const toggleA11y = useCallback(() => {
-        setA11y(a => {
-            localStorage.setItem('pub-a11y', a ? '0' : '1')
-            return !a
-        })
-    }, [])
 
     /* Ripple on button click */
     const portalRef = useRef(null)
@@ -164,9 +163,11 @@ export default function PublicLayout() {
     }, [])
 
     return (
-        <div ref={portalRef} className={`public-portal${dark ? ' dark-mode' : ''}${a11y ? ' a11y-mode' : ''}`}>
+        <div ref={portalRef} className={`public-portal${dark ? ' dark-mode' : ''}`}>
+            {/* Skip to main content (a11y) */}
+            <a className="pub-skip-link" href="#main-content">{t('public.skipToContent')}</a>
             {/* Scroll progress bar */}
-            <div className="pub-scroll-progress" style={{ width: `${scrollProgress}%` }} />
+            <div className="pub-scroll-progress" style={{ width: `${scrollProgress}%` }} aria-hidden="true" />
             {/* Top Government Bar */}
             <div className="pub-topbar">
                 <div className="pub-container">
@@ -177,17 +178,23 @@ export default function PublicLayout() {
                             <a href="#">{t('public.topBarReception')}</a>
                         </div>
                         <div className="pub-topbar__right">
-                            <button className="pub-dark-toggle" onClick={toggleDark} title="Dark Mode">
-                                {dark ? '☀️' : '🌙'}
-                            </button>
-                            <button className={`pub-a11y-btn${a11y ? ' active' : ''}`} onClick={toggleA11y}>
-                                👁 {t('public.a11yVersion')}
+                            <button
+                                type="button"
+                                className="pub-dark-toggle"
+                                onClick={toggleDark}
+                                aria-label={dark ? t('public.themeLight') : t('public.themeDark')}
+                                aria-pressed={dark}
+                            >
+                                <span aria-hidden="true">{dark ? '☀️' : '🌙'}</span>
                             </button>
                             {['ru', 'kg', 'en'].map(code => (
                                 <button
+                                    type="button"
                                     key={code}
                                     className={`pub-lang-btn${i18n.language === code ? ' active' : ''}`}
                                     onClick={() => i18n.changeLanguage(code)}
+                                    aria-label={t('public.switchLanguage', { lang: code.toUpperCase() })}
+                                    aria-current={i18n.language === code ? 'true' : undefined}
                                 >
                                     {code.toUpperCase()}
                                 </button>
@@ -218,7 +225,7 @@ export default function PublicLayout() {
                                         </NavLink>
                                     ) : (
                                         <>
-                                            <button type="button">
+                                            <button type="button" aria-haspopup="true">
                                                 {t(group.labelKey)}
                                                 <Chevron />
                                             </button>
@@ -245,26 +252,49 @@ export default function PublicLayout() {
 
                         <div className="pub-nav__right">
                             <Link to="/public/login" className="pub-login-btn">{t('public.cabinet')}</Link>
+                            <button
+                                type="button"
+                                className="pub-burger-btn"
+                                onClick={openMenu}
+                                aria-label={t('public.openMenu')}
+                                aria-expanded={menuOpen}
+                                aria-controls="pub-mobile-drawer"
+                            >
+                                <span className="pub-burger-btn__bars" aria-hidden="true">
+                                    <span /><span /><span />
+                                </span>
+                            </button>
                         </div>
                     </div>
                 </div>
             </nav>
 
+            {/* Mobile drawer (off-canvas) */}
+            <MobileDrawer
+                open={menuOpen}
+                onClose={closeMenu}
+                menuGroups={menuGroupsDef}
+                dark={dark}
+                onToggleDark={toggleDark}
+                currentLang={i18n.language}
+                onChangeLang={(code) => { i18n.changeLanguage(code); closeMenu(); }}
+            />
+
             {/* Breadcrumbs (not on home) */}
             {!isHome && pageTitle && (
-                <div className="pub-container">
-                    <div className="pub-breadcrumb">
-                        <Link to="/public">{t('public.breadcrumbHome')}</Link>
-                        <span className="pub-breadcrumb__sep">›</span>
-                        <span>{pageTitle}</span>
-                    </div>
-                </div>
+                <nav className="pub-container" aria-label={t('public.breadcrumbAriaLabel')}>
+                    <ol className="pub-breadcrumb">
+                        <li><Link to="/public">{t('public.breadcrumbHome')}</Link></li>
+                        <li aria-hidden="true"><span className="pub-breadcrumb__sep">›</span></li>
+                        <li aria-current="page">{pageTitle}</li>
+                    </ol>
+                </nav>
             )}
 
             <PublicSpotlight />
 
             {/* Content */}
-            <main className="pub-main">
+            <main className="pub-main" id="main-content" tabIndex="-1">
                 <div key={pageKey} className={`pub-page-transition${fadeIn ? ' pub-page-enter' : ''}`}>
                     <Outlet />
                 </div>
@@ -375,11 +405,17 @@ export default function PublicLayout() {
                 </div>
             </footer>
 
+            {/* Mobile bottom navigation (≤768px only via CSS) */}
+            <MobileBottomNav />
+
             {/* Back to top button */}
             <button
+                type="button"
                 className={`pub-back-to-top${showTop ? ' visible' : ''}`}
                 onClick={scrollToTop}
-                aria-label="Back to top"
+                aria-label={t('public.backToTop')}
+                aria-hidden={!showTop}
+                tabIndex={showTop ? 0 : -1}
             >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="18 15 12 9 6 15" />

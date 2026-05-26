@@ -73,8 +73,10 @@ export default function PublicSchools() {
 
     const mapMarkers = filtered.map(s => ({
         lat: s.lat, lng: s.lng, name: s.name, type: 'dyush',
-        typeName: TYPE_LABELS[s.type] || 'Спортшкола', address: s.city,
-        popupHtml: `<b>${s.name}</b><br/>${TYPE_LABELS[s.type] || ''}<br/>${s.city}<br/>${s.students} ${t('public.students')}<br/>${s.sports.slice(0, 3).join(', ')}`,
+        typeName: TYPE_LABELS[s.type] || 'Спортшкола',
+        address: s.city,
+        capacity: `${s.students} ${t('public.students')}`,
+        extra: s.sports.slice(0, 3).join(', '),
     }))
 
     return (

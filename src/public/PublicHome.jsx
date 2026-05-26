@@ -174,7 +174,6 @@ function AnimCounter({ target, label }) {
 
 export default function PublicHome() {
     const { t } = useTranslation()
-    const [accessible, setAccessible] = useState(false)
     const [verifyInput, setVerifyInput] = useState('')
     const [verifyResult, setVerifyResult] = useState(null)
     const [verifyPhase, setVerifyPhase] = useState('idle')
@@ -246,13 +245,12 @@ export default function PublicHome() {
     }
 
     return (
-        <div className={accessible ? 'a11y-mode' : ''}>
+        <div>
 
             {/* ═══ 1. HERO (Parallax + Gradient + Cursor Glow) ═══ */}
             <section
                 ref={heroRef}
                 className="hero-section"
-                style={accessible ? { background: '#333' } : {}}
                 onMouseMove={handleHeroMouseMove}
                 onMouseLeave={handleHeroMouseLeave}
             >
@@ -489,17 +487,22 @@ export default function PublicHome() {
                     </div>
                     <div className="ph-regions-grid">
                         {regions.map((r, i) => (
-                            <div
+                            <button
+                                type="button"
                                 key={r.key}
                                 className="ph-region-card stagger-item"
                                 style={{ '--i': i }}
                                 onMouseEnter={() => setHoveredRegion(r.key)}
                                 onMouseLeave={() => setHoveredRegion(null)}
+                                onFocus={() => setHoveredRegion(r.key)}
+                                onBlur={() => setHoveredRegion(null)}
                                 onClick={() => setSelectedRegion({ ...r, name: r.key })}
+                                aria-label={`${t(r.nameKey)} — ${t('public.regionMore')}`}
                             >
                                 <div
                                     className="ph-region-card__img"
                                     style={{ backgroundImage: `url(${r.img})` }}
+                                    aria-hidden="true"
                                 />
                                 <div className={`ph-region-card__overlay${hoveredRegion === r.key ? ' hovered' : ''}`}>
                                     <span className="ph-region-card__name">{t(r.nameKey)}</span>
@@ -512,7 +515,7 @@ export default function PublicHome() {
                                         <span className="ph-region-card__hint">{getRegionHint(r.key)}</span>
                                     )}
                                 </div>
-                            </div>
+                            </button>
                         ))}
                     </div>
                 </div>
@@ -613,14 +616,19 @@ export default function PublicHome() {
                             <div className="ph-verify__row">
                                 <input
                                     className="ph-verify__input"
+                                    type="text"
                                     placeholder={t('public.verifyPlaceholder')}
+                                    aria-label={t('public.verifyInputLabel')}
                                     value={verifyInput}
                                     onChange={e => { setVerifyInput(e.target.value); if (verifyPhase !== 'scanning') { setVerifyResult(null); setVerifyPhase('idle') } }}
                                     onKeyDown={e => e.key === 'Enter' && handleVerify()}
                                     disabled={verifyPhase === 'scanning'}
                                 />
-                                <button className={`ph-verify__btn${verifyPhase === 'scanning' ? ' scanning' : ''}`}
-                                    onClick={handleVerify} disabled={verifyPhase === 'scanning'}>
+                                <button
+                                    type="button"
+                                    className={`ph-verify__btn${verifyPhase === 'scanning' ? ' scanning' : ''}`}
+                                    onClick={handleVerify}
+                                    disabled={verifyPhase === 'scanning' || !verifyInput.trim()}>
                                     {verifyPhase === 'scanning' ? (
                                         <><span className="ph-verify__spinner" /> {t('public.verifyScanning')}</>
                                     ) : t('public.verifyBtn')}
@@ -650,7 +658,7 @@ export default function PublicHome() {
                                     <div className="ph-verify__result-row"><span>{t('public.verifySport')}</span><strong>{verifyResult.sport}</strong></div>
                                     <div className="ph-verify__result-row ph-verify__result-row--last"><span>{t('public.verifyStatus')}</span><strong style={{ color: '#22c55e' }}>{verifyResult.status}</strong></div>
                                 </div>
-                                <button className="ph-verify__reset" onClick={handleVerifyReset}>{t('public.verifyCheckAnother')}</button>
+                                <button type="button" className="ph-verify__reset" onClick={handleVerifyReset}>{t('public.verifyCheckAnother')}</button>
                             </div>
                         )}
 
@@ -658,7 +666,7 @@ export default function PublicHome() {
                             <div className="ph-verify__result ph-verify__result--err">
                                 <p className="ph-verify__err-title">{t('public.verifyDocNotFound')}</p>
                                 <p className="ph-verify__err-hint">{t('public.verifyDocNotFoundHint')}</p>
-                                <button className="ph-verify__reset" onClick={handleVerifyReset}>{t('public.verifyTryAgain')}</button>
+                                <button type="button" className="ph-verify__reset" onClick={handleVerifyReset}>{t('public.verifyTryAgain')}</button>
                             </div>
                         )}
                     </div>

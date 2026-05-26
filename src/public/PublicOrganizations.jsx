@@ -7,16 +7,18 @@ import { ORGS_DATA } from '../pages/Organizations'
 import KyrgyzstanMap from '../components/KyrgyzstanMap'
 
 /* Region center coordinates for placing markers */
+/* Region centers — chosen to be on land near the main city of each region,
+   NOT geometric centroid of the region polygon (which can fall in mountains/lakes). */
 const REGION_COORDS = {
-    'Бишкек': [42.87, 74.59],
-    'Ош': [40.53, 72.80],
-    'Чуй': [42.85, 74.80],
-    'Нарын': [41.43, 76.0],
-    'Иссык-Куль': [42.45, 77.60],
-    'Джалал-Абад': [41.03, 73.0],
-    'Баткен': [40.06, 70.82],
-    'Талас': [42.52, 72.24],
-    'Ош (обл.)': [40.25, 72.30],
+    'Бишкек':      [42.8746, 74.5698],   // City center
+    'Ош':          [40.5283, 72.7985],   // City center
+    'Чуй':         [42.8390, 75.2939],   // Tokmok (Chuy region admin center area)
+    'Нарын':       [41.4287, 75.9911],   // Naryn city
+    'Иссык-Куль':  [42.4907, 78.3936],   // Karakol (regional centre — on land, NOT the lake)
+    'Джалал-Абад': [40.9335, 73.0026],   // Jalal-Abad city
+    'Баткен':      [40.0615, 70.8199],   // Batken city
+    'Талас':       [42.5228, 72.2425],   // Talas city
+    'Ош (обл.)':   [40.2500, 72.3000],   // Osh oblast (south of city)
 }
 
 const TYPES_MAP = {
@@ -82,7 +84,10 @@ export default function PublicOrganizations() {
                                 type: o.type,
                                 typeName: t(TYPES_MAP[o.type]?.labelKey) || o.type,
                                 address: o.address,
-                                popupHtml: `<b>${o.name}</b><br/>${t(TYPES_MAP[o.type]?.labelKey) || ''}<br/>${o.region}<br/>${o.athletes} ${t('public.orgAthletes')}`,
+                                phone: o.phone,
+                                email: o.email,
+                                website: o.website,
+                                capacity: `${o.athletes} ${t('public.orgAthletes')}`,
                             }
                         })}
                     />
