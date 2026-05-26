@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useRole } from '../context/RoleContext'
@@ -22,27 +22,65 @@ const ROLE_GROUPS = [
         titleKey: 'public.loginTitle',
         roles: [
             { key: 'athlete', labelKey: 'public.loginAsAthlete', subKey: 'public.loginAthleteDesc', to: '/cabinet',
-              iconBg: '#1B3A6B' },
+              iconBg: '#1B3A6B', glow: '27, 58, 107' },
             { key: 'coach', labelKey: 'public.loginAsCoach', subKey: 'public.loginCoachDesc', to: '/cabinet',
-              iconBg: '#2B5EA7' },
+              iconBg: '#2B5EA7', glow: '43, 94, 167' },
             { key: 'judge', labelKey: 'public.loginAsJudge', subKey: 'public.loginJudgeDesc', to: '/cabinet',
-              iconBg: '#4A90D9' },
+              iconBg: '#4A90D9', glow: '74, 144, 217' },
             { key: 'org', labelKey: 'Организация', subKey: 'СДЮСШОР, ДЮСШ', to: '/cabinet',
-              iconBg: '#6A5ACD' },
+              iconBg: '#6A5ACD', glow: '106, 90, 205' },
         ],
     },
     {
         titleKey: 'public.loginStaffTab',
         roles: [
             { key: 'employee', labelKey: 'public.loginAsEmployee', subKey: 'public.loginEmployeeDesc', to: '/dashboard',
-              iconBg: '#1B3A6B' },
+              iconBg: '#1B3A6B', glow: '27, 58, 107' },
             { key: 'admin', labelKey: 'public.loginAsAdmin', subKey: 'public.loginAdminDesc', to: '/dashboard',
-              iconBg: '#2B5EA7' },
+              iconBg: '#2B5EA7', glow: '43, 94, 167' },
             { key: 'superadmin', labelKey: 'public.loginAsSuperadmin', subKey: 'public.loginSuperadminDesc', to: '/dashboard',
-              iconBg: '#0F2B52' },
+              iconBg: '#0F2B52', glow: '15, 43, 82' },
         ],
     },
 ]
+
+/* ── Counted-up number hook (0 → target with easing) ── */
+function useCountUp(target, duration = 1600) {
+    const [value, setValue] = useState(0)
+    useEffect(() => {
+        const start = performance.now()
+        let raf
+        const step = (now) => {
+            const p = Math.min((now - start) / duration, 1)
+            const eased = 1 - Math.pow(1 - p, 3)
+            setValue(Math.round(eased * target))
+            if (p < 1) raf = requestAnimationFrame(step)
+        }
+        raf = requestAnimationFrame(step)
+        return () => cancelAnimationFrame(raf)
+    }, [target, duration])
+    return value
+}
+
+/* ── Floating-label input ── */
+function FloatField({ type = 'text', label, value, onChange, autoComplete }) {
+    const [focused, setFocused] = useState(false)
+    const active = focused || (value && value.length > 0)
+    return (
+        <div className={`login-field${active ? ' is-active' : ''}`}>
+            <input
+                type={type}
+                value={value}
+                onChange={e => onChange(e.target.value)}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
+                autoComplete={autoComplete}
+                className="login-field__input"
+            />
+            <label className="login-field__label">{label}</label>
+        </div>
+    )
+}
 
 export default function PublicLogin() {
     const { t } = useTranslation()
@@ -59,7 +97,10 @@ export default function PublicLogin() {
         navigate(role.to, { state: { role: role.key } })
     }
 
-    const [hoveredRole, setHoveredRole] = useState(null)
+    /* Animated counters: 0 → target on first render */
+    const athletesCount = useCountUp(3847)
+    const coachesCount = useCountUp(247)
+    const judgesCount = useCountUp(186)
 
     const handleCitizenSubmit = (e) => {
         e.preventDefault()
@@ -80,8 +121,8 @@ export default function PublicLogin() {
                 <div style={s.circle2} />
                 <div style={s.circle3} />
 
-                {/* Logo */}
-                <div style={s.leftLogo}>
+                {/* Logo with shimmer effect */}
+                <div className="login-logo" style={s.leftLogo}>
                     <img src="/logo.png" alt="ГАФКиС" style={s.leftLogoImg} />
                     <span style={s.leftLogoText}>АИС eSport</span>
                 </div>
@@ -92,20 +133,20 @@ export default function PublicLogin() {
                     <p style={s.leftSub}>{t('public.loginPlatformDesc')}<br />{t('public.loginPlatformDescSub')}</p>
                 </div>
 
-                {/* Stats row */}
+                {/* Stats row (animated counters 0 → target) */}
                 <div style={s.statsRow}>
                     <div style={s.statItem}>
-                        <div style={s.statValue}>3 847</div>
+                        <div style={s.statValue}>{athletesCount.toLocaleString('ru-RU')}</div>
                         <div style={s.statLabel}>{t('public.counterAthletes')}</div>
                     </div>
                     <div style={s.statDivider} />
                     <div style={s.statItem}>
-                        <div style={s.statValue}>247</div>
+                        <div style={s.statValue}>{coachesCount.toLocaleString('ru-RU')}</div>
                         <div style={s.statLabel}>{t('public.counterCoaches')}</div>
                     </div>
                     <div style={s.statDivider} />
                     <div style={s.statItem}>
-                        <div style={s.statValue}>186</div>
+                        <div style={s.statValue}>{judgesCount.toLocaleString('ru-RU')}</div>
                         <div style={s.statLabel}>{t('public.counterJudges')}</div>
                     </div>
                 </div>
@@ -123,45 +164,32 @@ export default function PublicLogin() {
                 <div style={s.formContainer}>
                     <h2 style={s.formTitle}>{t('public.loginFormTitle')}</h2>
 
-                    {/* ── Segmented control tabs ── */}
-                    <div style={s.tabs}>
+                    {/* ── Pill-toggle tabs (sliding indicator) ── */}
+                    <div className="login-tabs" data-active={tab}>
                         <button
-                            style={tab === 'citizen' ? { ...s.tab, ...s.tabActive } : s.tab}
+                            type="button"
+                            className={`login-tab${tab === 'citizen' ? ' is-active' : ''}`}
                             onClick={() => setTab('citizen')}
+                            aria-pressed={tab === 'citizen'}
                         >
                             Личный кабинет
                         </button>
                         <button
-                            style={tab === 'staff' ? { ...s.tab, ...s.tabActive } : s.tab}
+                            type="button"
+                            className={`login-tab${tab === 'staff' ? ' is-active' : ''}`}
                             onClick={() => setTab('staff')}
+                            aria-pressed={tab === 'staff'}
                         >
                             Сотрудники
                         </button>
+                        <span className="login-tabs__slider" aria-hidden="true" />
                     </div>
 
                     {/* ── CITIZEN TAB ── */}
                     {tab === 'citizen' && (
                         <form onSubmit={handleCitizenSubmit} style={s.form}>
-                            <div style={s.fieldGroup}>
-                                <label style={s.label}>Email</label>
-                                <input
-                                    type="email"
-                                    placeholder="example@mail.kg"
-                                    value={email}
-                                    onChange={e => setEmail(e.target.value)}
-                                    style={s.input}
-                                />
-                            </div>
-                            <div style={s.fieldGroup}>
-                                <label style={s.label}>Пароль</label>
-                                <input
-                                    type="password"
-                                    placeholder="Введите пароль"
-                                    value={password}
-                                    onChange={e => setPassword(e.target.value)}
-                                    style={s.input}
-                                />
-                            </div>
+                            <FloatField type="email" label="Email" value={email} onChange={setEmail} autoComplete="email" />
+                            <FloatField type="password" label="Пароль" value={password} onChange={setPassword} autoComplete="current-password" />
                             <button type="submit" style={s.btnPrimary}>Войти</button>
 
                             <div style={s.divider}>
@@ -188,26 +216,8 @@ export default function PublicLogin() {
                     {/* ── STAFF TAB ── */}
                     {tab === 'staff' && (
                         <form onSubmit={handleStaffSubmit} style={s.form}>
-                            <div style={s.fieldGroup}>
-                                <label style={s.label}>Логин</label>
-                                <input
-                                    type="text"
-                                    placeholder="Введите логин"
-                                    value={staffLogin}
-                                    onChange={e => setStaffLogin(e.target.value)}
-                                    style={s.input}
-                                />
-                            </div>
-                            <div style={s.fieldGroup}>
-                                <label style={s.label}>Пароль</label>
-                                <input
-                                    type="password"
-                                    placeholder="Введите пароль"
-                                    value={staffPassword}
-                                    onChange={e => setStaffPassword(e.target.value)}
-                                    style={s.input}
-                                />
-                            </div>
+                            <FloatField type="text" label="Логин" value={staffLogin} onChange={setStaffLogin} autoComplete="username" />
+                            <FloatField type="password" label="Пароль" value={staffPassword} onChange={setStaffPassword} autoComplete="current-password" />
                             <button type="submit" style={s.btnPrimary}>Войти</button>
 
                             <div style={s.divider}>
@@ -245,14 +255,9 @@ export default function PublicLogin() {
                                 {group.roles.map(r => (
                                     <button
                                         key={r.key}
-                                        style={{
-                                            ...s.roleCard,
-                                            background: hoveredRole === r.key ? '#E3EBF6' : '#F0F4FA',
-                                            transform: hoveredRole === r.key ? 'translateY(-2px)' : 'none',
-                                            boxShadow: hoveredRole === r.key ? '0 4px 12px rgba(27,58,107,0.12)' : 'none',
-                                        }}
-                                        onMouseEnter={() => setHoveredRole(r.key)}
-                                        onMouseLeave={() => setHoveredRole(null)}
+                                        type="button"
+                                        className="login-role-card"
+                                        style={{ ...s.roleCard, '--role-glow': r.glow }}
                                         onClick={() => handleDemoLogin(r)}
                                     >
                                         <div style={{ ...s.roleIcon, background: r.iconBg }}>
@@ -273,8 +278,138 @@ export default function PublicLogin() {
                 </div>
             </div>
 
-            {/* ── Responsive styles ── */}
+            {/* ── Responsive + a11y/animation styles ── */}
             <style>{`
+                /* Logo shimmer — blik runs across logo once every ~3.5s */
+                .login-logo {
+                    position: relative;
+                    overflow: hidden;
+                    border-radius: 6px;
+                    padding: 6px 4px;
+                }
+                .login-logo::after {
+                    content: '';
+                    position: absolute;
+                    top: 0; bottom: 0;
+                    left: -40%;
+                    width: 30%;
+                    background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
+                    transform: skewX(-20deg);
+                    animation: loginLogoShimmer 3.5s ease-in-out infinite;
+                    pointer-events: none;
+                }
+                @keyframes loginLogoShimmer {
+                    0%, 60% { left: -40%; }
+                    80%, 100% { left: 130%; }
+                }
+
+                /* Pill-toggle tabs with sliding background */
+                .login-tabs {
+                    position: relative;
+                    display: flex;
+                    padding: 4px;
+                    background: var(--theme-bg-panel, #f0f2f5);
+                    border-radius: 10px;
+                    margin-bottom: 16px;
+                    overflow: hidden;
+                }
+                .login-tab {
+                    flex: 1;
+                    padding: 9px 16px;
+                    border: none;
+                    background: transparent;
+                    font: inherit;
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: var(--theme-text-secondary, #6e6e73);
+                    cursor: pointer;
+                    outline: none;
+                    position: relative;
+                    z-index: 1;
+                    border-radius: 7px;
+                    transition: color 0.25s ease;
+                }
+                .login-tab.is-active { color: #fff; }
+                .login-tab:focus-visible {
+                    outline: 2px solid #2B5EA7;
+                    outline-offset: 2px;
+                }
+                .login-tabs__slider {
+                    position: absolute;
+                    top: 4px;
+                    bottom: 4px;
+                    left: 4px;
+                    width: calc(50% - 4px);
+                    background: linear-gradient(135deg, #1B3A6B 0%, #2B5EA7 100%);
+                    border-radius: 7px;
+                    box-shadow: 0 2px 6px rgba(27, 58, 107, 0.3);
+                    transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+                    pointer-events: none;
+                }
+                .login-tabs[data-active="staff"] .login-tabs__slider {
+                    transform: translateX(100%);
+                }
+
+                /* Floating-label input */
+                .login-field {
+                    position: relative;
+                }
+                .login-field__input {
+                    width: 100%;
+                    padding: 14px 14px 14px;
+                    border: 1px solid #d2d2d7;
+                    border-radius: 8px;
+                    background: var(--theme-bg-card, #fff);
+                    color: #1a1a1a;
+                    font-size: 14px;
+                    font-family: inherit;
+                    outline: none;
+                    transition: border-color 0.2s;
+                    box-sizing: border-box;
+                }
+                .login-field__input:focus {
+                    border-color: #2B5EA7;
+                }
+                .login-field__label {
+                    position: absolute;
+                    left: 14px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: var(--theme-bg-card, #fff);
+                    padding: 0 4px;
+                    color: #86868b;
+                    font-size: 14px;
+                    pointer-events: none;
+                    transition: top 0.18s ease, font-size 0.18s ease, color 0.18s ease;
+                }
+                .login-field.is-active .login-field__label {
+                    top: 0;
+                    font-size: 11px;
+                    color: #2B5EA7;
+                    font-weight: 700;
+                }
+
+                /* Hover lift + colored glow on role cards (each role brings --role-glow) */
+                .login-role-card {
+                    background: #F0F4FA;
+                    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                                box-shadow 0.25s ease,
+                                border-color 0.25s ease;
+                    will-change: transform;
+                }
+                .login-role-card:hover {
+                    transform: translateY(-6px);
+                    box-shadow:
+                        0 12px 28px rgba(var(--role-glow, 27, 58, 107), 0.35),
+                        0 4px 8px rgba(var(--role-glow, 27, 58, 107), 0.15);
+                    border-color: rgba(var(--role-glow, 27, 58, 107), 0.4);
+                }
+                .login-role-card:focus-visible {
+                    outline: 3px solid rgba(var(--role-glow, 27, 58, 107), 0.5);
+                    outline-offset: 2px;
+                }
+
+                /* Responsive */
                 @media (max-width: 900px) {
                     .login-page { flex-direction: column !important; }
                     .login-left {

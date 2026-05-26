@@ -27,6 +27,7 @@ import PublicLayout from './public/PublicLayout'
 import PublicHome from './public/PublicHome'
 import PublicVerify from './public/PublicVerify'
 import PublicLogin from './public/PublicLogin'
+import PublicLoginPlayground from './public/PublicLoginPlayground'
 import PublicPlaceholder from './public/PublicPlaceholder'
 import PublicTrainerRegistration from './public/PublicTrainerRegistration'
 import PublicCoaches from './public/PublicCoaches'
@@ -95,6 +96,7 @@ export default function App() {
 
             {/* Login - standalone, no layout wrapper */}
             <Route path="/public/login" element={<PublicLogin />} />
+            <Route path="/public/login-playground" element={<PublicLoginPlayground />} />
             <Route path="/mockup" element={<PublicHomeMockup />} />
 
             {/* Cabinet layout - personal cabinet (header + sidebar) */}
