@@ -75,19 +75,40 @@ export const ROLES = {
 /**
  * Какие маршруты доступны каждой роли
  */
+const INTRANET_ROUTES = [
+    '/intranet',
+    '/intranet/news',
+    '/intranet/structure',
+    '/intranet/directory',
+    '/intranet/regulations',
+    '/intranet/knowledge',
+    '/intranet/templates',
+    '/intranet/chat',
+    '/intranet/announcements',
+    '/intranet/calendar',
+    '/intranet/routes',
+    '/intranet/approvals',
+    '/intranet/cms',
+]
+
 export const ROLE_ROUTES = {
     superadmin: [
         '/dashboard', '/athletes', '/coaches', '/judges',
         '/organizations', '/facilities', '/events', '/teams',
+        '/staff', '/medical-certificates', '/inventory',
         '/applications', '/trainer-applications', '/award-applications', '/analytics', '/settings',
+        ...INTRANET_ROUTES,
     ],
     admin: [
         '/dashboard', '/settings',
+        ...INTRANET_ROUTES,
     ],
     employee: [
         '/dashboard', '/athletes', '/coaches', '/judges',
         '/organizations', '/facilities', '/events', '/teams',
+        '/staff', '/medical-certificates', '/inventory',
         '/applications', '/trainer-applications', '/award-applications', '/analytics',
+        ...INTRANET_ROUTES,
     ],
     athlete: [
         '/dashboard', '/events',
