@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import Header from './Header'
+import AiAssistant from './AiAssistant/AiAssistant'
 import './Layout.css'
 
 export default function Layout() {
@@ -41,6 +42,7 @@ export default function Layout() {
                     <Outlet />
                 </main>
             </div>
+            <AiAssistant context="internal" />
         </div>
     )
 }
