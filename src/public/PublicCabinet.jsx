@@ -607,9 +607,9 @@ export default function PublicCabinet() {
                             </table>
                         </div>
 
-                        <button style={c.primaryBtn} onClick={() => alert('Подача заявления на повышение категории')}>
+                        <Link to="/public/judge-category" style={{ ...c.primaryBtn, display: 'inline-block', textDecoration: 'none' }}>
                             {t('public.cabApplyUpgrade')}
-                        </button>
+                        </Link>
 
                         <div style={{ ...c.hintBox, marginTop: 20 }}>
                             {t('public.cabJudgeBasis')}
@@ -846,20 +846,20 @@ export default function PublicCabinet() {
                                 <div style={c.appMenu}>
                                     {isJudge ? (
                                         <>
-                                            <a href="#" style={c.appMenuItem} onClick={e => { e.preventDefault(); alert('Заявление на повышение категории') }}>{t('public.cabCategoryUpgrade')}</a>
-                                            <a href="#" style={c.appMenuItem} onClick={e => { e.preventDefault(); alert('Заявление на восстановление удостоверения') }}>{t('public.cabCertRestore')}</a>
+                                            <Link to="/public/judge-category" style={c.appMenuItem}>{t('public.cabCategoryUpgrade')}</Link>
+                                            <Link to="/public/document-restoration" style={c.appMenuItem}>{t('public.cabCertRestore')}</Link>
                                         </>
                                     ) : isCoach ? (
                                         <>
                                             <Link to="/public/trainer-registration" style={c.appMenuItem}>{t('public.cabCoachRegistration')}</Link>
                                             <Link to="/public/award-application" style={c.appMenuItem}>{t('public.cabAwardZTKR')}</Link>
-                                            <a href="#" style={c.appMenuItem} onClick={e => { e.preventDefault(); alert('Заявка на дубликат') }}>{t('public.cabCertDuplicate')}</a>
+                                            <Link to="/public/document-restoration" style={c.appMenuItem}>{t('public.cabCertDuplicate')}</Link>
                                         </>
                                     ) : (
                                         <>
                                             <Link to="/public/award-application" style={c.appMenuItem}>{t('public.cabAwardApply')}</Link>
                                             <Link to="/public/trainer-registration" style={c.appMenuItem}>{t('public.cabCoachRegApply')}</Link>
-                                            <a href="#" style={c.appMenuItem} onClick={e => { e.preventDefault(); alert('Восстановление') }}>{t('public.cabDocRestore')}</a>
+                                            <Link to="/public/document-restoration" style={c.appMenuItem}>{t('public.cabDocRestore')}</Link>
                                         </>
                                     )}
                                 </div>
