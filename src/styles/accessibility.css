@@ -1,0 +1,305 @@
+/* ═══════════════════════════════════════════════════════════
+   ВЕРСИЯ ДЛЯ СЛАБОВИДЯЩИХ — ГОСТ Р 52872-2021
+   Surgical approach: re-skin via scheme variables, gracefully
+   restyle decorative blocks (hero) — never blank-out the page.
+   Scoped to .public-portal.a11y-on.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Colour schemes ── */
+.public-portal.a11y-on {
+    --a11y-bg: #ffffff;
+    --a11y-surface: #ffffff;
+    --a11y-text: #000000;
+    --a11y-muted: #1a1a1a;
+    --a11y-link: #0b3d91;
+    --a11y-link-visited: #5b2a86;
+    --a11y-border: #000000;
+    --a11y-accent-bg: #000000;
+    --a11y-accent-text: #ffffff;
+}
+.public-portal.a11y-scheme-white {
+    --a11y-bg: #ffffff; --a11y-surface: #ffffff; --a11y-text: #000000; --a11y-muted: #1a1a1a;
+    --a11y-link: #0b3d91; --a11y-link-visited: #5b2a86; --a11y-border: #000000;
+    --a11y-accent-bg: #000000; --a11y-accent-text: #ffffff;
+}
+.public-portal.a11y-scheme-black {
+    --a11y-bg: #000000; --a11y-surface: #000000; --a11y-text: #ffffff; --a11y-muted: #e8e8e8;
+    --a11y-link: #ffd24a; --a11y-link-visited: #ffae00; --a11y-border: #ffffff;
+    --a11y-accent-bg: #ffffff; --a11y-accent-text: #000000;
+}
+.public-portal.a11y-scheme-blue {
+    --a11y-bg: #9dd1ff; --a11y-surface: #cce6ff; --a11y-text: #063462; --a11y-muted: #0d2d52;
+    --a11y-link: #063462; --a11y-link-visited: #2a4d78; --a11y-border: #063462;
+    --a11y-accent-bg: #063462; --a11y-accent-text: #ffffff;
+}
+
+/* ── Base canvas ── */
+.public-portal.a11y-on,
+.public-portal.a11y-on .pub-main,
+.public-portal.a11y-on .pub-page-transition {
+    background: var(--a11y-bg) !important;
+    color: var(--a11y-text) !important;
+}
+
+/* Generic text colour for common content elements (NOT a blanket *) */
+.public-portal.a11y-on h1,
+.public-portal.a11y-on h2,
+.public-portal.a11y-on h3,
+.public-portal.a11y-on h4,
+.public-portal.a11y-on p,
+.public-portal.a11y-on span,
+.public-portal.a11y-on li,
+.public-portal.a11y-on td,
+.public-portal.a11y-on th,
+.public-portal.a11y-on label,
+.public-portal.a11y-on strong,
+.public-portal.a11y-on small,
+.public-portal.a11y-on div {
+    color: var(--a11y-text) !important;
+    text-shadow: none !important;
+}
+
+/* Links: always underlined + scheme colour */
+.public-portal.a11y-on a,
+.public-portal.a11y-on a span {
+    color: var(--a11y-link) !important;
+    text-decoration: underline !important;
+}
+.public-portal.a11y-on a:visited { color: var(--a11y-link-visited) !important; }
+
+/* Sections / containers — flatten to scheme bg, keep borders for structure */
+.public-portal.a11y-on section,
+.public-portal.a11y-on .pub-section,
+.public-portal.a11y-on .ph-section {
+    background: var(--a11y-bg) !important;
+    background-image: none !important;
+}
+
+/* Cards: solid surface + visible 2px border (instead of shadows) */
+.public-portal.a11y-on .pub-card,
+.public-portal.a11y-on .qa-card,
+.public-portal.a11y-on .ph-gov-card,
+.public-portal.a11y-on .ph-quick-card,
+.public-portal.a11y-on .ph-news-card,
+.public-portal.a11y-on .ph-region-card,
+.public-portal.a11y-on [class*="card"] {
+    background: var(--a11y-surface) !important;
+    background-image: none !important;
+    border: 2px solid var(--a11y-border) !important;
+    border-radius: 6px !important;
+    box-shadow: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    color: var(--a11y-text) !important;
+}
+
+/* ── HERO: graceful degrade to a solid readable band (NOT a broken box) ── */
+.public-portal.a11y-on .hero-section,
+.public-portal.a11y-on .ph-hero,
+.public-portal.a11y-on .pub-hero,
+.public-portal.a11y-on [class*="hero"] {
+    background: var(--a11y-accent-bg) !important;
+    background-image: none !important;
+    color: var(--a11y-accent-text) !important;
+    min-height: auto !important;
+}
+.public-portal.a11y-on .hero-bg,
+.public-portal.a11y-on .hero-gradient-overlay,
+.public-portal.a11y-on .hero-cursor-glow,
+.public-portal.a11y-on .ph-hero__bg,
+.public-portal.a11y-on .ph-hero__overlay,
+.public-portal.a11y-on .ph-hero__stripe,
+.public-portal.a11y-on .pub-hero__bg,
+.public-portal.a11y-on .ph-hero__scroll {
+    display: none !important;
+}
+.public-portal.a11y-on .hero-section h1,
+.public-portal.a11y-on .hero-section p,
+.public-portal.a11y-on .hero-section span,
+.public-portal.a11y-on [class*="hero"] h1,
+.public-portal.a11y-on [class*="hero"] h2,
+.public-portal.a11y-on [class*="hero"] p,
+.public-portal.a11y-on [class*="hero"] span {
+    color: var(--a11y-accent-text) !important;
+    text-shadow: none !important;
+}
+/* Hero counters: readable boxes on the accent band */
+.public-portal.a11y-on [class*="hero"] [class*="counter"],
+.public-portal.a11y-on [class*="hero"] [class*="stat"] {
+    background: transparent !important;
+    border: 1px solid var(--a11y-accent-text) !important;
+    border-radius: 4px !important;
+}
+
+/* ── Topbar / nav / footer ── */
+.public-portal.a11y-on .pub-topbar { background: var(--a11y-accent-bg) !important; }
+.public-portal.a11y-on .pub-topbar *,
+.public-portal.a11y-on .pub-topbar a { color: var(--a11y-accent-text) !important; }
+.public-portal.a11y-on .pub-nav {
+    background: var(--a11y-bg) !important;
+    border-bottom: 2px solid var(--a11y-border) !important;
+    backdrop-filter: none !important;
+}
+.public-portal.a11y-on .pub-footer { background: var(--a11y-accent-bg) !important; }
+.public-portal.a11y-on .pub-footer * { color: var(--a11y-accent-text) !important; }
+.public-portal.a11y-on .pub-footer a { color: var(--a11y-accent-text) !important; }
+
+/* Buttons & inputs */
+.public-portal.a11y-on button:not(.a11y-bar__btn):not(.a11y-bar__exit):not(.pub-a11y-link),
+.public-portal.a11y-on .pub-login-btn,
+.public-portal.a11y-on .ph-gov-card__btn {
+    background: var(--a11y-accent-bg) !important;
+    color: var(--a11y-accent-text) !important;
+    border: 2px solid var(--a11y-border) !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    text-decoration: underline !important;
+}
+.public-portal.a11y-on input,
+.public-portal.a11y-on select,
+.public-portal.a11y-on textarea {
+    background: var(--a11y-surface) !important;
+    color: var(--a11y-text) !important;
+    border: 2px solid var(--a11y-border) !important;
+    border-radius: 4px !important;
+}
+
+/* Decorative badges/pills keep contrast */
+.public-portal.a11y-on [class*="badge"],
+.public-portal.a11y-on [class*="tag"],
+.public-portal.a11y-on [class*="chip"] {
+    background: var(--a11y-surface) !important;
+    color: var(--a11y-text) !important;
+    border: 1px solid var(--a11y-border) !important;
+}
+
+/* ── Font sizes (targeted, predictable — no zoom, no h-scroll) ── */
+.public-portal.a11y-font-large { font-size: 112.5%; }
+.public-portal.a11y-font-xlarge { font-size: 130%; }
+.public-portal.a11y-font-large h1 { font-size: 2.1rem !important; }
+.public-portal.a11y-font-xlarge h1 { font-size: 2.4rem !important; }
+.public-portal.a11y-font-large p,
+.public-portal.a11y-font-large li,
+.public-portal.a11y-font-large a,
+.public-portal.a11y-font-large span,
+.public-portal.a11y-font-large td,
+.public-portal.a11y-font-large label,
+.public-portal.a11y-font-large button { font-size: 18px !important; }
+.public-portal.a11y-font-xlarge p,
+.public-portal.a11y-font-xlarge li,
+.public-portal.a11y-font-xlarge a,
+.public-portal.a11y-font-xlarge span,
+.public-portal.a11y-font-xlarge td,
+.public-portal.a11y-font-xlarge label,
+.public-portal.a11y-font-xlarge button { font-size: 21px !important; line-height: 1.6 !important; }
+
+/* ── Hide images (text-only mode) ── */
+.public-portal.a11y-noimg img,
+.public-portal.a11y-noimg svg:not(.a11y-bar svg):not(.pub-a11y-link svg),
+.public-portal.a11y-noimg [class*="card__img"],
+.public-portal.a11y-noimg .qa-3d-icon,
+.public-portal.a11y-noimg .ph-region-card__img { display: none !important; }
+/* Map stays (functional, not decorative) but loses interactivity glow */
+.public-portal.a11y-noimg .leaflet-container { display: none !important; }
+
+/* Kill animations/transitions in a11y mode (GOST: no auto-moving content) */
+.public-portal.a11y-on *,
+.public-portal.a11y-on *::before,
+.public-portal.a11y-on *::after {
+    animation: none !important;
+    transition: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ACCESSIBILITY TOOLBAR — always dark & readable, scheme-independent
+   ═══════════════════════════════════════════════════════════ */
+.a11y-bar {
+    background: #1b1b1b;
+    border-bottom: 3px solid #000;
+    padding: 10px 0;
+    position: relative;
+    z-index: 1200;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.a11y-bar__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 22px;
+}
+.a11y-bar__group { display: flex; align-items: center; gap: 10px; }
+.a11y-bar__label {
+    color: #ffffff !important;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.a11y-bar__btns { display: flex; gap: 6px; }
+.a11y-bar__btn {
+    min-width: 40px;
+    height: 36px;
+    padding: 0 12px;
+    background: #ffffff;
+    color: #000000;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+.a11y-bar__btn:hover { opacity: 0.85; }
+.a11y-bar__btn.is-active { outline: 3px solid #ffd24a; outline-offset: 1px; }
+.a11y-bar__btn:focus-visible { outline: 3px solid #4aa3ff; outline-offset: 2px; }
+
+.a11y-bar__size--normal { font-size: 14px; }
+.a11y-bar__size--large { font-size: 18px; }
+.a11y-bar__size--xlarge { font-size: 22px; }
+.a11y-bar__size sup { font-size: 0.55em; }
+
+.a11y-bar__scheme { font-size: 13px; }
+.a11y-bar__scheme--white { background: #ffffff; color: #000000; }
+.a11y-bar__scheme--black { background: #000000; color: #ffffff; border-color: #ffffff; }
+.a11y-bar__scheme--blue { background: #9dd1ff; color: #063462; }
+
+.a11y-bar__toggle { font-size: 13px; }
+
+.a11y-bar__exit {
+    margin-left: auto;
+    height: 36px;
+    padding: 0 18px;
+    background: #c5303c;
+    color: #ffffff !important;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 13px;
+}
+.a11y-bar__exit:hover { background: #a82733; }
+
+/* Topbar "Версия для слабовидящих" link */
+.pub-a11y-link {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.85);
+    cursor: pointer;
+    font-size: 11px;
+    font-family: inherit;
+    padding: 0 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.pub-a11y-link:hover { color: #fff; text-decoration: underline; }
+
+@media (max-width: 768px) {
+    .a11y-bar__inner { gap: 12px; }
+    .a11y-bar__label { font-size: 11px; }
+    .a11y-bar__exit { margin-left: 0; }
+}

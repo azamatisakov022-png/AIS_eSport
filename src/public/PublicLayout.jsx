@@ -5,6 +5,11 @@ import '../styles/public.css'
 import PublicSpotlight from './components/PublicSpotlight'
 import MobileDrawer from './components/MobileDrawer'
 import MobileBottomNav from './components/MobileBottomNav'
+import AiAssistant from '../components/AiAssistant/AiAssistant'
+import AccessibilityBar from './components/AccessibilityBar'
+import '../styles/accessibility.css'
+import { recordVisit, getTotal } from './stats/visitTracker'
+import './stats/stats.css'
 
 /* Menu groups and breadcrumbs use translation keys - resolved in component */
 const menuGroupsDef = [
@@ -18,6 +23,8 @@ const menuGroupsDef = [
             { to: '/public/antidoping', textKey: 'public.navAntidoping', descKey: 'public.navAntidopingDesc', icon: 'M9 12l2 2 4-4 M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z' },
             { to: '/public/anticorruption', textKey: 'public.navAnticorruption', descKey: 'public.navAnticorruptionDesc', icon: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z' },
             { to: '/public/reception', textKey: 'public.navReception', descKey: 'public.navReceptionDesc', icon: 'M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z' },
+            { to: '/public/discussions', textKey: 'public.navDiscussions', descKey: 'public.navDiscussionsDesc', icon: 'M17 8h2a2 2 0 012 2v9a2 2 0 01-2 2H7l-4 3V5a2 2 0 012-2h7 M14 2v6h6' },
+            { to: '/public/links', textKey: 'public.navLinks', descKey: 'public.navLinksDesc', icon: 'M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71 M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71' },
         ],
     },
     {
@@ -35,6 +42,7 @@ const menuGroupsDef = [
         items: [
             { to: '/public/calendar', textKey: 'public.navCalendar', descKey: 'public.navCalendarDesc', icon: 'M19 4H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2z M16 2v4 M8 2v4 M3 10h18' },
             { to: '/public/events', textKey: 'public.breadcrumbEvents', descKey: 'public.navEventsDesc', icon: 'M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z' },
+            { to: '/public/tickets', textKey: 'public.navTickets', descKey: 'public.navTicketsDesc', icon: 'M3 7v2a2 2 0 010 6v2a2 2 0 002 2h14a2 2 0 002-2v-2a2 2 0 010-6V7a2 2 0 00-2-2H5a2 2 0 00-2 2z M13 5v14' },
             { to: '/public/announcements', textKey: 'public.navAnnouncements', descKey: 'public.navAnnouncementsDesc', icon: 'M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9 M13.73 21a2 2 0 01-3.46 0' },
         ],
     },
@@ -71,9 +79,12 @@ const breadcrumbKeys = {
     '/public/cabinet': 'public.breadcrumbCabinet',
     '/public/anticorruption': 'public.navAnticorruption',
     '/public/reception': 'public.navReception',
+    '/public/discussions': 'public.navDiscussions',
+    '/public/links': 'public.navLinks',
     '/public/login': 'public.breadcrumbLogin',
     '/public/trainer-registration': 'public.breadcrumbTrainerReg',
     '/public/events': 'public.breadcrumbEvents',
+    '/public/tickets': 'public.navTickets',
     '/public/award-application': 'public.breadcrumbAwardApp',
 }
 
@@ -120,6 +131,12 @@ export default function PublicLayout() {
         return () => clearTimeout(t1)
     }, [location.pathname])
 
+    /* Visit tracking (Распоряжение №59-р) */
+    const [visitTotal, setVisitTotal] = useState(0)
+    useEffect(() => {
+        setVisitTotal(recordVisit(location.pathname))
+    }, [location.pathname])
+
     const scrollToTop = useCallback(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }, [])
@@ -137,6 +154,29 @@ export default function PublicLayout() {
             return !d
         })
     }, [])
+
+    /* Accessibility mode (GOST Р 52872) */
+    const A11Y_DEFAULT = { on: false, font: 'normal', scheme: 'white', images: true }
+    const [a11y, setA11yState] = useState(() => {
+        try {
+            const raw = localStorage.getItem('pub-a11y')
+            if (raw) return { ...A11Y_DEFAULT, ...JSON.parse(raw) }
+        } catch { /* ignore */ }
+        return A11Y_DEFAULT
+    })
+    const updateA11y = useCallback((patch) => {
+        setA11yState(prev => {
+            const next = { ...prev, ...patch }
+            localStorage.setItem('pub-a11y', JSON.stringify(next))
+            return next
+        })
+    }, [])
+    const enableA11y = useCallback(() => updateA11y({ on: true }), [updateA11y])
+    const exitA11y = useCallback(() => updateA11y({ on: false }), [updateA11y])
+
+    const a11yClasses = a11y.on
+        ? ` a11y-on a11y-font-${a11y.font} a11y-scheme-${a11y.scheme}${a11y.images ? '' : ' a11y-noimg'}`
+        : ''
 
 
     /* Ripple on button click */
@@ -163,9 +203,11 @@ export default function PublicLayout() {
     }, [])
 
     return (
-        <div ref={portalRef} className={`public-portal${dark ? ' dark-mode' : ''}`}>
+        <div ref={portalRef} className={`public-portal${dark ? ' dark-mode' : ''}${a11yClasses}`}>
             {/* Skip to main content (a11y) */}
             <a className="pub-skip-link" href="#main-content">{t('public.skipToContent')}</a>
+            {/* Accessibility toolbar (GOST Р 52872) */}
+            <AccessibilityBar settings={a11y} onChange={updateA11y} onExit={exitA11y} />
             {/* Scroll progress bar */}
             <div className="pub-scroll-progress" style={{ width: `${scrollProgress}%` }} aria-hidden="true" />
             {/* Top Government Bar */}
@@ -178,6 +220,15 @@ export default function PublicLayout() {
                             <a href="#">{t('public.topBarReception')}</a>
                         </div>
                         <div className="pub-topbar__right">
+                            {!a11y.on && (
+                                <button
+                                    type="button"
+                                    className="pub-a11y-link"
+                                    onClick={enableA11y}
+                                >
+                                    <span aria-hidden="true">👁</span> {t('a11y.enable')}
+                                </button>
+                            )}
                             <button
                                 type="button"
                                 className="pub-dark-toggle"
@@ -400,6 +451,9 @@ export default function PublicLayout() {
 
                     <div className="pub-footer__bottom">
                         <span>{t('public.copyright')} {t('public.footerAllRights')}</span>
+                        <Link to="/public/statistics" className="pub-visit-counter">
+                            <span aria-hidden="true">👁</span> Посещений: <b>{visitTotal.toLocaleString('ru-RU')}</b>
+                        </Link>
                         <span>{t('public.footerVersion')}</span>
                     </div>
                 </div>
@@ -421,6 +475,9 @@ export default function PublicLayout() {
                     <polyline points="18 15 12 9 6 15" />
                 </svg>
             </button>
+
+            {/* AI assistant (public context) */}
+            <AiAssistant context="public" />
         </div>
     )
 }
