@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { EVENTS_DATA } from './PublicEvents'
+import { getTicketEvent } from './tickets/ticketsData'
 
 const TYPES = {
     international: { label: 'Международные', icon: '🌍', color: '#F59E0B' },
@@ -97,6 +98,14 @@ export default function PublicEventDetail() {
                         <span>🏅 {event.sport}</span>
                         <span>👥 {event.age}</span>
                     </div>
+                    {getTicketEvent(event.id) && status !== 'finished' && (
+                        <Link
+                            to={`/public/tickets/${event.id}`}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 16, padding: '11px 22px', background: 'linear-gradient(135deg,#1B3A6B,#2563eb)', color: '#fff', borderRadius: 10, fontWeight: 700, fontSize: 14, textDecoration: 'none' }}
+                        >
+                            🎟 Купить билеты
+                        </Link>
+                    )}
                 </div>
 
                 {/* About */}
