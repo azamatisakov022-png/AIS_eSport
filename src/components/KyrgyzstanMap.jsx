@@ -341,7 +341,7 @@ export default function KyrgyzstanMap({
                                 } else if (markersInOblast.length > 1) {
                                     map.flyToBounds(oblastBounds, { padding: [40, 40], duration: 0.6 })
                                 } else {
-                                    // No markers — still zoom to oblast for orientation
+                                    // No markers - still zoom to oblast for orientation
                                     map.flyToBounds(oblastBounds, { padding: [40, 40], duration: 0.6 })
                                 }
                             })
@@ -507,7 +507,7 @@ export default function KyrgyzstanMap({
             setTimeout(() => map.invalidateSize(), 500)
         }
 
-        // Load or use Leaflet — delay init to allow page transition (350ms) to settle
+        // Load or use Leaflet - delay init to allow page transition (350ms) to settle
         const loadMarkerCluster = () => {
             if (window.L && !window.L.markerClusterGroup) {
                 const scriptMC = document.createElement('script')

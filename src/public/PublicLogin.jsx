@@ -280,7 +280,7 @@ export default function PublicLogin() {
 
             {/* ── Responsive + a11y/animation styles ── */}
             <style>{`
-                /* Logo shimmer — blik runs across logo once every ~3.5s */
+                /* Logo shimmer - blik runs across logo once every ~3.5s */
                 .login-logo {
                     position: relative;
                     overflow: hidden;

@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import PublicHero, { PublicHeroCounter } from './components/PublicHero'
 
 /* ══════════════════════════════════════════════════════
    ДАННЫЕ - Нормативно-правовые акты
@@ -175,29 +176,18 @@ export default function PublicNPA() {
     const lawCount = NPA_DOCUMENTS.filter(n => n.typeKey === 'npa.typeLaw').length
 
     return (
-        <div style={s.page}>
-            {/* ══ Header ══ */}
-            <div style={s.header}>
-                <div className="pub-container">
-                    <h1 style={s.headerTitle}>{t('public.npaTitle')}</h1>
-                    <p style={s.headerSub}>
-                        {t('npa.headerSub')}
-                    </p>
-                    <div style={s.statsRow}>
-                        {[
-                            { val: NPA_DOCUMENTS.length, label: t('npa.statDocs') },
-                            { val: lawCount, label: t('npa.statLaws') },
-                            { val: catCounts['npa.catGovDecrees'], label: t('npa.statDecrees') },
-                            { val: NPA_DOCUMENTS.length, label: t('npa.statActive') },
-                        ].map((st, i) => (
-                            <div key={i} style={s.statBlock}>
-                                <div style={s.statVal}>{st.val}</div>
-                                <div style={s.statLabel}>{st.label}</div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
+        <div className="pub-section">
+            {/* ══ Header - домашний flush-hero (#0a0a0c) ══ */}
+            <PublicHero title={t('public.npaTitle')} description={t('npa.headerSub')} variant="slate" layoutMode="abstract">
+                {[
+                    { val: NPA_DOCUMENTS.length, label: t('npa.statDocs') },
+                    { val: lawCount, label: t('npa.statLaws') },
+                    { val: catCounts['npa.catGovDecrees'], label: t('npa.statDecrees') },
+                    { val: NPA_DOCUMENTS.length, label: t('npa.statActive') },
+                ].map((st, i) => (
+                    <PublicHeroCounter key={i} value={st.val} label={st.label} />
+                ))}
+            </PublicHero>
 
             {/* ══ Search + filters ══ */}
             <div className="pub-container" style={{ paddingTop: 28, paddingBottom: 0 }}>
@@ -400,7 +390,6 @@ const s = {
     header: {
         background: 'linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 100%)',
         padding: '36px 0 28px',
-        borderRadius: '0 0 20px 20px',
     },
     headerTitle: {
         fontSize: 28, fontWeight: 500, color: '#fff', margin: '0 0 8px',
@@ -437,8 +426,8 @@ const s = {
         boxSizing: 'border-box',
     },
     searchFocus: {
-        borderColor: 'var(--theme-text-main)',
-        boxShadow: '0 0 0 3px rgba(88,86,214,0.1)',
+        borderColor: 'var(--pub-navy, #1d3557)',
+        boxShadow: '0 0 0 3px rgba(29,53,87,0.12)',
     },
 
     /* List */
@@ -459,7 +448,7 @@ const s = {
     typeBadge: {
         display: 'inline-block', padding: '2px 8px', borderRadius: 8,
         fontSize: 11, fontWeight: 600,
-        background: 'rgba(88, 86, 214, 0.15)', color: 'var(--theme-text-main)',
+        background: 'rgba(29, 53, 87, 0.1)', color: 'var(--pub-navy, #1d3557)',
     },
     cardNum: { fontSize: 13, color: 'var(--theme-text-secondary)' },
     cardTitle: {
@@ -499,7 +488,7 @@ const s = {
 
     actionsRow: { display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' },
     actionBtn: {
-        padding: '9px 16px', background: '#1B3A6B', color: '#fff', border: 'none',
+        padding: '9px 16px', background: 'var(--pub-navy, #1d3557)', color: '#fff', border: 'none',
         borderRadius: 10, fontSize: 13, fontWeight: 500, fontFamily: 'inherit',
         cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
     },

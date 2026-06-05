@@ -39,13 +39,17 @@ export default function PublicSports() {
                 <div className="pp-grid pp-grid--4">
                     {filtered.map((s, i) => (
                         <div key={i} className="pp-sport">
-                            <div className="pp-sport__icon">{s.icon}</div>
-                            <div className="pp-sport__name">{s.name}</div>
-                            <div className="pp-sport__cat">{SPORT_CATS[s.cat]}</div>
+                            <div className="pp-sport__img">
+                                <img src={s.img} alt={s.name} loading="lazy" />
+                            </div>
+                            <div className="pp-sport__body">
+                                <div className="pp-sport__name">{s.name}</div>
+                                <div className="pp-sport__cat">{SPORT_CATS[s.cat]}</div>
+                            </div>
                         </div>
                     ))}
                     {filtered.length === 0 && (
-                        <div className="pp-empty"><div className="pp-empty__icon">🎯</div>Ничего не найдено.</div>
+                        <div className="pp-empty">Ничего не найдено.</div>
                     )}
                 </div>
             </div>

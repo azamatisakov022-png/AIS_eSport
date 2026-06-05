@@ -1,11 +1,11 @@
 /**
  * Lightweight visit tracker (client-side, demo).
  * Records page views into localStorage and exposes aggregates for the
- * public statistics page (требование Распоряжения КМ КР №59-р —
+ * public statistics page (требование Распоряжения КМ КР №59-р -
  * статистика и метрика посещаемости веб-сайта).
  *
  * On a real deployment this is replaced by server-side analytics
- * (Matomo / Yandex.Metrika / GoatCounter) — the getStats() shape stays.
+ * (Matomo / Yandex.Metrika / GoatCounter) - the getStats() shape stays.
  */
 
 const KEY = 'pub-visits'

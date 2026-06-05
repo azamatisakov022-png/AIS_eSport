@@ -32,8 +32,8 @@ export default function IntranetApprovals() {
                 <div>
                     <h1 className="intra-page-head__title">Согласование документов</h1>
                     <p className="intra-page-head__sub">
-                        Внутренние документы по маршрутам — инициатор сотрудник. Примеры: заявки на закупку, заявления на отпуск, командировки.
-                        Внешние заявления (от спортсменов / тренеров / судей) — в разделе «Заявления».
+                        Внутренние документы по маршрутам - инициатор сотрудник. Примеры: заявки на закупку, заявления на отпуск, командировки.
+                        Внешние заявления (от спортсменов / тренеров / судей) - в разделе «Заявления».
                     </p>
                 </div>
                 <button className="intra-doc__action intra-doc__action--primary">+ Новый документ</button>
@@ -75,7 +75,7 @@ export default function IntranetApprovals() {
                                     <div className="intra-doc-progress__bar"><span style={{ width: `${pct}%` }} /></div>
                                     <span className="intra-doc-progress__val">{d.stage} / {d.total}</span>
                                 </div>
-                                {d.deadline !== '—' && <div className="intra-doc__issuer">Дедлайн: {d.deadline}</div>}
+                                {d.deadline !== '-' && <div className="intra-doc__issuer">Дедлайн: {d.deadline}</div>}
                             </div>
                             <span className="intra-doc__badge" style={{ background: c.bg, color: c.fg }}>{STATUS_LABEL[d.status]}</span>
                         </div>

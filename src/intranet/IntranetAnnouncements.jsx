@@ -43,7 +43,7 @@ export default function IntranetAnnouncements() {
                         </div>
                         <h3 className="intra-ann-card__title">{a.title}</h3>
                         <p className="intra-ann-card__body">{a.body}</p>
-                        <div className="intra-ann-card__author">— {a.author}</div>
+                        <div className="intra-ann-card__author">- {a.author}</div>
                     </article>
                 ))}
             </div>

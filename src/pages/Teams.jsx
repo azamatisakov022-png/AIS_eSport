@@ -455,7 +455,7 @@ export default function Teams() {
                             {drawerTab === 'roster' && (
                                 <>
                                     <div className="tm-npa-hint">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:6,flexShrink:0,verticalAlign:'middle'}}><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Ст. 32 Закона КР № 36: Спортсмен в сборной ≥ 5 лет — особые гарантии (здоровье, страхование, трудоустройство).
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:6,flexShrink:0,verticalAlign:'middle'}}><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Ст. 32 Закона КР № 36: Спортсмен в сборной ≥ 5 лет - особые гарантии (здоровье, страхование, трудоустройство).
                                     </div>
                                     {sel.athletes.length === 0 ? (
                                         <div className="tm-empty-tab">

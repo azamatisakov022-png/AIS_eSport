@@ -52,7 +52,7 @@ export default function PublicJudgeCategory() {
                 <div className="pub-container pp-wrap" style={{ paddingTop: 32 }}>
                     <div className="pp-success" style={{ margin: '0 auto' }}>
                         <strong>📥 Заявление принято · № {submitted.no}</strong>
-                        Заявление на присвоение «{submitted.cat}» зарегистрировано {submitted.date}. Срок рассмотрения аттестационной комиссией — 10 рабочих дней. Статус можно отследить в разделе{' '}
+                        Заявление на присвоение «{submitted.cat}» зарегистрировано {submitted.date}. Срок рассмотрения аттестационной комиссией - 10 рабочих дней. Статус можно отследить в разделе{' '}
                         <Link to="/public/services" style={{ color: '#1e8e3e', fontWeight: 600 }}>Госуслуги</Link>.
                         <div style={{ marginTop: 16 }}>
                             <Link to="/public/cabinet" className="pp-row__action pp-row__action--primary" style={{ display: 'inline-block' }}>Вернуться в кабинет</Link>
@@ -65,7 +65,7 @@ export default function PublicJudgeCategory() {
 
     return (
         <div className="pub-section">
-            <PublicHero title="Заявление на присвоение судейской категории" description="Онлайн-подача заявления на присвоение или повышение судейской категории. Рассмотрение — аттестационная комиссия ГАФКиС." variant="indigo" layoutMode="abstract" />
+            <PublicHero title="Заявление на присвоение судейской категории" description="Онлайн-подача заявления на присвоение или повышение судейской категории. Рассмотрение - аттестационная комиссия ГАФКиС." variant="indigo" layoutMode="abstract" />
 
             <div className="pub-container pp-wrap">
                 <div className="pp-cols">

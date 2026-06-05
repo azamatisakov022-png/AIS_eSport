@@ -5,11 +5,11 @@
  * │  SINGLE SWAP POINT for the real LLM.                                  │
  * │                                                                       │
  * │  Right now askAssistant() runs a local rule-based engine over the     │
- * │  knowledge base — no network, works offline, looks alive for demos.   │
+ * │  knowledge base - no network, works offline, looks alive for demos.   │
  * │                                                                       │
  * │  To go live with a real model later, replace the body of              │
  * │  askAssistant() with a single backend call (example commented below). │
- * │  The UI (AiAssistant.jsx) never changes — it only depends on the      │
+ * │  The UI (AiAssistant.jsx) never changes - it only depends on the      │
  * │  {text, links, suggestions} shape returned here.                      │
  * └─────────────────────────────────────────────────────────────────────┘
  */
@@ -91,7 +91,7 @@ function ruleBasedResponse(message, context) {
     /* Document verification */
     if (has(m, 'проверить документ', 'подлинност', 'qr', 'верифик', 'действителен ли', 'текшер')) {
         return {
-            text: `${FACTS.verify} Введите номер документа — система покажет статус: действителен, не найден или недействителен.`,
+            text: `${FACTS.verify} Введите номер документа - система покажет статус: действителен, не найден или недействителен.`,
             links: [{ label: 'Перейти к проверке документа', to: '/public/verify' }],
             suggestions: ['Какие документы можно проверить?', 'Где взять номер документа?'],
         }
@@ -102,7 +102,7 @@ function ruleBasedResponse(message, context) {
         (has(m, 'тренер') && has(m, 'регистр', 'докумен', 'подать', 'заявк'))) {
         const s = GOV_SERVICES.find(x => x.key === 'trainerReg')
         return {
-            text: `Для регистрации тренера нужны документы:\n• ${s.documents.join('\n• ')}\n\nСрок рассмотрения — ${s.deadline}. ${s.note}`,
+            text: `Для регистрации тренера нужны документы:\n• ${s.documents.join('\n• ')}\n\nСрок рассмотрения - ${s.deadline}. ${s.note}`,
             links: [{ label: 'Открыть форму регистрации тренера', to: s.to }],
             suggestions: ['Как подать заявку на звание?', 'Где проверить готовность?'],
         }
@@ -133,7 +133,7 @@ function ruleBasedResponse(message, context) {
     /* Login / cabinet */
     if (has(m, 'вход', 'войти', 'логин', 'кабинет', 'авториз', 'кирүү', 'login', 'зарегистр')) {
         return {
-            text: 'Войти в личный кабинет можно через форму входа: по email и паролю либо через СМЭВ Түндүк ЕСИ. Для спортсменов, тренеров и судей доступен личный кабинет, для сотрудников — внутренний портал.',
+            text: 'Войти в личный кабинет можно через форму входа: по email и паролю либо через СМЭВ Түндүк ЕСИ. Для спортсменов, тренеров и судей доступен личный кабинет, для сотрудников - внутренний портал.',
             links: [{ label: 'Перейти ко входу', to: '/public/login' }],
         }
     }
@@ -163,7 +163,7 @@ function ruleBasedResponse(message, context) {
     if (sec) {
         const base = context === 'internal' ? '' : ''
         return {
-            text: `Раздел «${sec.title}» — ${navHint(sec.key, context)} Открыть?`,
+            text: `Раздел «${sec.title}» - ${navHint(sec.key, context)} Открыть?`,
             links: [{ label: `Открыть «${sec.title}»`, to: sec.to }],
             suggestions: relatedSuggestions(sec.key, context),
         }
@@ -172,14 +172,14 @@ function ruleBasedResponse(message, context) {
     /* "where / how to find" without a specific section */
     if (has(m, 'где', 'найти', 'как открыть', 'покажи', 'куда', 'раздел')) {
         return {
-            text: 'Подскажите, что именно нужно найти — например: спортсмены, тренеры, судьи, мероприятия, организации, спортивные объекты, проверка документа или государственные услуги.',
+            text: 'Подскажите, что именно нужно найти - например: спортсмены, тренеры, судьи, мероприятия, организации, спортивные объекты, проверка документа или государственные услуги.',
             suggestions: context === 'internal'
                 ? ['Реестр спортсменов', 'Заявки на звания', 'Аналитика']
                 : ['Спортсмены', 'Мероприятия', 'Спортобъекты', 'Госуслуги'],
         }
     }
 
-    /* Fallback — honest about scope + helpful menu */
+    /* Fallback - honest about scope + helpful menu */
     return {
         text: 'Пока я отвечаю на вопросы про навигацию по порталу, государственные услуги и проверку документов. Скоро смогу больше. Выберите тему или переформулируйте вопрос:',
         suggestions: context === 'internal'

@@ -54,7 +54,7 @@ export default function PublicDocumentRestoration() {
                 <div className="pub-container pp-wrap" style={{ paddingTop: 32 }}>
                     <div className="pp-success" style={{ margin: '0 auto' }}>
                         <strong>📥 Заявление принято · № {submitted.no}</strong>
-                        Заявление на восстановление документа «{submitted.doc}» зарегистрировано {submitted.date}. Срок рассмотрения — 7 рабочих дней. Статус можно отследить в разделе{' '}
+                        Заявление на восстановление документа «{submitted.doc}» зарегистрировано {submitted.date}. Срок рассмотрения - 7 рабочих дней. Статус можно отследить в разделе{' '}
                         <Link to="/public/services" style={{ color: '#1e8e3e', fontWeight: 600 }}>Госуслуги</Link>.
                         <div style={{ marginTop: 16 }}>
                             <Link to="/public/cabinet" className="pp-row__action pp-row__action--primary" style={{ display: 'inline-block' }}>Вернуться в кабинет</Link>

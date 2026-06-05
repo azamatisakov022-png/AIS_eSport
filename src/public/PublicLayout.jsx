@@ -179,7 +179,12 @@ export default function PublicLayout() {
         : ''
 
 
-    /* Ripple on button click */
+    /* Ripple on button click.
+       NB: inline style (а не только className) обязателен - React при ре-рендере
+       кнопки с onClick-сменой состояния перетирает className и убирает .pub-ripple,
+       а волна остаётся в DOM. Без position:relative+overflow:hidden на кнопке
+       и без position:absolute на волне span становится обычным flex-элементом и
+       растягивает кнопку (баг с year-чипами на /public/news). */
     const portalRef = useRef(null)
     useEffect(() => {
         const root = portalRef.current
@@ -187,6 +192,11 @@ export default function PublicLayout() {
         const handler = (e) => {
             const btn = e.target.closest('button, .pub-login-btn, [type="submit"]')
             if (!btn || !root.contains(btn)) return
+            // inline style переживает React-ре-рендер (нет style prop в JSX)
+            const prevPosition = btn.style.position
+            const prevOverflow = btn.style.overflow
+            if (!prevPosition) btn.style.position = 'relative'
+            if (!prevOverflow) btn.style.overflow = 'hidden'
             btn.classList.add('pub-ripple')
             const rect = btn.getBoundingClientRect()
             const size = Math.max(rect.width, rect.height)
@@ -196,6 +206,9 @@ export default function PublicLayout() {
             wave.style.left = `${e.clientX - rect.left - size / 2}px`
             wave.style.top = `${e.clientY - rect.top - size / 2}px`
             btn.appendChild(wave)
+            // Только волну удаляем. Inline-стили оставляем permanently -
+            // position:relative/overflow:hidden идемпотентны, повторные клики
+            // их не повредят, а попытка очистки конфликтует с React-ре-рендером.
             setTimeout(() => wave.remove(), 650)
         }
         root.addEventListener('click', handler)

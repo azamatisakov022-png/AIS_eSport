@@ -1,9 +1,27 @@
 import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { TICKET_EVENTS, sectorAvailable, fmtPrice, fmtDate } from './tickets/ticketsData'
+import { TICKET_EVENTS, fmtPrice, ticketImage, eventPrice, eventAvailable } from './tickets/ticketsData'
 import './tickets/tickets.css'
 
-/** Ticket showcase — events with online sales. */
+function passDate(iso) {
+    try { return new Date(iso).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' }) }
+    catch { return iso }
+}
+
+/* Штрих-код: вертикальные полосы переменной ширины по seed */
+function Barcode({ seed = 'KR', height = 40 }) {
+    let s = 0; for (let i = 0; i < seed.length; i++) s = (s * 31 + seed.charCodeAt(i)) >>> 0
+    const bars = []; let x = 0
+    for (let i = 0; i < 60 && x < 240; i++) {
+        s = (s * 1103515245 + 12345) >>> 0
+        const w = 1 + (s % 4), gap = 1 + ((s >> 3) % 3)
+        bars.push(<rect key={i} x={x} y="0" width={w} height={height} fill="currentColor" />)
+        x += w + gap
+    }
+    return <svg className="tkw__barcode" viewBox={`0 0 ${x} ${height}`} height={height} preserveAspectRatio="none" aria-hidden>{bars}</svg>
+}
+
+/** Билеты — список в стиле Apple Wallet pass. */
 export default function PublicTickets() {
     const [sport, setSport] = useState('')
     const [city, setCity] = useState('')
@@ -19,7 +37,7 @@ export default function PublicTickets() {
         <div className="pub-section">
             <div className="pub-container">
                 <div className="tk-head">
-                    <h1 className="tk-head__title">🎟 Билеты на соревнования</h1>
+                    <h1 className="tk-head__title">Билеты на соревнования</h1>
                     <p className="tk-head__sub">Официальная продажа билетов на спортивные мероприятия Кыргызской Республики. Электронный билет с QR-кодом — покажите его на входе.</p>
                 </div>
 
@@ -37,31 +55,49 @@ export default function PublicTickets() {
                     )}
                 </div>
 
-                <div className="tk-grid">
+                <div className="tkw-grid">
                     {filtered.map(ev => {
-                        const minPrice = Math.min(...ev.sectors.map(s => s.price))
-                        const totalAvail = ev.sectors.reduce((a, s) => a + sectorAvailable(s), 0)
-                        const almostSold = totalAvail < 200
+                        const price = eventPrice(ev)
+                        // «Мало мест» - если свободных мест в зале осталось мало
+                        const almostSold = eventAvailable(ev) < 200
+                        const img = ticketImage(ev)
+                        const serial = `KR-${ev.id}-${ev.date.slice(8, 10)}${ev.date.slice(5, 7)}`
                         return (
-                            <Link key={ev.id} to={`/public/tickets/${ev.id}`} className="tk-card">
-                                <div className="tk-card__poster" style={{ '--accent': ev.sectors[0].color }}>
-                                    <span className="tk-card__emoji">{ev.emoji}</span>
-                                    <span className="tk-card__sport">{ev.sport}</span>
-                                </div>
-                                <div className="tk-card__body">
-                                    <h3 className="tk-card__title">{ev.title}</h3>
-                                    <div className="tk-card__meta">
-                                        <span>📅 {fmtDate(ev.date)}, {ev.time}</span>
-                                        <span>📍 {ev.venue}, {ev.city}</span>
+                            <Link key={ev.id} to={`/public/tickets/${ev.id}`} className="tkw">
+                                {/* Header band — strip-фото (Apple Wallet eventTicket) */}
+                                <div className="tkw__band">
+                                    {img && <img className="tkw__band-img" src={img} alt="" loading="lazy" />}
+                                    <div className="tkw__band-shade" />
+                                    <div className="tkw__band-top">
+                                        <span className="tkw__org">АИС&nbsp;eSport</span>
+                                        <span className="tkw__sport">{ev.sport}</span>
                                     </div>
-                                    <div className="tk-card__foot">
-                                        <span className="tk-card__price">от {fmtPrice(minPrice)}</span>
-                                        {almostSold
-                                            ? <span className="tk-card__badge tk-card__badge--hot">Мало мест</span>
-                                            : <span className="tk-card__badge">В продаже</span>}
-                                    </div>
-                                    <span className="tk-card__cta">Купить билеты →</span>
+                                    {almostSold && <span className="tkw__hot">Мало мест</span>}
                                 </div>
+
+                                {/* Primary field */}
+                                <h3 className="tkw__title">{ev.title}</h3>
+
+                                {/* Secondary fields */}
+                                <div className="tkw__fields">
+                                    <div className="tkw__f"><span>ДАТА</span><b>{passDate(ev.date)}</b></div>
+                                    <div className="tkw__f"><span>ВРЕМЯ</span><b>{ev.time}</b></div>
+                                    <div className="tkw__f"><span>ГОРОД</span><b>{ev.city}</b></div>
+                                    <div className="tkw__f"><span>ЦЕНА</span><b>{fmtPrice(price)}</b></div>
+                                </div>
+                                <div className="tkw__venue">{ev.venue}</div>
+
+                                {/* Perforation + barcode */}
+                                <div className="tkw__perf" aria-hidden>
+                                    <span className="tkw__notch tkw__notch--l" />
+                                    <span className="tkw__notch tkw__notch--r" />
+                                </div>
+                                <div className="tkw__bar">
+                                    <Barcode seed={serial} height={42} />
+                                    <span className="tkw__serial">{serial}</span>
+                                </div>
+
+                                <span className="tkw__btn">Купить билет</span>
                             </Link>
                         )
                     })}

@@ -64,7 +64,7 @@ export default function IntranetCalendar() {
                                     <div className="intra-cal-day__body">
                                         <span className="intra-cal-day__type" style={{ background: c.bg, color: c.fg }}>{TYPE_LABEL[e.type]}</span>
                                         <h4 className="intra-cal-day__title">{e.title}</h4>
-                                        <div className="intra-cal-day__place">{e.place !== '—' ? e.place : ''}</div>
+                                        <div className="intra-cal-day__place">{e.place !== '-' ? e.place : ''}</div>
                                     </div>
                                 </div>
                             )

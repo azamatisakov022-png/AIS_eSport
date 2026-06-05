@@ -39,7 +39,7 @@ function getSectionData(t) {
                 ],
                 coach: [
                     ['Чемпионат КР по дзюдо', '15.03.2025 - Тренер сборной'],
-                    ['Сборы (Иссык-Куль)', '01–14.06.2025 - Главный тренер'],
+                    ['Сборы (Иссык-Куль)', '01-14.06.2025 - Главный тренер'],
                     ['Кубок Азии', '20.05.2025 - Секундант'],
                 ],
                 judge: [
@@ -57,7 +57,7 @@ function getSectionData(t) {
             title: t('cabinet.nav.training'),
             roles: ['athlete', 'coach'],
             rows: [
-                [t('cabinet.fields.schedule'), 'Пн–Пт, 08:00–11:00'],
+                [t('cabinet.fields.schedule'), 'Пн-Пт, 08:00-11:00'],
                 [t('cabinet.fields.location'), 'РСДЮШОР по дзюдо, зал №2'],
                 [t('fields.coach'), 'Иванов С.П.'],
                 [t('cabinet.fields.nextTraining'), 'Завтра, 08:00'],

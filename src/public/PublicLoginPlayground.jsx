@@ -51,21 +51,21 @@ export default function PublicLoginPlayground() {
             <header className="pg-header">
                 <div>
                     <h1>Login Playground</h1>
-                    <p>Live-превью всех улучшений. Включай тоглеры и сравнивай анимации ролей. Когда выберешь — скажи мне, и я применю в реальный <code>/public/login</code>.</p>
+                    <p>Live-превью всех улучшений. Включай тоглеры и сравнивай анимации ролей. Когда выберешь - скажи мне, и я применю в реальный <code>/public/login</code>.</p>
                 </div>
                 <Link to="/public/login" className="pg-back-link">← К текущему /login</Link>
             </header>
 
             {/* ───── PART 1: FORM TOGGLES + PREVIEW ───── */}
             <section className="pg-section">
-                <h2>Часть 1 — улучшения формы</h2>
-                <p className="pg-section-desc">Включай галочки слева — превью справа обновляется в реальном времени.</p>
+                <h2>Часть 1 - улучшения формы</h2>
+                <p className="pg-section-desc">Включай галочки слева - превью справа обновляется в реальном времени.</p>
 
                 <div className="pg-form-layout">
                     <aside className="pg-toggles">
                         {[
                             { k: 'glass', label: 'Glassmorphism', desc: 'Полупрозрачная форма с blur поверх hero-фона' },
-                            { k: 'floatingLabels', label: 'Floating labels', desc: 'Email/Пароль — лейбл поднимается при фокусе' },
+                            { k: 'floatingLabels', label: 'Floating labels', desc: 'Email/Пароль - лейбл поднимается при фокусе' },
                             { k: 'progressOnButton', label: 'Progress on button', desc: 'Полоска бежит по кнопке во время логина (нажми «Войти» для теста)' },
                             { k: 'pillToggle', label: 'Pill toggle', desc: 'Скользящий «pill» вместо квадратных табов' },
                             { k: 'brandedEsi', label: 'Branded ЭСИ', desc: 'Лого ГП КР рядом с «Войти через ЭСИ»' },
@@ -91,8 +91,8 @@ export default function PublicLoginPlayground() {
 
             {/* ───── PART 2: ROLE CARD ANIMATIONS ───── */}
             <section className="pg-section">
-                <h2>Часть 2 — 10 анимаций ролевых карточек</h2>
-                <p className="pg-section-desc">Наводи мышкой, кликай — смотри как реагируют. Стрелки на ⑧ показывают точку клика. Все карточки активные.</p>
+                <h2>Часть 2 - 10 анимаций ролевых карточек</h2>
+                <p className="pg-section-desc">Наводи мышкой, кликай - смотри как реагируют. Стрелки на ⑧ показывают точку клика. Все карточки активные.</p>
 
                 <div className="pg-variants">
                     {ANIMATIONS.map(a => {
@@ -113,14 +113,14 @@ export default function PublicLoginPlayground() {
             </section>
 
             <footer className="pg-footer">
-                <p>Скажи мне номера вариантов которые понравились — например «Форма: glass + floating labels + pill. Анимации: ② + ④ + ⑦». Я применю выбранное в /public/login.</p>
+                <p>Скажи мне номера вариантов которые понравились - например «Форма: glass + floating labels + pill. Анимации: ② + ④ + ⑦». Я применю выбранное в /public/login.</p>
             </footer>
         </div>
     )
 }
 
 /* ═══════════════════════════════════════════════
-   PART 1 — Login form preview
+   PART 1 - Login form preview
    ═══════════════════════════════════════════════ */
 function LoginFormPreview({ features }) {
     const [tab, setTab] = useState('citizen')
@@ -150,7 +150,7 @@ function LoginFormPreview({ features }) {
                     <h1>Цифровой спорт Кыргызстана</h1>
                     <p>Единая платформа управления спортом для ГАФКиС</p>
                     <CountersBlock animated={features.animatedCounters} />
-                    <small>От первого шага до пьедестала — мы вместе</small>
+                    <small>От первого шага до пьедестала - мы вместе</small>
                 </div>
             </div>
 
@@ -256,7 +256,7 @@ function CountersBlock({ animated }) {
 }
 
 /* ═══════════════════════════════════════════════
-   PART 2 — Role card animation variants
+   PART 2 - Role card animation variants
    Each component renders the same 4 roles but
    applies its specific animation style.
    ═══════════════════════════════════════════════ */

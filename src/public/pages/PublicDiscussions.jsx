@@ -7,6 +7,13 @@ import './publicPages.css'
 
 const fmt = (iso) => new Date(iso).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })
 
+const IconChat = () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></svg>
+)
+const IconDownload = () => (
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" /></svg>
+)
+
 export function PublicDiscussionsList() {
     const [status, setStatus] = useState('all')
 
@@ -31,22 +38,21 @@ export function PublicDiscussionsList() {
                     ))}
                 </div>
 
-                <div className="pp-list">
+                <div className="pd-list">
                     {filtered.map(d => (
-                        <Link key={d.id} to={`/public/discussions/${d.id}`} className="pp-row" style={{ textDecoration: 'none', color: 'inherit' }}>
-                            <div className="pp-row__icon">{d.status === 'active' ? '🟢' : '⚪'}</div>
-                            <div className="pp-row__body">
-                                <div className="pp-row__meta">
-                                    <span className={`pp-badge ${d.status === 'active' ? 'pp-badge--green' : 'pp-badge--gray'}`}>{d.status === 'active' ? 'Идёт обсуждение' : 'Завершено'}</span>
-                                    <span>опубликовано {fmt(d.published)}</span>
-                                    <span>· 💬 {d.comments} предложений</span>
+                        <Link key={d.id} to={`/public/discussions/${d.id}`} className="pub-card pd-card">
+                            <span className="pd-card__ic"><IconChat /></span>
+                            <div className="pd-card__body">
+                                <div className="pd-card__meta">
+                                    <span>Опубликовано {fmt(d.published)}</span>
+                                    <span className="pd-card__num">· {d.comments} предложений</span>
                                 </div>
-                                <h3 className="pp-row__title">{d.title}</h3>
-                                <div className="pp-row__desc">
+                                <h3 className="pd-card__title">{d.title}</h3>
+                                <div className="pd-card__sub">
                                     {d.status === 'active' ? `Приём предложений до ${fmt(d.deadline)}` : 'Обсуждение завершено'}
                                 </div>
                             </div>
-                            <span className="pp-row__action">Открыть</span>
+                            <span className="pd-card__go">Открыть →</span>
                         </Link>
                     ))}
                 </div>
@@ -66,7 +72,7 @@ export function PublicDiscussionDetail() {
         return (
             <div className="pub-section">
                 <div className="pub-container pp-wrap" style={{ paddingTop: 40 }}>
-                    <div className="pp-empty"><div className="pp-empty__icon">💬</div>Обсуждение не найдено. <Link to="/public/discussions" style={{ color: 'var(--pub-navy)' }}>Ко всем</Link></div>
+                    <div className="pp-empty">Обсуждение не найдено. <Link to="/public/discussions" style={{ color: 'var(--pub-navy)' }}>Ко всем</Link></div>
                 </div>
             </div>
         )
@@ -79,16 +85,16 @@ export function PublicDiscussionDetail() {
 
                 <article className="pp-article">
                     <div className="pp-article__meta">
-                        <span className={`pp-badge ${d.status === 'active' ? 'pp-badge--green' : 'pp-badge--gray'}`}>{d.status === 'active' ? 'Идёт обсуждение' : 'Завершено'}</span>
-                        <span>опубликовано {fmt(d.published)}</span>
-                        <span>· 💬 {d.comments} предложений</span>
+                        <span>Опубликовано {fmt(d.published)}</span>
+                        <span>· {d.comments} предложений</span>
+                        <span>· {d.status === 'active' ? `приём до ${fmt(d.deadline)}` : 'завершено'}</span>
                     </div>
                     <h1 className="pp-article__title">{d.title}</h1>
                     <p className="pp-article__lead">{d.summary}</p>
                     <div className="pp-article__body">
                         <p><strong>Приём предложений:</strong> {d.status === 'active' ? `до ${fmt(d.deadline)}` : `завершён ${fmt(d.deadline)}`}</p>
                         <p>С полным текстом проекта документа можно ознакомиться по ссылке. Все поступившие предложения рассматриваются рабочей группой ГАФКиС, итоги публикуются после завершения обсуждения.</p>
-                        <button className="pp-row__action" style={{ marginTop: 8 }}>📄 Скачать проект документа</button>
+                        <button className="pd-dl"><IconDownload /> Скачать проект документа</button>
                     </div>
                 </article>
 

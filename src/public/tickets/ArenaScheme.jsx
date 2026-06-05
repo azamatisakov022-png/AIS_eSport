@@ -48,7 +48,7 @@ export default function ArenaScheme({ schemeType = 'arena', sectors, selectedId,
     const layout = LAYOUTS[schemeType] || LAYOUTS.arena
 
     return (
-        <div className="tk-scheme" role="group" aria-label="Схема зала — выберите сектор">
+        <div className="tk-scheme" role="group" aria-label="Схема зала - выберите сектор">
             <div className="tk-scheme__stage">
                 {/* Field / playing area */}
                 {layout.field && (
@@ -83,7 +83,7 @@ export default function ArenaScheme({ schemeType = 'arena', sectors, selectedId,
                             onClick={() => !soldOut && onSelect(sec.id)}
                             disabled={soldOut}
                             aria-pressed={selected}
-                            title={soldOut ? `${sec.name} — мест нет` : `${sec.name} — ${sec.price} сом, свободно ${avail}`}
+                            title={soldOut ? `${sec.name} - мест нет` : `${sec.name} - ${sec.price} сом, свободно ${avail}`}
                         >
                             <span className="tk-zone__name">{sec.name}</span>
                             <span className="tk-zone__price">{soldOut ? 'Мест нет' : `${sec.price} сом`}</span>

@@ -13,20 +13,20 @@ const CONDITIONS = { new: 'Новое', working: 'Рабочее', repair: 'На
 const COND_BADGE = { new: 'reg-badge--green', working: 'reg-badge--blue', repair: 'reg-badge--orange', written_off: 'reg-badge--gray' }
 const LOCATIONS = ['Склад ЦА', 'СДЮСШОР №3 г. Бишкек', 'Ошская СДЮСШОР', 'Дворец спорта им. Кожомкула', 'Водный центр «Дельфин»', 'ДЮСШ Нарын']
 
-const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
+const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '-'
 
 const MOCK = [
     { id: 1, code: 'INV-2024-0012', name: 'Татами (комплект)', category: 'Единоборства', quantity: 8, condition: 'working', location: 'СДЮСШОР №3 г. Бишкек', assignedTo: 'Дзюдо (секция)', purchaseDate: '2024-02-15', warrantyEnd: '2027-02-15' },
     { id: 2, code: 'INV-2024-0028', name: 'Боксёрский ринг', category: 'Единоборства', quantity: 2, condition: 'working', location: 'Ошская СДЮСШОР', assignedTo: 'Бокс (секция)', purchaseDate: '2024-04-10', warrantyEnd: '2029-04-10' },
-    { id: 3, code: 'INV-2025-0044', name: 'Штанга олимпийская (220 кг)', category: 'Тяжёлая атлетика', quantity: 6, condition: 'new', location: 'Склад ЦА', assignedTo: '—', purchaseDate: '2025-09-01', warrantyEnd: '2030-09-01' },
+    { id: 3, code: 'INV-2025-0044', name: 'Штанга олимпийская (220 кг)', category: 'Тяжёлая атлетика', quantity: 6, condition: 'new', location: 'Склад ЦА', assignedTo: '-', purchaseDate: '2025-09-01', warrantyEnd: '2030-09-01' },
     { id: 4, code: 'INV-2023-0102', name: 'Беговая дорожка проф.', category: 'Лёгкая атлетика', quantity: 4, condition: 'repair', location: 'СДЮСШОР №3 г. Бишкек', assignedTo: 'Зал ОФП', purchaseDate: '2023-03-20', warrantyEnd: '2026-03-20' },
-    { id: 5, code: 'INV-2024-0061', name: 'Мячи футбольные (комплект)', category: 'Игровые виды', quantity: 50, condition: 'working', location: 'ДЮСШ Нарын', assignedTo: 'Футбол (секция)', purchaseDate: '2024-08-12', warrantyEnd: '—' },
+    { id: 5, code: 'INV-2024-0061', name: 'Мячи футбольные (комплект)', category: 'Игровые виды', quantity: 50, condition: 'working', location: 'ДЮСШ Нарын', assignedTo: 'Футбол (секция)', purchaseDate: '2024-08-12', warrantyEnd: '-' },
     { id: 6, code: 'INV-2025-0009', name: 'Стартовые тумбы для плавания', category: 'Плавание', quantity: 8, condition: 'new', location: 'Водный центр «Дельфин»', assignedTo: 'Плавание (секция)', purchaseDate: '2025-11-05', warrantyEnd: '2030-11-05' },
-    { id: 7, code: 'INV-2022-0210', name: 'Гимнастические маты', category: 'Общее оборудование', quantity: 30, condition: 'written_off', location: 'Склад ЦА', assignedTo: '—', purchaseDate: '2020-01-10', warrantyEnd: '2023-01-10' },
+    { id: 7, code: 'INV-2022-0210', name: 'Гимнастические маты', category: 'Общее оборудование', quantity: 30, condition: 'written_off', location: 'Склад ЦА', assignedTo: '-', purchaseDate: '2020-01-10', warrantyEnd: '2023-01-10' },
     { id: 8, code: 'INV-2024-0077', name: 'Татами додянг (тхэквондо)', category: 'Единоборства', quantity: 5, condition: 'working', location: 'Дворец спорта им. Кожомкула', assignedTo: 'Тхэквондо (секция)', purchaseDate: '2024-06-18', warrantyEnd: '2027-06-18' },
-    { id: 9, code: 'INV-2025-0033', name: 'Спортивная форма сборной (комплект)', category: 'Экипировка', quantity: 120, condition: 'new', location: 'Склад ЦА', assignedTo: 'Сборные команды', purchaseDate: '2025-12-20', warrantyEnd: '—' },
-    { id: 10, code: 'INV-2023-0155', name: 'Гантельный ряд (2–50 кг)', category: 'Тяжёлая атлетика', quantity: 3, condition: 'working', location: 'СДЮСШОР №3 г. Бишкек', assignedTo: 'Зал ОФП', purchaseDate: '2023-07-30', warrantyEnd: '2028-07-30' },
-    { id: 11, code: 'INV-2024-0090', name: 'Волейбольные сетки', category: 'Игровые виды', quantity: 12, condition: 'repair', location: 'ДЮСШ Нарын', assignedTo: 'Волейбол (секция)', purchaseDate: '2024-05-25', warrantyEnd: '—' },
+    { id: 9, code: 'INV-2025-0033', name: 'Спортивная форма сборной (комплект)', category: 'Экипировка', quantity: 120, condition: 'new', location: 'Склад ЦА', assignedTo: 'Сборные команды', purchaseDate: '2025-12-20', warrantyEnd: '-' },
+    { id: 10, code: 'INV-2023-0155', name: 'Гантельный ряд (2-50 кг)', category: 'Тяжёлая атлетика', quantity: 3, condition: 'working', location: 'СДЮСШОР №3 г. Бишкек', assignedTo: 'Зал ОФП', purchaseDate: '2023-07-30', warrantyEnd: '2028-07-30' },
+    { id: 11, code: 'INV-2024-0090', name: 'Волейбольные сетки', category: 'Игровые виды', quantity: 12, condition: 'repair', location: 'ДЮСШ Нарын', assignedTo: 'Волейбол (секция)', purchaseDate: '2024-05-25', warrantyEnd: '-' },
     { id: 12, code: 'INV-2025-0050', name: 'Электронное табло', category: 'Общее оборудование', quantity: 2, condition: 'new', location: 'Дворец спорта им. Кожомкула', assignedTo: 'Главный зал', purchaseDate: '2025-10-15', warrantyEnd: '2028-10-15' },
 ]
 

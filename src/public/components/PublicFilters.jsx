@@ -3,12 +3,14 @@ import { useTranslation } from 'react-i18next'
 import PublicSelect from './PublicSelect'
 
 const s = {
-    filters: { 
-        background: 'var(--theme-bg-card)', 
-        border: '1px solid var(--theme-border)', 
-        borderRadius: 14, 
-        padding: '20px 24px', 
-        marginBottom: 20 
+    filters: {
+        background: 'var(--theme-bg-card)',
+        border: '1px solid var(--theme-border)',
+        borderRadius: 14,
+        padding: '20px 24px',
+        marginBottom: 20,
+        position: 'relative',
+        zIndex: 50
     },
     filterRow: { 
         display: 'grid', 

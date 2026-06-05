@@ -66,7 +66,6 @@ import PublicFacilities from './public/PublicFacilities'
 import PublicSchools from './public/PublicSchools'
 import PublicNPA from './public/PublicNPA'
 import PublicCabinetLayout from './public/PublicCabinetLayout'
-import PublicHomeMockup from './public/PublicHomeMockup'
 import PublicTeams from './public/PublicTeams'
 
 // Public content pages (раскрытые placeholder'ы)
@@ -109,7 +108,7 @@ export default function App() {
                 <Route path="/award-applications/:id" element={<ApplicationReview />} />
                 <Route path="/settings" element={<Settings />} />
 
-                {/* Intranet — internal corporate portal */}
+                {/* Intranet - internal corporate portal */}
                 <Route path="/intranet" element={<IntranetHome />} />
                 <Route path="/intranet/news" element={<IntranetNewsList />} />
                 <Route path="/intranet/news/:id" element={<IntranetNewsDetail />} />
@@ -153,7 +152,6 @@ export default function App() {
             {/* Login - standalone, no layout wrapper */}
             <Route path="/public/login" element={<PublicLogin />} />
             <Route path="/public/login-playground" element={<PublicLoginPlayground />} />
-            <Route path="/mockup" element={<PublicHomeMockup />} />
 
             {/* Cabinet layout - personal cabinet (header + sidebar) */}
             <Route path="/public" element={<PublicCabinetLayout />}>

@@ -37,7 +37,7 @@ export default function PublicReception() {
                             {sent ? (
                                 <div className="pp-success">
                                     <strong>Обращение зарегистрировано · № ОБ-2026-00482</strong>
-                                    Срок рассмотрения — до 14 рабочих дней. Статус можно отследить по номеру обращения.
+                                    Срок рассмотрения - до 14 рабочих дней. Статус можно отследить по номеру обращения.
                                 </div>
                             ) : (
                                 <form className="pp-form" onSubmit={submit}>
@@ -63,7 +63,7 @@ export default function PublicReception() {
                                         <textarea required placeholder="Опишите ваше обращение" />
                                     </div>
                                     <button type="submit" className="pp-form__submit">Отправить</button>
-                                    <p className="pp-form__note">Обращения рассматриваются в соответствии с Законом КР «О порядке рассмотрения обращений граждан». Срок — до 14 рабочих дней.</p>
+                                    <p className="pp-form__note">Обращения рассматриваются в соответствии с Законом КР «О порядке рассмотрения обращений граждан». Срок - до 14 рабочих дней.</p>
                                 </form>
                             )}
                         </div>

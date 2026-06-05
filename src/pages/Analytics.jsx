@@ -354,7 +354,7 @@ export default function Analytics() {
                                 onClick={() => setQuarter(q.key)}>{t(q.labelKey)}</button>
                         ))}
                     </div>
-                    <button className="an-export-btn" onClick={() => toast('Экспорт отчёта — в разработке')}>
+                    <button className="an-export-btn" onClick={() => toast('Экспорт отчёта - в разработке')}>
                         {t('analytics.exportReport')}
                     </button>
                 </div>

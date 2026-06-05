@@ -1,6 +1,6 @@
 /**
  * Deterministic QR-looking SVG (demo).
- * Not a real encoder — generates a stable module grid from `value`
+ * Not a real encoder - generates a stable module grid from `value`
  * with authentic-looking finder patterns in 3 corners.
  * Good enough to visually represent a ticket QR; swap for a real
  * QR library (e.g. `qrcode`) when wiring real verification.

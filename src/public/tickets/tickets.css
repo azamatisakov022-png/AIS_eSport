@@ -13,10 +13,190 @@
 }
 .tk-filters__reset { padding: 10px 16px; border: 1px solid var(--theme-border, #d2d2d7); background: none; border-radius: 10px; cursor: pointer; font-size: 14px; color: var(--theme-text-secondary, #6e6e73); }
 
-/* Showcase grid */
+/* Showcase grid (legacy) */
 .tk-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 @media (max-width: 1000px) { .tk-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 640px) { .tk-grid { grid-template-columns: 1fr; } }
+
+/* ═══════════════════════════════════════════════
+   WALLET PASS — список билетов (эстетика event-pass)
+   ═══════════════════════════════════════════════ */
+.tkw-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+.tkw {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 0 0 16px;
+    background: var(--theme-bg-card, #fff);
+    border: 1px solid var(--theme-border, #e5e7eb);
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 1px 2px rgba(15,27,45,0.05), 0 14px 32px -18px rgba(15,27,45,0.3);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.tkw:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 2px 4px rgba(15,27,45,0.06), 0 22px 44px -20px rgba(15,27,45,0.36);
+}
+/* Header band — strip-фото (как strip image в Apple Wallet eventTicket) */
+.tkw__band {
+    position: relative;
+    aspect-ratio: 16 / 7;
+    overflow: hidden;
+    background: linear-gradient(160deg, var(--pub-navy, #1d3557), var(--pub-navy-deep, #0f1b2d));
+}
+.tkw__band-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+}
+.tkw:hover .tkw__band-img { transform: scale(1.05); }
+.tkw__band-shade {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(15,27,45,0.7) 0%, rgba(15,27,45,0.1) 42%, rgba(15,27,45,0.08) 100%);
+}
+.tkw__band-top {
+    position: absolute; top: 0; left: 0; right: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+}
+.tkw__org {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.8);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+.tkw__sport {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.tkw__title {
+    font-family: var(--pub-font-display, 'Manrope'), sans-serif;
+    font-size: 18px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2;
+    margin: 16px 18px 14px;
+    color: var(--theme-text-main, #1d1d1f);
+}
+/* Поля — как secondary fields в Apple Wallet (моно, uppercase-метки) */
+.tkw__fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 13px 14px;
+    padding: 0 18px 12px;
+}
+.tkw__f { display: flex; flex-direction: column; gap: 3px; }
+.tkw__f span {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em;
+    color: var(--theme-text-secondary, #6e6e73);
+}
+.tkw__f b {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 14px; font-weight: 700;
+    color: var(--theme-text-main, #1d1d1f);
+}
+.tkw__venue {
+    font-size: 12.5px; color: var(--theme-text-secondary, #6e6e73);
+    padding: 0 18px 16px;
+}
+.tkw__hot {
+    position: absolute; bottom: 10px; right: 12px; z-index: 2;
+    padding: 4px 10px; border-radius: 999px;
+    background: var(--pub-red, #e63946); color: #fff;
+    font-family: var(--pub-font-display, 'Manrope'), sans-serif;
+    font-size: 11px; font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+/* Перфорация */
+.tkw__perf {
+    position: relative; height: 0;
+    border-top: 2px dashed var(--theme-border, #e5e7eb);
+    margin: 0 2px;
+}
+.tkw__notch {
+    position: absolute; top: -10px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--theme-bg-base, #f0f2f5);
+}
+.tkw__notch--l { left: -12px; }
+.tkw__notch--r { right: -12px; }
+/* Штрих-код (как на настоящем билете) */
+.tkw__bar {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 16px 18px 4px;
+}
+.tkw__barcode { width: 88%; height: 42px; color: var(--theme-text-main, #1d1d1f); }
+.tkw__serial {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.14em;
+    color: var(--theme-text-secondary, #6e6e73);
+}
+.tkw__btn {
+    margin: 14px 18px 0;
+    padding: 12px;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--pub-navy, #1d3557);
+    box-shadow: inset 0 0 0 1.5px var(--pub-navy, #1d3557);
+    font-family: var(--pub-font-display, 'Manrope'), sans-serif;
+    font-size: 14px; font-weight: 700;
+    text-align: center;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+.tkw:hover .tkw__btn { background: var(--pub-navy, #1d3557); color: #fff; }
+
+@media (max-width: 1000px) { .tkw-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .tkw-grid { grid-template-columns: 1fr; } }
+
+/* ═══════════════════════════════════════════════
+   STEP 1 — Photo hero (входной билет, свободная рассадка)
+   Крупное фото слева, блок покупки справа (DICE / Resident Advisor).
+   ═══════════════════════════════════════════════ */
+.tk-buy {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-radius: 18px;
+    overflow: hidden;
+    background: var(--theme-bg-card, #fff);
+    border: 1px solid var(--theme-border, #e5e7eb);
+    box-shadow: 0 2px 4px rgba(15,27,45,0.05), 0 20px 48px -24px rgba(15,27,45,0.28);
+}
+@media (max-width: 760px) { .tk-buy { grid-template-columns: 1fr; } }
+.tk-buy__photo {
+    position: relative; min-height: 360px;
+    background: linear-gradient(160deg, var(--pub-navy, #1d3557), var(--pub-navy-deep, #0f1b2d));
+}
+@media (max-width: 760px) { .tk-buy__photo { min-height: 210px; } }
+.tk-buy__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.tk-buy__tag {
+    position: absolute; left: 16px; top: 16px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+    color: #fff; background: rgba(15,27,45,0.55); padding: 5px 12px; border-radius: 999px;
+    backdrop-filter: blur(4px);
+}
+.tk-buy__panel { padding: 32px; display: flex; flex-direction: column; justify-content: center; }
+.tk-buy__eyebrow { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; color: var(--pub-navy, #1d3557); }
+.tk-buy__title { font-family: var(--pub-font-display, 'Manrope'), sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin: 10px 0 6px; line-height: 1.15; color: var(--theme-text-main, #1d1d1f); }
+.tk-buy__meta { font-size: 13.5px; color: var(--theme-text-secondary, #6e6e73); margin-bottom: 22px; }
+.tk-buy__pricerow { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 18px; }
+.tk-buy__price { font-family: var(--pub-font-display, 'Manrope'), sans-serif; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--theme-text-main, #1d1d1f); }
+.tk-buy__price i { font-style: normal; font-size: 14px; font-weight: 600; color: var(--theme-text-secondary, #6e6e73); }
+.tk-buy__total { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; margin: 16px 0; border-top: 1px solid var(--theme-border, #e5e7eb); }
+.tk-buy__total span { font-size: 14px; color: var(--theme-text-secondary, #6e6e73); }
+.tk-buy__total strong { font-family: var(--pub-font-display, 'Manrope'), sans-serif; font-size: 20px; font-weight: 800; color: var(--theme-text-main, #1d1d1f); }
+.tk-buy__note { font-size: 12.5px; line-height: 1.5; color: var(--theme-text-secondary, #6e6e73); margin: 14px 0 0; }
 
 .tk-card {
     display: flex; flex-direction: column;
@@ -49,13 +229,29 @@
 
 /* ── Event page ── */
 .tk-back { display: inline-block; margin-bottom: 16px; color: var(--theme-text-secondary,#6e6e73); text-decoration: none; font-weight: 600; font-size: 14px; }
-.tk-back:hover { color: #2563eb; }
+.tk-back:hover { color: var(--pub-navy, #1d3557); }
 
 .tk-event-head { display: flex; gap: 18px; align-items: center; margin-bottom: 24px; }
 .tk-event-head__poster {
-    width: 80px; height: 80px; border-radius: 16px; flex-shrink: 0;
-    background: linear-gradient(135deg, var(--accent,#2563eb) 0%, #0f1b2d 130%);
-    display: flex; align-items: center; justify-content: center; font-size: 40px;
+    position: relative;
+    width: 132px; height: 92px; border-radius: 14px; flex-shrink: 0; overflow: hidden;
+    background: linear-gradient(160deg, var(--pub-navy,#1d3557) 0%, var(--pub-navy-deep,#0f1b2d) 100%);
+}
+.tk-event-head__poster img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
+}
+.tk-event-head__poster::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(15,27,45,0.05) 40%, rgba(15,27,45,0.72) 100%);
+}
+.tk-event-head__poster-sport {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+    padding: 6px 10px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 .tk-event-head__title { font-size: 24px; font-weight: 800; margin: 0 0 8px; color: var(--theme-text-main,#1d1d1f); }
 .tk-event-head__meta { display: flex; flex-wrap: wrap; gap: 14px; font-size: 14px; color: var(--theme-text-secondary,#6e6e73); }
@@ -63,7 +259,7 @@
 /* Stepper */
 .tk-steps { display: flex; gap: 8px; list-style: none; padding: 0; margin: 0 0 28px; }
 .tk-step { display: flex; align-items: center; gap: 8px; flex: 1; padding: 12px 14px; border-radius: 10px; background: var(--theme-bg-panel,#f0f2f5); color: var(--theme-text-secondary,#6e6e73); }
-.tk-step.is-active { background: #2563eb; color: #fff; }
+.tk-step.is-active { background: var(--pub-navy, #1d3557); color: #fff; }
 .tk-step.is-done { background: rgba(22,163,74,0.12); color: #16a34a; }
 .tk-step__num { width: 24px; height: 24px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
 .tk-step.is-active .tk-step__num { background: rgba(255,255,255,0.3); }
@@ -123,8 +319,8 @@
 
 /* Buttons */
 .tk-btn { width: 100%; padding: 13px; border-radius: 10px; border: none; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; text-align: center; text-decoration: none; display: inline-block; transition: all 0.2s; }
-.tk-btn--primary { background: linear-gradient(135deg, #1B3A6B 0%, #2563eb 100%); color: #fff; }
-.tk-btn--primary:hover:not(:disabled) { opacity: 0.92; transform: translateY(-1px); }
+.tk-btn--primary { background: var(--pub-navy, #1d3557); color: #fff; }
+.tk-btn--primary:hover:not(:disabled) { background: var(--pub-navy-deep, #0f1b2d); transform: translateY(-1px); }
 .tk-btn--primary:disabled { opacity: 0.45; cursor: not-allowed; }
 .tk-btn--ghost { background: var(--theme-bg-card,#fff); color: var(--theme-text-main,#1d1d1f); border: 1px solid var(--theme-border,#d2d2d7); margin-top: 8px; }
 .tk-btn--ghost:hover { background: var(--theme-bg-panel,#f5f6fa); }
@@ -136,14 +332,15 @@
 .tk-checkout__form h3 { font-size: 16px; font-weight: 700; margin: 0 0 14px; color: var(--theme-text-main,#1d1d1f); }
 .tk-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
 .tk-field span { font-size: 13px; font-weight: 600; color: var(--theme-text-main,#1d1d1f); }
+.tk-field__hint { font-size: 12.5px; line-height: 1.5; color: var(--theme-text-secondary,#6e6e73); margin: -4px 0 0; }
 .tk-field input { padding: 11px 14px; border: 1px solid var(--theme-border,#d2d2d7); border-radius: 10px; font-size: 14px; font-family: inherit; background: var(--theme-bg-card,#fff); color: var(--theme-text-main,#1d1d1f); }
-.tk-field input:focus { outline: 2px solid #2563eb; border-color: #2563eb; }
+.tk-field input:focus { outline: 2px solid var(--pub-navy, #1d3557); border-color: var(--pub-navy, #1d3557); }
 
 .tk-pay { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 @media (max-width: 480px) { .tk-pay { grid-template-columns: 1fr; } }
 .tk-pay__opt { display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; border: 2px solid var(--theme-border,#e5e7eb); border-radius: 10px; cursor: pointer; transition: all 0.18s; position: relative; }
 .tk-pay__opt input { position: absolute; opacity: 0; }
-.tk-pay__opt.is-active { border-color: #2563eb; background: rgba(37,99,235,0.06); }
+.tk-pay__opt.is-active { border-color: var(--pub-navy, #1d3557); background: rgba(29,53,87,0.06); }
 .tk-pay__name { font-size: 14px; font-weight: 700; color: var(--theme-text-main,#1d1d1f); }
 .tk-pay__hint { font-size: 11px; color: var(--theme-text-secondary,#6e6e73); }
 
@@ -167,7 +364,7 @@
 .tk-ticket { display: flex; background: var(--theme-bg-card,#fff); border-radius: 16px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.12); border: 1px solid var(--theme-border,#e5e7eb); }
 @media (max-width: 560px) { .tk-ticket { flex-direction: column; } }
 .tk-ticket__main { flex: 1; padding: 24px; }
-.tk-ticket__sport { font-size: 13px; font-weight: 700; color: #2563eb; margin-bottom: 6px; }
+.tk-ticket__sport { font-size: 13px; font-weight: 700; color: var(--pub-navy, #1d3557); margin-bottom: 6px; }
 .tk-ticket__title { font-size: 20px; font-weight: 800; margin: 0 0 16px; color: var(--theme-text-main,#1d1d1f); }
 .tk-ticket__rows { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .tk-ticket__rows > div { display: flex; flex-direction: column; gap: 2px; }
@@ -195,6 +392,12 @@
 .public-portal.dark-mode .tk-scheme__stage { background: #1a1d24; border-color: rgba(255,255,255,0.08); }
 .public-portal.dark-mode .tk-step:not(.is-active):not(.is-done) { background: #22252d; }
 .public-portal.dark-mode .tk-ticket__stub { background: #13151a; }
+/* Контурная кнопка «Купить билет» на тёмной карточке - светлый контур,
+   заливка на hover тёмно-навы (текст форсится глобальным dark-правилом на светлый) */
+.public-portal.dark-mode .tkw__btn { box-shadow: inset 0 0 0 1.5px rgba(188,211,238,0.45); }
+.public-portal.dark-mode .tkw:hover .tkw__btn { background: #2c4a73; }
+.public-portal.dark-mode .tk-btn--primary { background: #2c4a73; }
+.public-portal.dark-mode .tk-btn--primary:hover:not(:disabled) { background: #35588a; }
 
 /* Print: show only the ticket */
 @media print {

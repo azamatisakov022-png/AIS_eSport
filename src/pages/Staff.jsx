@@ -15,7 +15,7 @@ const ROLES = ['superadmin', 'admin', 'employee', 'readonly']
 const ROLE_LABELS = { superadmin: 'Суперадмин', admin: 'Администратор', employee: 'Сотрудник', readonly: 'Просмотр' }
 const COLORS = ['#2563EB', '#059669', '#7c3aed', '#d97706', '#e11d48', '#0d9488']
 
-const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
+const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '-'
 const getInitials = (n) => { const p = n.split(' '); return (p[0]?.[0] || '') + (p[1]?.[0] || '') }
 const getColor = (id) => COLORS[id % COLORS.length]
 

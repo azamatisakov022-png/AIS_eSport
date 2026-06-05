@@ -17,16 +17,15 @@ const st = {
         margin: '0 0 12px',
         lineHeight: 1.15,
         letterSpacing: '-0.03em',
-        background: 'linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.7) 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
+        color: '#ffffff',
     },
     desc: {
-        fontSize: 15,
-        color: 'rgba(235,235,245,0.8)',
-        lineHeight: 1.5,
+        fontSize: 16,
+        color: 'rgba(255,255,255,0.92)',
+        lineHeight: 1.55,
         margin: 0,
-        fontWeight: 400,
+        fontWeight: 500,
+        maxWidth: 640,
     },
     counters: {
         display: 'flex', gap: 12, flexWrap: 'wrap'
@@ -42,7 +41,7 @@ export default function PublicHero({ title, description, variant = 'slate', bgIm
     // Extremely premium macOS feel, absolutely no cropping issues.
     if (layoutMode === 'abstract') {
         return (
-            <section style={st.container}>
+            <section className="pub-hero-flush" style={st.container}>
                 <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'hidden', background: '#0a0a0c' }}>
                     {/* Glowing orbs using CSS from public.css */}
                     <div className={`hero-orb orb-${variant}-1`} />
@@ -82,7 +81,7 @@ export default function PublicHero({ title, description, variant = 'slate', bgIm
     // Perfectly integrates the 16:9 photo into the right side smoothly.
     if (layoutMode === 'split') {
         return (
-            <section style={st.container}>
+            <section className="pub-hero-flush" style={st.container}>
                 <div style={{ position: 'absolute', inset: 0, background: '#0a0a0c', zIndex: 0 }} />
                 
                 {/* Right side background image (constrained width drastically reduces vertical cropping) */}
@@ -117,11 +116,11 @@ export default function PublicHero({ title, description, variant = 'slate', bgIm
     // The image covers everything, but acts as a dynamic fixed window while scrolling.
     if (layoutMode === 'parallax') {
         return (
-            <section style={{
-                ...st.container, 
-                backgroundAttachment: 'fixed', 
-                backgroundImage: `url(${bgImage || ''})`, 
-                backgroundSize: 'cover', 
+            <section className="pub-hero-flush" style={{
+                ...st.container,
+                backgroundAttachment: 'fixed',
+                backgroundImage: `url(${bgImage || ''})`,
+                backgroundSize: 'cover',
                 backgroundPosition: 'center'
             }}>
                 {/* Heavy Dark Overlay to ensure text readability */}

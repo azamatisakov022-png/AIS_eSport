@@ -1,5 +1,5 @@
 /**
- * EmptyState — Reusable component for empty tables, lists, and sections.
+ * EmptyState - Reusable component for empty tables, lists, and sections.
  * 
  * Usage:
  *   <EmptyState icon="search" title="Ничего не найдено" desc="Попробуйте изменить параметры поиска" />

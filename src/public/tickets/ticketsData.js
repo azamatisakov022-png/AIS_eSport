@@ -43,7 +43,7 @@ export const TICKET_EVENTS = [
     },
     {
         id: 5,
-        title: 'Чемпионат Азии по борьбе — отбор',
+        title: 'Чемпионат Азии по борьбе - отбор',
         sport: 'Борьба',
         city: 'Бишкек',
         venue: 'Дворец спорта им. Кожомкула',
@@ -113,11 +113,23 @@ export const TICKET_EVENTS = [
 ]
 
 export const PAYMENT_METHODS = [
-    { id: 'elcart', name: 'Элкарт', hint: 'Национальная платёжная система' },
-    { id: 'mbank', name: 'MBank', hint: 'Оплата через приложение' },
-    { id: 'odengi', name: 'O!Деньги', hint: 'Электронный кошелёк' },
-    { id: 'visa', name: 'Visa / Mastercard', hint: 'Банковская карта' },
+    { id: 'card', name: 'Банковская карта', hint: 'Visa / Mastercard / Элкарт' },
+    { id: 'qr', name: 'Оплата по QR', hint: 'Любое банковское приложение' },
 ]
+
+/* Профессиональные фото инвентаря/тематики по виду спорта (Unsplash,
+   обработанные студийные/постановочные кадры). Локально в public/sports. */
+const SPORT_IMG = {
+    'Футбол': '/sports/sp-football.jpg',
+    'Борьба': '/sports/sp-wrestling.jpg',
+    'Бокс': '/sports/sp-boxing.jpg',
+    'Дзюдо': '/sports/sp-judo.jpg',
+    'Тхэквондо': '/sports/sp-taekwondo.jpg',
+    'Кок-бору': '/sports/sp-kokboru.jpg',
+}
+export function ticketImage(ev) {
+    return SPORT_IMG[ev.sport] || null
+}
 
 export function getTicketEvent(id) {
     return TICKET_EVENTS.find(e => String(e.id) === String(id)) || null
@@ -125,6 +137,20 @@ export function getTicketEvent(id) {
 
 export function sectorAvailable(sector) {
     return Math.max(0, sector.total - sector.sold)
+}
+
+/* ── Модель «входного билета» (свободная рассадка, без плана зала) ──
+   Единая цена входа на событие + общая вместимость/остаток зала.
+   Вместимость и остаток считаем из секторов (переиспользуем данные). */
+const GA_PRICE = { 7: 500, 12: 700, 5: 500, 9: 400, 2: 600, 1: 350 }
+export function eventPrice(ev) {
+    return GA_PRICE[ev.id] ?? Math.min(...ev.sectors.map(s => s.price))
+}
+export function eventCapacity(ev) {
+    return ev.sectors.reduce((a, s) => a + s.total, 0)
+}
+export function eventAvailable(ev) {
+    return ev.sectors.reduce((a, s) => a + sectorAvailable(s), 0)
 }
 
 export function fmtPrice(n) {

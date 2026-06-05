@@ -1,21 +1,22 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import ArenaScheme from './tickets/ArenaScheme'
 import FauxQR from './tickets/FauxQR'
-import { getTicketEvent, sectorAvailable, fmtPrice, fmtDate, PAYMENT_METHODS } from './tickets/ticketsData'
+import {
+    getTicketEvent, fmtPrice, fmtDate, PAYMENT_METHODS, ticketImage,
+    eventPrice, eventAvailable,
+} from './tickets/ticketsData'
 import './tickets/tickets.css'
 
-const STEPS = ['Выбор мест', 'Оплата', 'Билет']
+const STEPS = ['Билеты', 'Оплата', 'Билет']
 
 export default function PublicTicketEvent() {
     const { id } = useParams()
     const event = getTicketEvent(id)
 
     const [step, setStep] = useState(0)
-    const [sectorId, setSectorId] = useState(null)
     const [qty, setQty] = useState(1)
-    const [buyer, setBuyer] = useState({ name: '', phone: '', email: '' })
-    const [pay, setPay] = useState('elcart')
+    const [email, setEmail] = useState('')
+    const [pay, setPay] = useState('card')
     const [paying, setPaying] = useState(false)
     const [ticketNo, setTicketNo] = useState('')
 
@@ -27,18 +28,19 @@ export default function PublicTicketEvent() {
         )
     }
 
-    const sector = event.sectors.find(s => s.id === sectorId) || null
-    const maxQty = sector ? Math.min(8, sectorAvailable(sector)) : 1
-    const total = sector ? sector.price * qty : 0
+    const price = eventPrice(event)
+    const available = eventAvailable(event)
+    const maxQty = Math.min(8, Math.max(1, available))
+    const total = price * qty
+    const img = ticketImage(event)
 
-    const goPay = () => { if (sector) setStep(1) }
-    const canCheckout = buyer.name.trim() && buyer.phone.trim() && buyer.email.trim()
+    const goPay = () => setStep(1)
+    const canCheckout = /\S+@\S+\.\S+/.test(email.trim())
 
     const submitPayment = (e) => {
         e.preventDefault()
         if (!canCheckout || paying) return
         setPaying(true)
-        // Imitate payment processing
         setTimeout(() => {
             const no = `КР-${event.id}-${Date.now().toString().slice(-6)}`
             setTicketNo(no)
@@ -54,15 +56,16 @@ export default function PublicTicketEvent() {
 
                 {/* Event header */}
                 <div className="tk-event-head">
-                    <div className="tk-event-head__poster" style={{ '--accent': event.sectors[0].color }}>
-                        <span>{event.emoji}</span>
+                    <div className="tk-event-head__poster">
+                        {img ? <img src={img} alt="" loading="lazy" /> : null}
+                        <span className="tk-event-head__poster-sport">{event.sport}</span>
                     </div>
                     <div>
                         <h1 className="tk-event-head__title">{event.title}</h1>
                         <div className="tk-event-head__meta">
-                            <span>📅 {fmtDate(event.date)}, {event.time}</span>
-                            <span>📍 {event.venue}, {event.city}</span>
-                            <span>🏅 {event.sport}</span>
+                            <span>{fmtDate(event.date)}, {event.time}</span>
+                            <span>{event.venue}, {event.city}</span>
+                            <span>{event.sport}</span>
                         </div>
                     </div>
                 </div>
@@ -77,79 +80,53 @@ export default function PublicTicketEvent() {
                     ))}
                 </ol>
 
-                {/* ── STEP 1: SELECT ── */}
+                {/* ── STEP 1: PHOTO HERO (входной билет, свободная рассадка) ── */}
                 {step === 0 && (
-                    <div className="tk-select">
-                        <ArenaScheme
-                            schemeType={event.schemeType}
-                            sectors={event.sectors}
-                            selectedId={sectorId}
-                            onSelect={setSectorId}
-                        />
+                    <div className="tk-buy">
+                        <div className="tk-buy__photo">
+                            {img && <img src={img} alt="" />}
+                            <span className="tk-buy__tag">{event.sport}</span>
+                        </div>
+                        <div className="tk-buy__panel">
+                            <span className="tk-buy__eyebrow">ВХОДНОЙ БИЛЕТ · СВОБОДНАЯ РАССАДКА</span>
+                            <h2 className="tk-buy__title">{event.title}</h2>
+                            <div className="tk-buy__meta">{fmtDate(event.date)}, {event.time} · {event.venue}</div>
 
-                        <aside className="tk-sidebar">
-                            <h3>Сектора</h3>
-                            <ul className="tk-sector-list">
-                                {event.sectors.map(s => {
-                                    const avail = sectorAvailable(s)
-                                    const soldOut = avail === 0
-                                    return (
-                                        <li key={s.id}>
-                                            <button
-                                                type="button"
-                                                className={`tk-sector${sectorId === s.id ? ' is-active' : ''}${soldOut ? ' is-soldout' : ''}`}
-                                                onClick={() => !soldOut && setSectorId(s.id)}
-                                                disabled={soldOut}
-                                            >
-                                                <span className="tk-sector__dot" style={{ background: s.color }} />
-                                                <span className="tk-sector__name">{s.name}</span>
-                                                <span className="tk-sector__price">{soldOut ? 'Нет мест' : fmtPrice(s.price)}</span>
-                                            </button>
-                                        </li>
-                                    )
-                                })}
-                            </ul>
-
-                            {sector && (
-                                <div className="tk-qty">
-                                    <span>Количество</span>
-                                    <div className="tk-qty__ctrl">
-                                        <button type="button" onClick={() => setQty(q => Math.max(1, q - 1))} aria-label="Меньше">−</button>
-                                        <strong>{qty}</strong>
-                                        <button type="button" onClick={() => setQty(q => Math.min(maxQty, q + 1))} aria-label="Больше">+</button>
-                                    </div>
-                                    <small>Свободно: {sectorAvailable(sector)}</small>
+                            <div className="tk-buy__pricerow">
+                                <div className="tk-buy__price">{fmtPrice(price)}<i> / билет</i></div>
+                                <div className="tk-qty__ctrl">
+                                    <button type="button" onClick={() => setQty(q => Math.max(1, q - 1))} aria-label="Меньше">−</button>
+                                    <strong>{qty}</strong>
+                                    <button type="button" onClick={() => setQty(q => Math.min(maxQty, q + 1))} aria-label="Больше">+</button>
                                 </div>
-                            )}
+                            </div>
 
-                            <div className="tk-total">
-                                <span>Итого</span>
+                            <div className="tk-buy__total">
+                                <span>Итого за {qty}</span>
                                 <strong>{fmtPrice(total)}</strong>
                             </div>
-                            <button type="button" className="tk-btn tk-btn--primary" disabled={!sector} onClick={goPay}>
+
+                            <button type="button" className="tk-btn tk-btn--primary" onClick={goPay}>
                                 Продолжить
                             </button>
-                        </aside>
+
+                            <p className="tk-buy__note">
+                                Места не нумерованы - рассадка свободная, в порядке прибытия. Электронный билет с QR-кодом придёт на email сразу после оплаты.
+                            </p>
+                        </div>
                     </div>
                 )}
 
                 {/* ── STEP 2: CHECKOUT ── */}
-                {step === 1 && sector && (
+                {step === 1 && (
                     <form className="tk-checkout" onSubmit={submitPayment}>
                         <div className="tk-checkout__form">
-                            <h3>Данные покупателя</h3>
+                            <h3>Куда отправить билет</h3>
                             <label className="tk-field">
-                                <span>ФИО</span>
-                                <input type="text" value={buyer.name} onChange={e => setBuyer(b => ({ ...b, name: e.target.value }))} placeholder="Иванов Иван" required />
+                                <span>Email</span>
+                                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="example@mail.kg" required />
                             </label>
-                            <label className="tk-field">
-                                <span>Телефон</span>
-                                <input type="tel" value={buyer.phone} onChange={e => setBuyer(b => ({ ...b, phone: e.target.value }))} placeholder="+996 700 00 00 00" required />
-                            </label>
-                            <label className="tk-field">
-                                <span>Email (для электронного билета)</span>
-                                <input type="email" value={buyer.email} onChange={e => setBuyer(b => ({ ...b, email: e.target.value }))} placeholder="example@mail.kg" required />
-                            </label>
+                            <p className="tk-field__hint">Электронный билет с QR-кодом придёт на эту почту сразу после оплаты.</p>
 
                             <h3 style={{ marginTop: 20 }}>Способ оплаты</h3>
                             <div className="tk-pay">
@@ -166,37 +143,37 @@ export default function PublicTicketEvent() {
                         <aside className="tk-summary">
                             <h3>Ваш заказ</h3>
                             <div className="tk-summary__row"><span>Мероприятие</span><b>{event.title}</b></div>
-                            <div className="tk-summary__row"><span>Сектор</span><b>{sector.name}</b></div>
-                            <div className="tk-summary__row"><span>Билетов</span><b>{qty} × {fmtPrice(sector.price)}</b></div>
+                            <div className="tk-summary__row"><span>Билет</span><b>Входной, свободная рассадка</b></div>
+                            <div className="tk-summary__row"><span>Билетов</span><b>{qty} × {fmtPrice(price)}</b></div>
                             <div className="tk-summary__total"><span>К оплате</span><strong>{fmtPrice(total)}</strong></div>
                             <button type="submit" className="tk-btn tk-btn--primary" disabled={!canCheckout || paying}>
                                 {paying ? 'Обработка платежа…' : `Оплатить ${fmtPrice(total)}`}
                             </button>
                             <button type="button" className="tk-btn tk-btn--ghost" onClick={() => setStep(0)} disabled={paying}>Назад</button>
-                            <p className="tk-summary__note">Демонстрационная оплата. Реальная интеграция с платёжными системами — на этапе внедрения.</p>
+                            <p className="tk-summary__note">Демонстрационная оплата. Реальная интеграция с платёжными системами - на этапе внедрения.</p>
                         </aside>
                     </form>
                 )}
 
                 {/* ── STEP 3: TICKET ── */}
-                {step === 2 && sector && (
+                {step === 2 && (
                     <div className="tk-result">
                         <div className="tk-success">
                             <span className="tk-success__icon">✓</span>
                             <h2>Оплата прошла успешно</h2>
-                            <p>Электронный билет отправлен на {buyer.email}</p>
+                            <p>Электронный билет отправлен на {email}</p>
                         </div>
 
                         <div className="tk-ticket">
                             <div className="tk-ticket__main">
-                                <div className="tk-ticket__sport">{event.emoji} {event.sport}</div>
+                                <div className="tk-ticket__sport">{event.sport}</div>
                                 <h3 className="tk-ticket__title">{event.title}</h3>
                                 <div className="tk-ticket__rows">
                                     <div><span>Дата</span><b>{fmtDate(event.date)}, {event.time}</b></div>
                                     <div><span>Место</span><b>{event.venue}</b></div>
-                                    <div><span>Сектор</span><b>{sector.name}</b></div>
+                                    <div><span>Рассадка</span><b>Свободная</b></div>
                                     <div><span>Билетов</span><b>{qty}</b></div>
-                                    <div><span>Покупатель</span><b>{buyer.name}</b></div>
+                                    <div><span>Покупатель</span><b>{email}</b></div>
                                     <div><span>Сумма</span><b>{fmtPrice(total)}</b></div>
                                 </div>
                                 <div className="tk-ticket__no">Билет № {ticketNo}</div>
@@ -209,7 +186,6 @@ export default function PublicTicketEvent() {
 
                         <div className="tk-result__actions">
                             <button type="button" className="tk-btn tk-btn--primary" onClick={() => window.print()}>Скачать / печать билета</button>
-                            <Link to="/public/verify" className="tk-btn tk-btn--ghost">Проверить подлинность</Link>
                             <Link to="/public/tickets" className="tk-btn tk-btn--ghost">Купить ещё билеты</Link>
                         </div>
                     </div>

@@ -14,7 +14,7 @@ const SOURCE_BADGE = { minzdrav: 'reg-badge--blue', upload: 'reg-badge--gray', e
 const COLORS = ['#2563EB', '#059669', '#7c3aed', '#d97706', '#e11d48', '#0d9488']
 
 const today = new Date(); today.setHours(0, 0, 0, 0)
-const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
+const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '-'
 const daysUntil = (d) => Math.ceil((new Date(d) - today) / 86400000)
 const getInitials = (n) => { const p = n.split(' '); return (p[0]?.[0] || '') + (p[1]?.[0] || '') }
 const getColor = (id) => COLORS[id % COLORS.length]

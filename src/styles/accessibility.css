@@ -77,9 +77,8 @@
 
 /* Cards: solid surface + visible 2px border (instead of shadows) */
 .public-portal.a11y-on .pub-card,
-.public-portal.a11y-on .qa-card,
-.public-portal.a11y-on .ph-gov-card,
-.public-portal.a11y-on .ph-quick-card,
+.public-portal.a11y-on .ph-tile,
+.public-portal.a11y-on .ph-svc,
 .public-portal.a11y-on .ph-news-card,
 .public-portal.a11y-on .ph-region-card,
 .public-portal.a11y-on [class*="card"] {
@@ -147,7 +146,7 @@
 /* Buttons & inputs */
 .public-portal.a11y-on button:not(.a11y-bar__btn):not(.a11y-bar__exit):not(.pub-a11y-link),
 .public-portal.a11y-on .pub-login-btn,
-.public-portal.a11y-on .ph-gov-card__btn {
+.public-portal.a11y-on .ph-svc__cta {
     background: var(--a11y-accent-bg) !important;
     color: var(--a11y-accent-text) !important;
     border: 2px solid var(--a11y-border) !important;
@@ -197,7 +196,6 @@
 .public-portal.a11y-noimg img,
 .public-portal.a11y-noimg svg:not(.a11y-bar svg):not(.pub-a11y-link svg),
 .public-portal.a11y-noimg [class*="card__img"],
-.public-portal.a11y-noimg .qa-3d-icon,
 .public-portal.a11y-noimg .ph-region-card__img { display: none !important; }
 /* Map stays (functional, not decorative) but loses interactivity glow */
 .public-portal.a11y-noimg .leaflet-container { display: none !important; }
