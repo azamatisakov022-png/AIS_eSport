@@ -5,22 +5,32 @@ import { CALENDAR_PLAN } from './publicContent'
 import './publicPages.css'
 
 const LEVELS = ['all', 'Международный', 'Республиканский', 'Массовый']
-const LEVEL_BADGE = { 'Международный': 'pp-badge--blue', 'Республиканский': 'pp-badge--green', 'Массовый': 'pp-badge--amber' }
+const LEVEL_DOT = { 'Международный': '#2563eb', 'Республиканский': '#16a34a', 'Массовый': '#b45309' }
 
 const MONTHS = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь']
 const MON_SHORT = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']
 
+/* outline-иконки вместо эмодзи 📍 🎯 */
+const ib = { viewBox: '0 0 24 24', width: 14, height: 14, fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }
+const IconPin = () => <svg {...ib}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
+const IconSport = () => <svg {...ib}><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="4" /></svg>
+
 export default function PublicCalendarPlan() {
     const [level, setLevel] = useState('all')
     const [sport, setSport] = useState('all')
+
+    const years = useMemo(() => Array.from(new Set(CALENDAR_PLAN.map(e => e.date.slice(0, 4)))).sort().reverse(), [])
+    const [year, setYear] = useState(years[0])
 
     const sports = useMemo(() => Array.from(new Set(CALENDAR_PLAN.map(e => e.sport))).sort(), [])
     const cntEvents = useAnimatedCounter(CALENDAR_PLAN.length)
     const cntSports = useAnimatedCounter(sports.length)
 
     const filtered = useMemo(() => CALENDAR_PLAN.filter(e =>
-        (level === 'all' || e.level === level) && (sport === 'all' || e.sport === sport)
-    ), [level, sport])
+        (level === 'all' || e.level === level) &&
+        (sport === 'all' || e.sport === sport) &&
+        (year === 'all' || e.date.startsWith(year))
+    ), [level, sport, year])
 
     const byMonth = useMemo(() => {
         const map = new Map()
@@ -34,7 +44,7 @@ export default function PublicCalendarPlan() {
 
     return (
         <div className="pub-section">
-            <PublicHero title="Календарный план мероприятий" description="Полный календарь спортивных мероприятий Кыргызской Республики на 2026 год." variant="indigo" layoutMode="abstract">
+            <PublicHero title="Календарный план мероприятий" description="Календарь спортивных мероприятий Кыргызской Республики. Архив по годам." variant="indigo" layoutMode="abstract">
                 <PublicHeroCounter animRef={cntEvents.ref} value={cntEvents.value} label="мероприятий" />
                 <PublicHeroCounter animRef={cntSports.ref} value={cntSports.value} label="видов спорта" />
             </PublicHero>
@@ -54,6 +64,16 @@ export default function PublicCalendarPlan() {
                     </select>
                 </div>
 
+                {/* Архив по годам - требование Распоряжения №59-р */}
+                <div className="pp-chips" style={{ marginBottom: 28 }}>
+                    <button className={`pp-chip${year === 'all' ? ' pp-chip--active' : ''}`} onClick={() => setYear('all')}>Все годы</button>
+                    {years.map(y => (
+                        <button key={y} className={`pp-chip${year === y ? ' pp-chip--active' : ''}`} onClick={() => setYear(y)}>
+                            {y} <span className="pp-chip__count">{CALENDAR_PLAN.filter(e => e.date.startsWith(y)).length}</span>
+                        </button>
+                    ))}
+                </div>
+
                 {byMonth.map(([m, events]) => {
                     const monthIdx = Number(m.slice(5, 7)) - 1
                     return (
@@ -70,9 +90,9 @@ export default function PublicCalendarPlan() {
                                         <div className="pp-cal-event__body">
                                             <h3 className="pp-cal-event__title">{e.title}</h3>
                                             <div className="pp-cal-event__meta">
-                                                <span className={`pp-badge ${LEVEL_BADGE[e.level] || 'pp-badge--gray'}`}>{e.level}</span>
-                                                <span>📍 {e.place}</span>
-                                                <span>🎯 {e.sport}</span>
+                                                <span className="pp-cal-event__lvl"><i style={{ background: LEVEL_DOT[e.level] || '#6e6e73' }} />{e.level}</span>
+                                                <span className="pp-cal-event__tag"><IconPin />{e.place}</span>
+                                                <span className="pp-cal-event__tag"><IconSport />{e.sport}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -82,7 +102,7 @@ export default function PublicCalendarPlan() {
                     )
                 })}
                 {filtered.length === 0 && (
-                    <div className="pp-empty"><div className="pp-empty__icon">📅</div>Мероприятий по выбранным фильтрам не найдено.</div>
+                    <div className="pp-empty">Мероприятий по выбранным фильтрам не найдено.</div>
                 )}
             </div>
         </div>

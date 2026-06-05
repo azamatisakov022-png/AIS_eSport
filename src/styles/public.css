@@ -1975,3 +1975,162 @@
 /* ═══ LEGACY QA-CARD DARK MODE (restored from initial design) ═══ */
 /* Quick Access / Gov Services dark-mode встроены в .ph-tile / .ph-svc
    (Editorial Scoreboard). Старые .qa-card / .ph-quick-card удалены. */
+
+/* ════════════════════════════════════════
+   HOME · БЛОКИ №59-р: документы/вакансии · проекты · обратная связь
+   ════════════════════════════════════════ */
+
+/* — Две колонки «Документы / Вакансии» — */
+.ph-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+.ph-list { display: flex; flex-direction: column; }
+.ph-list__row {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 16px 4px; text-decoration: none;
+    border-bottom: 1px solid var(--theme-border, #e8e8ed);
+    transition: padding-left 0.25s ease;
+}
+.ph-list__row:last-child { border-bottom: none; }
+.ph-list__row:hover { padding-left: 12px; }
+.ph-list__ic {
+    flex-shrink: 0; width: 40px; height: 40px;
+    display: grid; place-items: center; border-radius: 10px;
+    background: var(--pub-gray-100, #f4f5f7); color: var(--pub-navy, #1d3557);
+    transition: background 0.25s ease, color 0.25s ease;
+}
+.ph-list__row:hover .ph-list__ic { background: var(--pub-navy, #1d3557); color: #fff; }
+.ph-list__body { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.ph-list__title {
+    font-family: var(--pub-font-display); font-size: 15.5px; font-weight: 700;
+    line-height: 1.35; color: var(--theme-text-main, var(--pub-text-dark));
+}
+.ph-list__meta {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11.5px; font-weight: 600; letter-spacing: 0.02em;
+    color: var(--theme-text-secondary, var(--pub-text-muted));
+    display: inline-flex; align-items: center; flex-wrap: wrap;
+}
+.ph-list__sep {
+    display: inline-block; width: 3px; height: 3px; border-radius: 50%;
+    background: currentColor; margin: 0 8px; opacity: 0.55;
+}
+.ph-list__go {
+    margin-left: auto; align-self: center; flex-shrink: 0;
+    color: var(--pub-navy, #1d3557); font-size: 17px;
+    opacity: 0; transform: translateX(-6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.ph-list__row:hover .ph-list__go { opacity: 1; transform: translateX(0); }
+
+/* — Реализуемые проекты — */
+.ph-proj-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.ph-proj { padding: 26px; gap: 14px; }
+.ph-proj__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ph-proj__status {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--pub-navy, #1d3557);
+}
+.ph-proj__status i {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #16a34a; box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+}
+.ph-proj__period {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11.5px; font-weight: 600;
+    color: var(--theme-text-secondary, var(--pub-text-muted));
+}
+.ph-proj__title {
+    font-family: var(--pub-font-display); font-size: 18px; font-weight: 800;
+    line-height: 1.25; margin: 0; letter-spacing: -0.2px;
+    color: var(--theme-text-main, var(--pub-text-dark));
+}
+.ph-proj__desc {
+    font-size: 14px; line-height: 1.55; margin: 0; flex: 1;
+    color: var(--theme-text-secondary, var(--pub-text-muted));
+}
+.ph-proj__foot { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+.ph-proj__bar {
+    flex: 1; height: 6px; border-radius: 4px;
+    background: var(--pub-gray-100, #eef0f3); overflow: hidden;
+}
+.ph-proj__bar b { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, #00c6ff, #007aff); }
+.ph-proj__pct {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+    color: var(--pub-navy, #1d3557);
+}
+
+/* — Обратная связь: обращение руководителя + Вопрос-ответ — */
+.ph-fb { display: grid; grid-template-columns: 360px 1fr; gap: 28px; align-items: start; }
+.ph-leader {
+    background: var(--pub-navy-deep, #0f1b2d); color: #fff; border-radius: 18px;
+    padding: 28px; display: flex; flex-direction: column; gap: 18px;
+    position: relative; overflow: hidden;
+}
+.ph-leader::before {
+    content: '“'; position: absolute; top: 2px; right: 22px;
+    font-family: Georgia, serif; font-size: 96px; line-height: 1;
+    color: rgba(255, 255, 255, 0.08);
+}
+.ph-leader__head { display: flex; align-items: center; gap: 14px; }
+.ph-leader__avatar {
+    width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, #2a4d7a, #1d3557);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    font-family: var(--pub-font-display); font-weight: 800; font-size: 17px; color: #fff;
+}
+.ph-leader__id { display: flex; flex-direction: column; gap: 3px; }
+.ph-leader__name { font-family: var(--pub-font-display); font-weight: 700; font-size: 15px; }
+.ph-leader__pos {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.03em; color: rgba(255, 255, 255, 0.6);
+}
+.ph-leader__quote { margin: 0; font-size: 15px; line-height: 1.6; color: rgba(255, 255, 255, 0.88); position: relative; z-index: 1; }
+.ph-leader__link {
+    margin-top: auto; display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.03em;
+    color: var(--pub-red, #e63946); text-decoration: none; transition: gap 0.2s ease;
+}
+.ph-leader__link:hover { gap: 11px; }
+
+.ph-faq { display: flex; flex-direction: column; }
+.ph-faq__item { border-bottom: 1px solid var(--theme-border, #e8e8ed); }
+.ph-faq__q {
+    width: 100%; background: none; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 18px 4px; text-align: left;
+    font-family: var(--pub-font-display); font-size: 16px; font-weight: 700;
+    color: var(--theme-text-main, var(--pub-text-dark)); transition: color 0.2s ease;
+}
+.ph-faq__q:hover { color: var(--pub-navy, #1d3557); }
+.ph-faq__chev { flex-shrink: 0; color: var(--theme-text-secondary, var(--pub-text-muted)); transition: transform 0.3s ease; }
+.ph-faq__item.is-open .ph-faq__chev { transform: rotate(180deg); }
+.ph-faq__a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease; }
+.ph-faq__item.is-open .ph-faq__a { grid-template-rows: 1fr; }
+.ph-faq__a > p {
+    overflow: hidden; margin: 0; font-size: 14.5px; line-height: 1.6;
+    color: var(--theme-text-secondary, var(--pub-text-muted));
+}
+.ph-faq__item.is-open .ph-faq__a > p { padding: 0 4px 20px; }
+
+/* dark mode */
+.public-portal.dark-mode .ph-list__ic { background: rgba(255, 255, 255, 0.06); color: #9fc3ff; }
+.public-portal.dark-mode .ph-list__row:hover .ph-list__ic { background: #2a4d7a; color: #fff; }
+.public-portal.dark-mode .ph-proj__bar { background: rgba(255, 255, 255, 0.08); }
+.public-portal.dark-mode .ph-leader { background: #0a0f1a; border: 1px solid rgba(255, 255, 255, 0.06); }
+/* FAQ-вопрос - это <button>, глобальное правило цвета его не перекрывает; форсируем явно */
+.public-portal.dark-mode .ph-faq .ph-faq__q { color: #e8eaed !important; }
+.public-portal.dark-mode .ph-faq .ph-faq__q:hover { color: #fff !important; }
+
+/* responsive */
+@media (max-width: 900px) {
+    .ph-duo { grid-template-columns: 1fr; gap: 36px; }
+    .ph-proj-grid { grid-template-columns: 1fr; }
+    .ph-fb { grid-template-columns: 1fr; }
+}
+@media (max-width: 1100px) and (min-width: 901px) {
+    .ph-proj-grid { grid-template-columns: 1fr 1fr; }
+}

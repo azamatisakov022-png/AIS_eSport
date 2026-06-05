@@ -20,18 +20,33 @@ function fmtDate(iso) {
 
 export default function PublicAnnouncements() {
     const [type, setType] = useState('all')
+    const [year, setYear] = useState('all')
 
-    const filtered = useMemo(() => ANNOUNCEMENTS_PUB.filter(a => type === 'all' || a.type === type), [type])
+    const years = useMemo(() => Array.from(new Set(ANNOUNCEMENTS_PUB.map(a => a.date.slice(0, 4)))).sort().reverse(), [])
+
+    const filtered = useMemo(() => ANNOUNCEMENTS_PUB
+        .filter(a => (type === 'all' || a.type === type) && (year === 'all' || a.date.startsWith(year)))
+        .sort((a, b) => b.date.localeCompare(a.date)), [type, year])
 
     return (
         <div className="pub-section">
             <PublicHero title="Объявления" description="Вакансии, тендеры и аренда спортивного имущества ГАФКиС." variant="gold" layoutMode="abstract" />
 
             <div className="pub-container pp-wrap">
-                <div className="pp-chips" style={{ marginBottom: 28 }}>
+                <div className="pp-chips" style={{ marginBottom: 14 }}>
                     {Object.entries(ANNOUNCEMENT_TYPES).map(([k, label]) => (
                         <button key={k} className={`pp-chip${type === k ? ' pp-chip--active' : ''}`} onClick={() => setType(k)}>
                             {label} <span className="pp-chip__count">{k === 'all' ? ANNOUNCEMENTS_PUB.length : ANNOUNCEMENTS_PUB.filter(a => a.type === k).length}</span>
+                        </button>
+                    ))}
+                </div>
+
+                {/* Архив по годам - требование Распоряжения №59-р */}
+                <div className="pp-chips" style={{ marginBottom: 28 }}>
+                    <button className={`pp-chip${year === 'all' ? ' pp-chip--active' : ''}`} onClick={() => setYear('all')}>Все годы</button>
+                    {years.map(y => (
+                        <button key={y} className={`pp-chip${year === y ? ' pp-chip--active' : ''}`} onClick={() => setYear(y)}>
+                            {y} <span className="pp-chip__count">{ANNOUNCEMENTS_PUB.filter(a => a.date.startsWith(y)).length}</span>
                         </button>
                     ))}
                 </div>
@@ -52,6 +67,9 @@ export default function PublicAnnouncements() {
                             <span className="pd-card__go">Подробнее →</span>
                         </a>
                     ))}
+                    {filtered.length === 0 && (
+                        <div className="pp-empty">Объявлений по выбранным фильтрам не найдено.</div>
+                    )}
                 </div>
             </div>
         </div>

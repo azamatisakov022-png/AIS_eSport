@@ -11,8 +11,18 @@ import {
 import {
     PUBLIC_NEWS,
     HOME_HERO,
+    HOME_DOCS,
+    HOME_PROJECTS,
+    HOME_FAQ,
+    HOME_LEADER_WORD,
+    ANNOUNCEMENTS_PUB,
 } from './pages/publicContent'
 import './pages/publicPages.css'
+
+/* outline-иконки для блоков «Документы / Вакансии» (без эмодзи) */
+const _ic = { viewBox: '0 0 24 24', width: 20, height: 20, fill: 'none', stroke: 'currentColor', strokeWidth: 1.7, strokeLinecap: 'round', strokeLinejoin: 'round' }
+const IconDoc = () => <svg {..._ic}><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5M9 13h6M9 17h4" /></svg>
+const IconVacancy = () => <svg {..._ic}><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2M2 13h20" /></svg>
 
 /** Помощник для фотографий - placeholder picsum по seed-у id+категория. */
 /* Брендовая градиент-обложка по категории (когда нет реального фото) */
@@ -146,7 +156,17 @@ export default function PublicHome() {
     const revealEvents = useScrollReveal(0.1)
     const revealRegions = useScrollReveal(0.1)
     const revealNews = useScrollReveal(0.1)
+    const revealDocs = useScrollReveal(0.1)
+    const revealProjects = useScrollReveal(0.1)
+    const revealFeedback = useScrollReveal(0.1)
     const revealVerify = useScrollReveal(0.1)
+    const [openFaq, setOpenFaq] = useState(0)
+
+    /* Последние 3 вакансии (по дате) для блока на главной */
+    const homeVacancies = ANNOUNCEMENTS_PUB
+        .filter(a => a.type === 'vacancy')
+        .sort((a, b) => b.date.localeCompare(a.date))
+        .slice(0, 3)
 
     const monthsShort = t('public.monthsShort', { returnObjects: true })
 
@@ -410,7 +430,124 @@ export default function PublicHome() {
             </section>
 
             {/* ═══════════════════════════════════
-                7. VERIFY DOCUMENT - Light, minimal
+                7. ДОКУМЕНТЫ И ВАКАНСИИ - две колонки (Распоряжение №59-р)
+               ═══════════════════════════════════ */}
+            <section ref={revealDocs} className="ph-section ph-section--white scroll-reveal">
+                <div className="pub-container">
+                    <div className="ph-duo">
+                        <div className="ph-duo__col">
+                            <div className="ph-sec-head ph-sec-head--row">
+                                <h2 className="ph-sec-title">Последние документы</h2>
+                                <Link to="/public/npa" className="ph-sec-link">Все НПА <span aria-hidden>→</span></Link>
+                            </div>
+                            <div className="ph-list">
+                                {HOME_DOCS.map(d => (
+                                    <Link key={d.id} to="/public/npa" className="ph-list__row">
+                                        <span className="ph-list__ic"><IconDoc /></span>
+                                        <span className="ph-list__body">
+                                            <span className="ph-list__title">{d.title}</span>
+                                            <span className="ph-list__meta">{d.type} {d.number}<i className="ph-list__sep" />{fmtNewsDate(d.date)}</span>
+                                        </span>
+                                        <span className="ph-list__go" aria-hidden>→</span>
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="ph-duo__col">
+                            <div className="ph-sec-head ph-sec-head--row">
+                                <h2 className="ph-sec-title">Вакансии</h2>
+                                <Link to="/public/announcements" className="ph-sec-link">Все объявления <span aria-hidden>→</span></Link>
+                            </div>
+                            <div className="ph-list">
+                                {homeVacancies.map(v => (
+                                    <Link key={v.id} to="/public/announcements" className="ph-list__row">
+                                        <span className="ph-list__ic"><IconVacancy /></span>
+                                        <span className="ph-list__body">
+                                            <span className="ph-list__title">{v.title}</span>
+                                            <span className="ph-list__meta">опубликовано {fmtNewsDate(v.date)}{v.deadline !== '-' && <><i className="ph-list__sep" />приём до {fmtNewsDate(v.deadline)}</>}</span>
+                                        </span>
+                                        <span className="ph-list__go" aria-hidden>→</span>
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════
+                8. РЕАЛИЗУЕМЫЕ ПРОЕКТЫ (Распоряжение №59-р)
+               ═══════════════════════════════════ */}
+            <section ref={revealProjects} className="ph-section ph-section--gray scroll-reveal">
+                <div className="pub-container">
+                    <div className="ph-sec-head">
+                        <h2 className="ph-sec-title">Реализуемые проекты</h2>
+                        <span className="ph-sec-sub">Государственные программы и проекты ГАФКиС</span>
+                    </div>
+                    <div className="ph-proj-grid">
+                        {HOME_PROJECTS.map(p => (
+                            <article key={p.id} className="pub-card ph-proj">
+                                <div className="ph-proj__top">
+                                    <span className="ph-proj__status"><i />{p.status}</span>
+                                    <span className="ph-proj__period">{p.period}</span>
+                                </div>
+                                <h3 className="ph-proj__title">{p.title}</h3>
+                                <p className="ph-proj__desc">{p.desc}</p>
+                                <div className="ph-proj__foot">
+                                    <div className="ph-proj__bar"><b style={{ width: `${p.progress}%` }} /></div>
+                                    <span className="ph-proj__pct">{p.progress}%</span>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════
+                9. ОБРАТНАЯ СВЯЗЬ - обращение руководителя + Вопрос-ответ (Распоряжение №59-р)
+               ═══════════════════════════════════ */}
+            <section ref={revealFeedback} className="ph-section ph-section--white scroll-reveal">
+                <div className="pub-container">
+                    <div className="ph-sec-head">
+                        <h2 className="ph-sec-title">Обратная связь</h2>
+                        <span className="ph-sec-sub">Обращение руководителя и ответы на частые вопросы</span>
+                    </div>
+                    <div className="ph-fb">
+                        <aside className="ph-leader">
+                            <div className="ph-leader__head">
+                                <span className="ph-leader__avatar">{HOME_LEADER_WORD.avatar}</span>
+                                <span className="ph-leader__id">
+                                    <span className="ph-leader__name">{HOME_LEADER_WORD.name}</span>
+                                    <span className="ph-leader__pos">{HOME_LEADER_WORD.pos}</span>
+                                </span>
+                            </div>
+                            <blockquote className="ph-leader__quote">{HOME_LEADER_WORD.text}</blockquote>
+                            <Link to="/public/reception" className="ph-leader__link">Написать обращение <span aria-hidden>→</span></Link>
+                        </aside>
+
+                        <div className="ph-faq">
+                            {HOME_FAQ.map((f, i) => (
+                                <div key={i} className={`ph-faq__item${openFaq === i ? ' is-open' : ''}`}>
+                                    <button
+                                        type="button"
+                                        className="ph-faq__q"
+                                        onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                                        aria-expanded={openFaq === i}
+                                    >
+                                        <span>{f.q}</span>
+                                        <svg className="ph-faq__chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6" /></svg>
+                                    </button>
+                                    <div className="ph-faq__a"><p>{f.a}</p></div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════
+                10. VERIFY DOCUMENT - Light, minimal
                ═══════════════════════════════════ */}
             <section ref={revealVerify} className="ph-section ph-section--gray scroll-reveal">
                 <div className="pub-container">
