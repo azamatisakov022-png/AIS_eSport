@@ -96,7 +96,7 @@ export const ROLE_ROUTES = {
         '/dashboard', '/athletes', '/coaches', '/judges',
         '/organizations', '/facilities', '/events', '/teams',
         '/staff', '/medical-certificates', '/inventory',
-        '/applications', '/trainer-applications', '/award-applications', '/analytics', '/settings',
+        '/applications', '/trainer-applications', '/award-applications', '/judge-applications', '/analytics', '/settings',
         ...INTRANET_ROUTES,
     ],
     admin: [
@@ -107,7 +107,7 @@ export const ROLE_ROUTES = {
         '/dashboard', '/athletes', '/coaches', '/judges',
         '/organizations', '/facilities', '/events', '/teams',
         '/staff', '/medical-certificates', '/inventory',
-        '/applications', '/trainer-applications', '/award-applications', '/analytics',
+        '/applications', '/trainer-applications', '/award-applications', '/judge-applications', '/analytics',
         ...INTRANET_ROUTES,
     ],
     athlete: [

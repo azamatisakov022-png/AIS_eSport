@@ -127,6 +127,59 @@ export const awardsApi = {
 // Переходы статуса заявки определяет бэкенд (поле nextStatuses в ответе),
 // т.к. они зависят от трека звания (прямой / комиссия / Кабинет Министров).
 
+// ── Судьи: реестр и заявки на категорию ─────────────────────────────────────
+export function mapJudge(j) {
+  return {
+    id: j.id,
+    name: j.fullName,
+    cert: j.certNumber || '—',
+    category: j.category || '—',
+    sports: j.sports || [],
+    region: j.region || '—',
+    endDate: j.endDate || null,
+    annulled: !!j.annulled,
+    // детальные поля (могут отсутствовать в списочном ответе / у судьи из заявки)
+    birth: j.birthDate || null,
+    sex: j.sex === 'FEMALE' ? 'Ж' : (j.sex === 'MALE' ? 'М' : ''),
+    phone: j.phone || '',
+    email: j.email || '',
+    attestDate: j.attestDate || null,
+    org: j.organizationName || '—',
+  }
+}
+
+export const judgesApi = {
+  async list({ search, category, sport, region, status, size = 200 } = {}) {
+    const p = new URLSearchParams()
+    if (search) p.set('search', search)
+    if (category) p.set('category', category)
+    if (sport) p.set('sport', sport)
+    if (region) p.set('region', region)
+    if (status && status !== 'all') p.set('status', status)
+    p.set('size', size)
+    const data = await authFetch(`/judges?${p.toString()}`)
+    return { items: (data.content || []).map(mapJudge), total: data.totalElements }
+  },
+  get(id) { return authFetch(`/judges/${id}`).then(mapJudge) },
+}
+
+export const judgeAppsApi = {
+  async list({ search, category, status, size = 100 } = {}) {
+    const p = new URLSearchParams()
+    if (search) p.set('search', search)
+    if (category) p.set('category', category)
+    if (status) p.set('status', status)
+    p.set('size', size)
+    const data = await authFetch(`/judge-applications?${p.toString()}`)
+    return { items: data.content || [], total: data.totalElements }
+  },
+  get(id) { return authFetch(`/judge-applications/${id}`) },
+  create(payload) { return authFetch('/judge-applications', { method: 'POST', body: JSON.stringify(payload) }) },
+  changeStatus(id, status, reason) {
+    return authFetch(`/judge-applications/${id}/status`, { method: 'PUT', body: JSON.stringify({ status, reason }) })
+  },
+}
+
 // ── Публичный портал ────────────────────────────────────────────────────────
 export const publicApi = {
   async athletes({ size = 200 } = {}) {

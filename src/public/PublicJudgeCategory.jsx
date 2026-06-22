@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import PublicHero from './components/PublicHero'
+import { judgeAppsApi } from '../api/esport'
 import './pages/publicPages.css'
 
 const SPORTS = ['Дзюдо', 'Бокс', 'Борьба', 'Тхэквондо', 'Каратэ', 'Лёгкая атлетика', 'Плавание', 'Футбол', 'Волейбол', 'Гимнастика', 'Тяжёлая атлетика', 'Другой']
@@ -31,6 +32,7 @@ export default function PublicJudgeCategory() {
     const [docs, setDocs] = useState({})
     const [confirm, setConfirm] = useState(false)
     const [submitted, setSubmitted] = useState(null)
+    const [sending, setSending] = useState(false)
     const fileRefs = useRef({})
 
     const set = (k, v) => setForm(p => ({ ...p, [k]: v }))
@@ -40,10 +42,31 @@ export default function PublicJudgeCategory() {
     const allDocs = DOCS.every(d => docs[d.key])
     const canSubmit = required && allDocs && confirm
 
-    const submit = () => {
-        if (!canSubmit) return
-        setSubmitted({ no: genNo(), date: new Date().toLocaleDateString('ru-RU'),
-            cat: CATEGORIES.find(c => c.value === form.requested)?.label || form.requested })
+    const submit = async () => {
+        if (!canSubmit || sending) return
+        const reqLabel = CATEGORIES.find(c => c.value === form.requested)?.label || form.requested
+        const curLabel = form.current ? (CATEGORIES.find(c => c.value === form.current)?.label || form.current) : ''
+        let no = genNo()
+        setSending(true)
+        try {
+            // Реальная подача в бэкенд: заявка попадает в очередь аттестационной комиссии
+            const created = await judgeAppsApi.create({
+                applicantName: form.fio,
+                inn: form.inn,
+                phone: form.phone,
+                email: form.email,
+                sport: form.sport,
+                currentCategory: curLabel,
+                requestedCategory: reqLabel,
+                eventsServed: form.events ? Number(form.events) : null,
+                experienceYears: form.experience ? Number(form.experience) : null,
+            })
+            if (created?.appNo) no = created.appNo
+        } catch {
+            // Демо-режим: бэкенд недоступен — локальный номер
+        }
+        setSending(false)
+        setSubmitted({ no, date: new Date().toLocaleDateString('ru-RU'), cat: reqLabel })
     }
 
     if (submitted) {
@@ -109,8 +132,8 @@ export default function PublicJudgeCategory() {
                                 <span>Подтверждаю достоверность указанных данных и согласие на обработку персональных данных.</span>
                             </label>
 
-                            <button type="submit" className="pp-form__submit" disabled={!canSubmit} style={{ opacity: canSubmit ? 1 : 0.4, cursor: canSubmit ? 'pointer' : 'not-allowed' }}>
-                                Подать заявление
+                            <button type="submit" className="pp-form__submit" disabled={!canSubmit || sending} style={{ opacity: (canSubmit && !sending) ? 1 : 0.4, cursor: (canSubmit && !sending) ? 'pointer' : 'not-allowed' }}>
+                                {sending ? 'Отправка…' : 'Подать заявление'}
                             </button>
                         </form>
                     </div>

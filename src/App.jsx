@@ -16,6 +16,8 @@ import Settings from './pages/Settings'
 import TrainerApplications from './pages/TrainerApplications'
 import AwardApplications from './pages/AwardApplications'
 import ApplicationReview from './pages/ApplicationReview'
+import JudgeApplications from './pages/JudgeApplications'
+import JudgeApplicationReview from './pages/JudgeApplicationReview'
 import Staff from './pages/Staff'
 import MedicalCertificates from './pages/MedicalCertificates'
 import Inventory from './pages/Inventory'
@@ -106,6 +108,8 @@ export default function App() {
                 <Route path="/trainer-applications" element={<TrainerApplications />} />
                 <Route path="/award-applications" element={<AwardApplications />} />
                 <Route path="/award-applications/:id" element={<ApplicationReview />} />
+                <Route path="/judge-applications" element={<JudgeApplications />} />
+                <Route path="/judge-applications/:id" element={<JudgeApplicationReview />} />
                 <Route path="/settings" element={<Settings />} />
 
                 {/* Intranet - internal corporate portal */}

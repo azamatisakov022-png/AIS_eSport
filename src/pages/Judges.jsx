@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useToast } from '../context/ToastContext'
+import { judgesApi } from '../api/esport'
 import { MetricIcons } from '../components/CabinetIcons'
 import './Judges.css'
 import Portal from '../components/Portal'
@@ -26,7 +27,7 @@ function daysUntil(dateStr) {
 }
 
 function fmt(dateStr) {
-    return new Date(dateStr).toLocaleDateString('ru-RU')
+    return dateStr ? new Date(dateStr).toLocaleDateString('ru-RU') : '—'
 }
 
 function getInitials(name) {
@@ -45,9 +46,11 @@ function computeStatus(j) {
 }
 
 function catClass(cat) {
-    if (cat === 'Международная') return 'jd-cat--intl'
-    if (cat === 'Национальная') return 'jd-cat--national'
-    if (cat === 'I категория') return 'jd-cat--first'
+    if (!cat) return 'jd-cat--base'
+    const c = cat.toLowerCase()
+    if (c.includes('международ')) return 'jd-cat--intl'
+    if (c.includes('национал')) return 'jd-cat--national'
+    if (c.startsWith('i категория') || c.startsWith('i ')) return 'jd-cat--first'
     return 'jd-cat--base'
 }
 
@@ -96,7 +99,7 @@ const EMPTY_FORM = {
 export default function Judges() {
     const { t } = useTranslation()
     const toast = useToast()
-    const [data] = useState(MOCK)
+    const [data, setData] = useState(MOCK)
     const [search, setSearch] = useState('')
     const [catF, setCatF] = useState('')
     const [sportF, setSportF] = useState('')
@@ -106,6 +109,15 @@ export default function Judges() {
     const [tab, setTab] = useState('info')
     const [addModal, setAddModal] = useState(false)
     const [form, setForm] = useState(EMPTY_FORM)
+
+    // Загрузка реестра судей из бэкенда (с фолбэком на демо-данные)
+    useEffect(() => {
+        let alive = true
+        judgesApi.list({ size: 200 })
+            .then(({ items }) => { if (alive && items.length) setData(items) })
+            .catch(() => { /* остаёмся на демо-данных */ })
+        return () => { alive = false }
+    }, [])
 
     const enriched = useMemo(() => data.map(j => ({ ...j, _status: computeStatus(j) })), [data])
 
@@ -122,8 +134,8 @@ export default function Judges() {
 
     const metrics = useMemo(() => ({
         total: enriched.length,
-        intl: enriched.filter(j => j.category === 'Международная').length,
-        national: enriched.filter(j => j.category === 'Национальная').length,
+        intl: enriched.filter(j => j.category && j.category.toLowerCase().includes('международ')).length,
+        national: enriched.filter(j => j.category && j.category.toLowerCase().includes('национал')).length,
         expiring: enriched.filter(j => j._status === 'expiring').length,
         annulled: enriched.filter(j => j._status === 'annulled').length,
     }), [enriched])
@@ -257,7 +269,7 @@ export default function Judges() {
                                             </div>
                                             <div className="jd-person__info">
                                                 <div className="jd-person__name">{j.name}</div>
-                                                <div className="jd-person__sub">{j.sex}, {fmt(j.birth)}</div>
+                                                <div className="jd-person__sub">{[j.sex, j.birth ? fmt(j.birth) : null].filter(Boolean).join(', ') || '—'}</div>
                                             </div>
                                         </div>
                                     </td>
