@@ -169,6 +169,37 @@ public class JudgeService {
         return judgeRepository.countByIsArchivedFalseAndAnnulledFalse();
     }
 
+    /**
+     * Выдача удостоверения судьи из утверждённой заявки: создаёт запись в реестре
+     * с автогенерацией номера, датой аттестации (сегодня) и сроком на 4 года.
+     */
+    public Judge issueFromApplication(String fullName, String category, String sport,
+                                      String region, String phone, String email) {
+        LocalDate attestDate = LocalDate.now();
+        String certNumber = generateCertNumber(attestDate);
+
+        List<String> sports = new ArrayList<>();
+        if (sport != null && !sport.isBlank()) {
+            sports.add(sport);
+        }
+
+        Judge judge = Judge.builder()
+                .fullName(fullName)
+                .phone(phone)
+                .email(email)
+                .certNumber(certNumber)
+                .category(category)
+                .sports(sports)
+                .attestDate(attestDate)
+                .endDate(attestDate.plusYears(4))
+                .region(region)
+                .build();
+
+        judge = judgeRepository.save(judge);
+        log.info("Выдано удостоверение судьи из заявки: {} -> {} ({})", fullName, category, certNumber);
+        return judge;
+    }
+
     private String generateCertNumber(LocalDate attestDate) {
         int year = attestDate.getYear();
         String prefix = "УД-КР-" + year + "-";
