@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kg.gov.gafkis.esport.dto.response.*;
 import kg.gov.gafkis.esport.entity.*;
+import kg.gov.gafkis.esport.entity.enums.AthleteVerificationStatus;
 import kg.gov.gafkis.esport.exception.ResourceNotFoundException;
 import kg.gov.gafkis.esport.mapper.*;
 import kg.gov.gafkis.esport.repository.*;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -39,25 +41,31 @@ public class PublicController {
     // ─── Athletes ───────────────────────────────────────────────────────
 
     @GetMapping("/athletes")
-    @Operation(summary = "Public list of athletes", description = "Paginated list of non-archived athletes")
+    @Operation(summary = "Public list of athletes", description = "Только подтверждённые (VERIFIED), не в архиве")
     public ResponseEntity<PagedResponse<AthleteListResponse>> getAthletes(
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<AthleteListResponse> page = athleteRepository
-                .findByIsArchivedFalse(pageable)
+                .findByIsArchivedFalseAndVerificationStatus(AthleteVerificationStatus.VERIFIED, pageable)
                 .map(athleteMapper::toListResponse);
 
         return ResponseEntity.ok(PagedResponse.from(page));
     }
 
     @GetMapping("/athletes/{id}")
-    @Operation(summary = "Athlete detail", description = "Get a single athlete by ID")
+    @Operation(summary = "Athlete detail", description = "Только подтверждённый спортсмен; персональные контакты скрыты")
+    @Transactional(readOnly = true)
     public ResponseEntity<AthleteResponse> getAthlete(@PathVariable Long id) {
 
         Athlete athlete = athleteRepository.findById(id)
+                .filter(a -> !a.isArchived() && a.getVerificationStatus() == AthleteVerificationStatus.VERIFIED)
                 .orElseThrow(() -> new ResourceNotFoundException("Athlete", "id", id));
 
-        return ResponseEntity.ok(athleteMapper.toResponse(athlete));
+        AthleteResponse resp = athleteMapper.toResponse(athlete);
+        // Публично не раскрываем персональные контакты
+        resp.setPhone(null);
+        resp.setEmail(null);
+        return ResponseEntity.ok(resp);
     }
 
     // ─── Coaches ────────────────────────────────────────────────────────

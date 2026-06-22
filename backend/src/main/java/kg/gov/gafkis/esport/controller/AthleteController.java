@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import kg.gov.gafkis.esport.dto.request.AthleteCreateRequest;
 import kg.gov.gafkis.esport.dto.request.AthleteUpdateRequest;
 import kg.gov.gafkis.esport.dto.request.MedalRequest;
+import kg.gov.gafkis.esport.dto.request.StatusChangeRequest;
 import kg.gov.gafkis.esport.dto.response.AthleteListResponse;
 import kg.gov.gafkis.esport.dto.response.AthleteResponse;
 import kg.gov.gafkis.esport.dto.response.MedalResponse;
@@ -37,8 +38,9 @@ public class AthleteController {
             @Parameter(description = "Фильтр по разряду") @RequestParam(required = false) String rank,
             @Parameter(description = "Фильтр по региону") @RequestParam(required = false) String region,
             @Parameter(description = "Фильтр по статусу мед. справки (valid/expiring/expired)") @RequestParam(required = false) String medStatus,
+            @Parameter(description = "Фильтр по статусу верификации (DRAFT/IN_REVIEW/VERIFIED/REJECTED)") @RequestParam(required = false) String verification,
             @PageableDefault(size = 20) Pageable pageable) {
-        PagedResponse<AthleteListResponse> response = athleteService.getAll(search, sport, rank, region, medStatus, pageable);
+        PagedResponse<AthleteListResponse> response = athleteService.getAll(search, sport, rank, region, medStatus, verification, pageable);
         return ResponseEntity.ok(response);
     }
 
@@ -69,6 +71,31 @@ public class AthleteController {
     public ResponseEntity<Void> archive(@PathVariable Long id) {
         athleteService.archive(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/submit")
+    @Operation(summary = "Отправить на проверку", description = "Черновик/Отклонено -> На проверке")
+    public ResponseEntity<AthleteResponse> submit(@PathVariable Long id) {
+        return ResponseEntity.ok(athleteService.submitForReview(id));
+    }
+
+    @PostMapping("/{id}/verify")
+    @Operation(summary = "Подтвердить запись", description = "На проверке -> Подтверждено")
+    public ResponseEntity<AthleteResponse> verify(@PathVariable Long id) {
+        return ResponseEntity.ok(athleteService.verify(id));
+    }
+
+    @PostMapping("/{id}/reject")
+    @Operation(summary = "Отклонить запись", description = "На проверке -> Отклонено (с указанием причины)")
+    public ResponseEntity<AthleteResponse> reject(@PathVariable Long id, @RequestBody(required = false) StatusChangeRequest request) {
+        String reason = request != null ? request.getReason() : null;
+        return ResponseEntity.ok(athleteService.reject(id, reason));
+    }
+
+    @PostMapping("/{id}/lifecycle")
+    @Operation(summary = "Сменить статус жизненного цикла", description = "ACTIVE/INACTIVE/SUSPENDED/DISQUALIFIED/RETIRED/EXCLUDED")
+    public ResponseEntity<AthleteResponse> changeLifecycle(@PathVariable Long id, @Valid @RequestBody StatusChangeRequest request) {
+        return ResponseEntity.ok(athleteService.changeLifecycle(id, request.getStatus(), request.getReason()));
     }
 
     @PostMapping("/{id}/medals")

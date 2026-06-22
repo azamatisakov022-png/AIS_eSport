@@ -24,6 +24,10 @@ public interface AthleteMapper {
     @Mapping(target = "teamName", expression = "java(athlete.getTeam() != null ? athlete.getTeam().getName() : null)")
     @Mapping(target = "medStatus", expression = "java(computeStatus(athlete.getMedExpDate()))")
     @Mapping(target = "insStatus", expression = "java(computeStatus(athlete.getInsExpDate()))")
+    @Mapping(target = "verificationStatus", expression = "java(athlete.getVerificationStatus() != null ? athlete.getVerificationStatus().name() : null)")
+    @Mapping(target = "verificationStatusLabel", expression = "java(athlete.getVerificationStatus() != null ? athlete.getVerificationStatus().getLabel() : null)")
+    @Mapping(target = "lifecycleStatus", expression = "java(athlete.getLifecycleStatus() != null ? athlete.getLifecycleStatus().name() : null)")
+    @Mapping(target = "lifecycleStatusLabel", expression = "java(athlete.getLifecycleStatus() != null ? athlete.getLifecycleStatus().getLabel() : null)")
     @Mapping(target = "medals", source = "medals")
     AthleteResponse toResponse(Athlete athlete);
 
@@ -32,6 +36,10 @@ public interface AthleteMapper {
     @Mapping(target = "organizationName", expression = "java(athlete.getOrganization() != null ? athlete.getOrganization().getName() : null)")
     @Mapping(target = "medStatus", expression = "java(computeStatus(athlete.getMedExpDate()))")
     @Mapping(target = "insStatus", expression = "java(computeStatus(athlete.getInsExpDate()))")
+    @Mapping(target = "verificationStatus", expression = "java(athlete.getVerificationStatus() != null ? athlete.getVerificationStatus().name() : null)")
+    @Mapping(target = "verificationStatusLabel", expression = "java(athlete.getVerificationStatus() != null ? athlete.getVerificationStatus().getLabel() : null)")
+    @Mapping(target = "lifecycleStatus", expression = "java(athlete.getLifecycleStatus() != null ? athlete.getLifecycleStatus().name() : null)")
+    @Mapping(target = "lifecycleStatusLabel", expression = "java(athlete.getLifecycleStatus() != null ? athlete.getLifecycleStatus().getLabel() : null)")
     AthleteListResponse toListResponse(Athlete athlete);
 
     List<AthleteListResponse> toListResponse(List<Athlete> athletes);

@@ -13,7 +13,10 @@ import kg.gov.gafkis.esport.entity.AthleteMedal;
 import kg.gov.gafkis.esport.entity.Coach;
 import kg.gov.gafkis.esport.entity.Organization;
 import kg.gov.gafkis.esport.entity.Team;
+import kg.gov.gafkis.esport.entity.enums.AthleteLifecycleStatus;
+import kg.gov.gafkis.esport.entity.enums.AthleteVerificationStatus;
 import kg.gov.gafkis.esport.entity.enums.Sex;
+import kg.gov.gafkis.esport.exception.BadRequestException;
 import kg.gov.gafkis.esport.exception.ResourceNotFoundException;
 import kg.gov.gafkis.esport.mapper.AthleteMapper;
 import kg.gov.gafkis.esport.repository.AthleteMedalRepository;
@@ -48,8 +51,9 @@ public class AthleteService {
 
     @Transactional(readOnly = true)
     public PagedResponse<AthleteListResponse> getAll(String search, String sport, String rank,
-                                                      String region, String medStatus, Pageable pageable) {
-        Specification<Athlete> spec = buildSpecification(search, sport, rank, region, medStatus);
+                                                      String region, String medStatus,
+                                                      String verificationStatus, Pageable pageable) {
+        Specification<Athlete> spec = buildSpecification(search, sport, rank, region, medStatus, verificationStatus);
         Page<Athlete> page = athleteRepository.findAll(spec, pageable);
         List<AthleteListResponse> content = athleteMapper.toListResponse(page.getContent());
 
@@ -168,6 +172,63 @@ public class AthleteService {
         log.info("Архивирован спортсмен: {} (id={})", athlete.getFullName(), athlete.getId());
     }
 
+    // ─── Верификация записи ──────────────────────────────────────────────
+
+    public AthleteResponse submitForReview(Long id) {
+        Athlete a = getEntity(id);
+        if (a.getVerificationStatus() != AthleteVerificationStatus.DRAFT
+                && a.getVerificationStatus() != AthleteVerificationStatus.REJECTED) {
+            throw new BadRequestException("На проверку можно отправить только запись в статусе «Черновик» или «Отклонено»");
+        }
+        a.setVerificationStatus(AthleteVerificationStatus.IN_REVIEW);
+        a.setStatusNote(null);
+        log.info("Спортсмен {} (id={}) отправлен на проверку", a.getFullName(), id);
+        return athleteMapper.toResponse(athleteRepository.save(a));
+    }
+
+    public AthleteResponse verify(Long id) {
+        Athlete a = getEntity(id);
+        if (a.getVerificationStatus() != AthleteVerificationStatus.IN_REVIEW) {
+            throw new BadRequestException("Подтвердить можно только запись в статусе «На проверке»");
+        }
+        a.setVerificationStatus(AthleteVerificationStatus.VERIFIED);
+        a.setStatusNote(null);
+        log.info("Спортсмен {} (id={}) подтверждён", a.getFullName(), id);
+        return athleteMapper.toResponse(athleteRepository.save(a));
+    }
+
+    public AthleteResponse reject(Long id, String reason) {
+        Athlete a = getEntity(id);
+        if (a.getVerificationStatus() != AthleteVerificationStatus.IN_REVIEW) {
+            throw new BadRequestException("Отклонить можно только запись в статусе «На проверке»");
+        }
+        a.setVerificationStatus(AthleteVerificationStatus.REJECTED);
+        a.setStatusNote(reason);
+        log.info("Спортсмен {} (id={}) отклонён: {}", a.getFullName(), id, reason);
+        return athleteMapper.toResponse(athleteRepository.save(a));
+    }
+
+    // ─── Жизненный цикл ──────────────────────────────────────────────────
+
+    public AthleteResponse changeLifecycle(Long id, String statusStr, String reason) {
+        Athlete a = getEntity(id);
+        AthleteLifecycleStatus newStatus;
+        try {
+            newStatus = AthleteLifecycleStatus.valueOf(statusStr.trim().toUpperCase());
+        } catch (Exception e) {
+            throw new BadRequestException("Неизвестный статус жизненного цикла: " + statusStr);
+        }
+        a.setLifecycleStatus(newStatus);
+        a.setStatusNote(reason);
+        log.info("Спортсмен {} (id={}): жизненный цикл -> {} ({})", a.getFullName(), id, newStatus, reason);
+        return athleteMapper.toResponse(athleteRepository.save(a));
+    }
+
+    private Athlete getEntity(Long id) {
+        return athleteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Спортсмен", "id", id));
+    }
+
     public MedalResponse addMedal(Long athleteId, MedalRequest request) {
         Athlete athlete = athleteRepository.findById(athleteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Спортсмен", "id", athleteId));
@@ -226,12 +287,22 @@ public class AthleteService {
     }
 
     private Specification<Athlete> buildSpecification(String search, String sport, String rank,
-                                                       String region, String medStatus) {
+                                                       String region, String medStatus, String verificationStatus) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
             // Only non-archived athletes
             predicates.add(cb.equal(root.get("isArchived"), false));
+
+            // Filter by verification status (DRAFT / IN_REVIEW / VERIFIED / REJECTED)
+            if (verificationStatus != null && !verificationStatus.isBlank()) {
+                try {
+                    predicates.add(cb.equal(root.get("verificationStatus"),
+                            AthleteVerificationStatus.valueOf(verificationStatus.trim().toUpperCase())));
+                } catch (IllegalArgumentException ignored) {
+                    // неизвестный статус - фильтр не применяем
+                }
+            }
 
             // Search by fullName (case-insensitive LIKE)
             if (search != null && !search.isBlank()) {

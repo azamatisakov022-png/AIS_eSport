@@ -20,5 +20,9 @@ public class AthleteListResponse {
     private String organizationName;
     private String medStatus;
     private String insStatus;
+    private String verificationStatus;
+    private String verificationStatusLabel;
+    private String lifecycleStatus;
+    private String lifecycleStatusLabel;
     private boolean isArchived;
 }

@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ATHLETES_DATA } from './PublicAthletes'
+import { publicApi } from '../api/esport'
 
 const RANK_BADGE = {
     'ЗМС КР':    { bg: 'rgba(255,59,48,0.15)', color: '#FF6B6B' },
@@ -30,7 +32,26 @@ function countMedals(medals) {
 export default function PublicAthleteProfile() {
     const { t } = useTranslation()
     const { id } = useParams()
-    const athlete = ATHLETES_DATA.find(a => a.id === Number(id))
+    const [athlete, setAthlete] = useState(null)
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        let alive = true
+        setLoading(true)
+        publicApi.athlete(id)
+            .then(a => { if (alive) setAthlete(a) })
+            .catch(() => { if (alive) setAthlete(ATHLETES_DATA.find(a => a.id === Number(id)) || null) })
+            .finally(() => { if (alive) setLoading(false) })
+        return () => { alive = false }
+    }, [id])
+
+    if (loading) {
+        return (
+            <div className="pub-section">
+                <div className="pub-container" style={{ textAlign: 'center', padding: '60px 0', color: 'var(--theme-text-secondary)' }}>Загрузка…</div>
+            </div>
+        )
+    }
 
     if (!athlete) {
         return (
@@ -110,7 +131,7 @@ export default function PublicAthleteProfile() {
                         <div style={s.infoRow}><span style={s.infoLabel}>Тренер</span><span style={s.infoValue}>{athlete.coach}</span></div>
                         <div style={s.infoRow}><span style={s.infoLabel}>Организация</span><span style={s.infoValue}>{athlete.org}</span></div>
                         <div style={s.infoRow}><span style={s.infoLabel}>Сборная команда</span><span style={s.infoValue}>{athlete.team || '-'}</span></div>
-                        <div style={s.infoRow}><span style={s.infoLabel}>Год рождения</span><span style={s.infoValue}>{athlete.birth}</span></div>
+                        <div style={s.infoRow}><span style={s.infoLabel}>Год рождения</span><span style={s.infoValue}>{athlete.birth ? String(athlete.birth).slice(0, 4) : '-'}</span></div>
                         <div style={s.infoRow}><span style={s.infoLabel}>Пол</span><span style={s.infoValue}>{athlete.sex === 'М' ? 'Мужской' : 'Женский'}</span></div>
                         <div style={s.infoRow}><span style={s.infoLabel}>Регион</span><span style={s.infoValue}>{athlete.region}</span></div>
                     </div>
@@ -120,8 +141,8 @@ export default function PublicAthleteProfile() {
                 <div style={s.block}>
                     <h2 style={s.blockTitle}>{t('public.personalInfo')}</h2>
                     <div style={s.infoTable}>
-                        <div style={s.infoRow}><span style={s.infoLabel}>№ удостоверения</span><span style={{ ...s.infoValue, fontFamily: 'monospace' }}>{athlete.certNo}</span></div>
-                        <div style={s.infoRow}><span style={s.infoLabel}>Дата присвоения</span><span style={s.infoValue}>{new Date(athlete.certDate).toLocaleDateString('ru-RU')}</span></div>
+                        <div style={s.infoRow}><span style={s.infoLabel}>№ удостоверения</span><span style={{ ...s.infoValue, fontFamily: 'monospace' }}>{athlete.certNo || '-'}</span></div>
+                        <div style={s.infoRow}><span style={s.infoLabel}>Дата присвоения</span><span style={s.infoValue}>{athlete.certDate ? new Date(athlete.certDate).toLocaleDateString('ru-RU') : '-'}</span></div>
                         <div style={{ ...s.infoRow, borderBottom: 'none' }}><span style={s.infoLabel}>Звание / разряд</span><span style={s.infoValue}>{athlete.rank}</span></div>
                     </div>
                 </div>

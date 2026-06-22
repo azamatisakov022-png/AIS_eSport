@@ -38,6 +38,12 @@ public class AthleteResponse {
 
     private List<MedalResponse> medals;
 
+    private String verificationStatus;
+    private String verificationStatusLabel;
+    private String lifecycleStatus;
+    private String lifecycleStatusLabel;
+    private String statusNote;
+
     private boolean isArchived;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

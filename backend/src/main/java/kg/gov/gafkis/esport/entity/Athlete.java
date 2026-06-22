@@ -1,6 +1,8 @@
 package kg.gov.gafkis.esport.entity;
 
 import jakarta.persistence.*;
+import kg.gov.gafkis.esport.entity.enums.AthleteLifecycleStatus;
+import kg.gov.gafkis.esport.entity.enums.AthleteVerificationStatus;
 import kg.gov.gafkis.esport.entity.enums.Sex;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -78,6 +80,19 @@ public class Athlete {
     @Column(name = "is_archived", nullable = false)
     @Builder.Default
     private boolean isArchived = false;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "verification_status", nullable = false, length = 20)
+    @Builder.Default
+    private AthleteVerificationStatus verificationStatus = AthleteVerificationStatus.DRAFT;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "lifecycle_status", nullable = false, length = 20)
+    @Builder.Default
+    private AthleteLifecycleStatus lifecycleStatus = AthleteLifecycleStatus.ACTIVE;
+
+    @Column(name = "status_note", length = 500)
+    private String statusNote;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

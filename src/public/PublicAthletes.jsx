@@ -5,6 +5,7 @@ import PublicSelect from './components/PublicSelect'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import PublicHero, { PublicHeroCounter } from './components/PublicHero'
+import { publicApi } from '../api/esport'
 
 const SPORTS = ['Бокс', 'Борьба', 'Дзюдо', 'Футбол', 'Плавание', 'Лёгкая атлетика', 'Каратэ', 'Тхэквондо', 'Гимнастика', 'Шахматы', 'Тяжёлая атлетика', 'Стрельба']
 const REGIONS = ['Бишкек', 'Ош', 'Чуйская', 'Иссык-Кульская', 'Джалал-Абадская', 'Нарынская', 'Баткенская', 'Таласская', 'Ошская']
@@ -78,6 +79,23 @@ export default function PublicAthletes() {
     const [region, setRegion] = useState(searchParams.get('region') || '')
     const [page, setPage] = useState(Number(searchParams.get('page')) || 1)
 
+    // Данные из публичного API (только подтверждённые); при недоступности - демо
+    const [items, setItems] = useState(ATHLETES_DATA)
+    useEffect(() => {
+        let alive = true
+        publicApi.athletes()
+            .then(list => {
+                if (!alive || !list.length) return
+                setItems(list.map(a => ({
+                    ...a,
+                    birth: a.birth ? String(a.birth).slice(0, 4) : '',
+                    medals: a.medals || [],
+                })))
+            })
+            .catch(() => { /* остаёмся на демо-данных */ })
+        return () => { alive = false }
+    }, [])
+
     useEffect(() => {
         const params = new URLSearchParams()
         if (search) params.set('q', search)
@@ -89,14 +107,14 @@ export default function PublicAthletes() {
     }, [search, sport, rank, region, page, setSearchParams])
 
     const filtered = useMemo(() => {
-        return ATHLETES_DATA.filter(a => {
+        return items.filter(a => {
             if (search && !a.name.toLowerCase().includes(search.toLowerCase())) return false
             if (sport && a.sport !== sport) return false
             if (rank && a.rank !== rank) return false
             if (region && a.region !== region) return false
             return true
         })
-    }, [search, sport, rank, region])
+    }, [items, search, sport, rank, region])
 
     const totalPages = Math.ceil(filtered.length / PER_PAGE)
     const paged = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE)

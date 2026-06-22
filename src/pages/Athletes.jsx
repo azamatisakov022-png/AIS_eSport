@@ -6,6 +6,23 @@ import Breadcrumbs from '../components/Breadcrumbs'
 import { TableSkeleton, MetricSkeleton } from '../components/Skeleton'
 import './Athletes.css'
 import Portal from '../components/Portal'
+import { athletesApi, VERIFICATION, LIFECYCLE } from '../api/esport'
+
+const VERIF_CHIP = {
+    DRAFT: { bg: 'rgba(142,142,147,0.15)', color: '#6e6e73' },
+    IN_REVIEW: { bg: 'rgba(217,119,6,0.15)', color: '#b45309' },
+    VERIFIED: { bg: 'rgba(22,163,74,0.15)', color: '#16a34a' },
+    REJECTED: { bg: 'rgba(225,29,72,0.15)', color: '#e11d48' },
+}
+const LIFE_CHIP = {
+    ACTIVE: { bg: 'rgba(22,163,74,0.12)', color: '#16a34a' },
+    INACTIVE: { bg: 'rgba(142,142,147,0.15)', color: '#6e6e73' },
+    SUSPENDED: { bg: 'rgba(217,119,6,0.15)', color: '#b45309' },
+    DISQUALIFIED: { bg: 'rgba(225,29,72,0.15)', color: '#e11d48' },
+    RETIRED: { bg: 'rgba(99,102,241,0.15)', color: '#6366f1' },
+    EXCLUDED: { bg: 'rgba(60,60,67,0.18)', color: '#3c3c43' },
+}
+function chip(map, code) { return map[code] || { bg: 'rgba(142,142,147,0.15)', color: '#6e6e73' } }
 
 const SPORTS = ['Бокс', 'Борьба', 'Дзюдо', 'Футбол', 'Плавание', 'Лёгкая атлетика', 'Каратэ', 'Тхэквондо', 'Гимнастика', 'Шахматы', 'Тяжёлая атлетика', 'Стрельба']
 const REGIONS = ['Бишкек', 'Ош', 'Чуйская', 'Иссык-Кульская', 'Джалал-Абадская', 'Нарынская', 'Баткенская', 'Таласская', 'Ошская']
@@ -13,7 +30,7 @@ const RANKS = ['ЗМС КР', 'МСМК', 'МС КР', 'КМС', 'I р.', 'II р
 const ORGS = ['СДЮСШОР №3', 'ДЮСШ «Олимп»', 'Ошская СДЮСШОР', 'СК «Иссык-Куль»', 'ДЮСШ Нарынской обл.', 'СДЮСШОР «Кубат»', 'ФК «Дордой»', 'Шахматный клуб «Стратегия»', 'СДЮСШОР по гимнастике', 'ДЮСШ №5 г. Ош', 'Водный центр «Дельфин»', 'Стрелковый клуб КР']
 const COLORS = ['#2563EB', '#059669', '#7c3aed', '#d97706', '#e11d48', '#0d9488', '#6366f1', '#0891b2']
 
-function fmt(d) { return new Date(d).toLocaleDateString('ru-RU') }
+function fmt(d) { return d ? new Date(d).toLocaleDateString('ru-RU') : '-' }
 function initials(n) { const p = n.split(' '); return (p[0]?.[0] || '') + (p[1]?.[0] || '') }
 function avColor(id) { return COLORS[id % COLORS.length] }
 
@@ -79,13 +96,22 @@ const EMPTY_FORM = {
 export default function Athletes() {
     const { t } = useTranslation()
     const toast = useToast()
-    const [data] = useState(MOCK)
+    const [data, setData] = useState([])
     const [isLoading, setIsLoading] = useState(true)
+    const [apiError, setApiError] = useState(false)
+    const [verF, setVerF] = useState('')
+    const [reload, setReload] = useState(0)
 
     useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 800)
-        return () => clearTimeout(timer)
-    }, [])
+        let alive = true
+        setIsLoading(true)
+        athletesApi.list({ verification: verF })
+            .then(({ items }) => { if (alive) { setData(items); setApiError(false) } })
+            .catch(() => { if (alive) { setData(MOCK); setApiError(true) } })
+            .finally(() => { if (alive) setIsLoading(false) })
+        return () => { alive = false }
+    }, [verF, reload])
+
     const [search, setSearch] = useState('')
     const [sportF, setSportF] = useState('')
     const [rankF, setRankF] = useState('')
@@ -96,10 +122,36 @@ export default function Athletes() {
     const [addModal, setAddModal] = useState(false)
     const [form, setForm] = useState(EMPTY_FORM)
 
+    const refresh = () => setReload(r => r + 1)
+
+    async function runAction(label, promise) {
+        try { await promise; toast(label); refresh() }
+        catch (e) { toast('Ошибка: ' + (e.message || 'не удалось')) }
+    }
+    const doSubmit = (id) => runAction('Отправлено на проверку', athletesApi.submit(id))
+    const doVerify = (id) => runAction('Запись подтверждена', athletesApi.verify(id))
+    const doReject = (id) => { const r = window.prompt('Причина отказа:'); if (r !== null) runAction('Запись отклонена', athletesApi.reject(id, r)) }
+    const doLifecycle = (id, status) => { if (!status) return; runAction('Статус изменён', athletesApi.lifecycle(id, status, null)) }
+
+    async function saveNew() {
+        if (!form.name || !form.birth) { toast('Заполните ФИО и дату рождения'); return }
+        try {
+            await athletesApi.create({
+                fullName: form.name, birthDate: form.birth,
+                sex: form.sex === 'Ж' ? 'FEMALE' : 'MALE',
+                phone: form.phone || null, email: form.email || null,
+                region: form.region || null, sport: form.sport || null,
+                rank: form.rank || null, coachName: form.coach || null,
+            })
+            toast('Спортсмен добавлен (статус «Черновик»)')
+            setAddModal(false); refresh()
+        } catch (e) { toast('Ошибка: ' + (e.message || 'не удалось')) }
+    }
+
     const enriched = useMemo(() => data.map(a => ({
         ...a,
-        _med: medStatus(a.medExp, t),
-        _ins: insStatus(a.insExp, t),
+        _med: a._med || medStatus(a.medExp, t),
+        _ins: a._ins || insStatus(a.insExp, t),
     })), [data, t])
 
     const filtered = useMemo(() => enriched.filter(a => {
@@ -190,7 +242,12 @@ export default function Athletes() {
                     <option value="expiring">{t('status.expiring')}</option>
                     <option value="expired">{t('status.expired')}</option>
                 </select>
+                <select className="ath-filters__select" value={verF} onChange={e => setVerF(e.target.value)} title="Статус верификации">
+                    <option value="">Все статусы</option>
+                    {VERIFICATION.map(v => <option key={v.code} value={v.code}>{v.label}</option>)}
+                </select>
             </div>
+            {apiError && <div style={{ margin: '0 0 12px', fontSize: 12, color: '#b45309' }}>Бэкенд недоступен - показаны демо-данные. Запустите сервер (порт 8082).</div>}
 
             {/* Table */}
             <div className="ath-table-wrap">
@@ -203,12 +260,13 @@ export default function Athletes() {
                             <th>{t('athletes.table.rank')}</th>
                             <th>{t('athletes.table.coach')}</th>
                             <th>{t('athletes.table.medical')}</th>
-                            <th>{t('athletes.table.insurance')}</th>
+                            <th>Верификация</th>
+                            <th>Статус</th>
                             <th>{t('athletes.table.actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {filtered.length === 0 && <tr><td colSpan={8} className="ath-table__empty">{t('athletes.notFound')}</td></tr>}
+                        {filtered.length === 0 && <tr><td colSpan={9} className="ath-table__empty">{t('athletes.notFound')}</td></tr>}
                         {filtered.map(a => (
                             <tr key={a.id}>
                                 <td>
@@ -225,7 +283,12 @@ export default function Athletes() {
                                 <td><span className={`ath-rank ${rankClass(a.rank)}`}>{a.rank}</span></td>
                                 <td style={{ fontSize: 12 }}>{a.coach}</td>
                                 <td><span className={`ath-badge ${a._med.cls}`}>{a._med.label}</span></td>
-                                <td><span className={`ath-badge ${a._ins.cls}`}>{a._ins.label}</span></td>
+                                <td>{a.verificationStatusLabel
+                                    ? <span style={{ background: chip(VERIF_CHIP, a.verificationStatus).bg, color: chip(VERIF_CHIP, a.verificationStatus).color, padding: '2px 8px', borderRadius: 8, fontSize: 11, fontWeight: 600, whiteSpace: 'nowrap' }}>{a.verificationStatusLabel}</span>
+                                    : '-'}</td>
+                                <td>{a.lifecycleStatusLabel
+                                    ? <span style={{ background: chip(LIFE_CHIP, a.lifecycleStatus).bg, color: chip(LIFE_CHIP, a.lifecycleStatus).color, padding: '2px 8px', borderRadius: 8, fontSize: 11, fontWeight: 600, whiteSpace: 'nowrap' }}>{a.lifecycleStatusLabel}</span>
+                                    : '-'}</td>
                                 <td><button className="ath-btn ath-btn--primary" onClick={() => openDrawer(a.id)}>Просмотр</button></td>
                             </tr>
                         ))}
@@ -347,10 +410,24 @@ export default function Athletes() {
                             )}
                         </div>
 
-                        <div className="ath-drawer__footer">
-                            <button className="ath-btn ath-btn--primary" style={{ padding: '10px 20px', fontSize: 13 }} onClick={() => toast('Редактирование')}>{t('common.edit')}</button>
+                        {da.statusNote && (
+                            <div style={{ padding: '0 20px', fontSize: 12, color: '#b45309' }}>Причина / примечание: {da.statusNote}</div>
+                        )}
+                        <div className="ath-drawer__footer" style={{ flexWrap: 'wrap', gap: 8 }}>
+                            {(da.verificationStatus === 'DRAFT' || da.verificationStatus === 'REJECTED') && (
+                                <button className="ath-btn ath-btn--primary" style={{ padding: '10px 20px', fontSize: 13 }} onClick={() => { doSubmit(da.id); setDrawer(null) }}>Отправить на проверку</button>
+                            )}
+                            {da.verificationStatus === 'IN_REVIEW' && (
+                                <>
+                                    <button className="ath-btn ath-btn--primary" style={{ padding: '10px 20px', fontSize: 13 }} onClick={() => { doVerify(da.id); setDrawer(null) }}>Подтвердить</button>
+                                    <button className="ath-btn ath-btn--red" style={{ padding: '10px 20px', fontSize: 13 }} onClick={() => { doReject(da.id); setDrawer(null) }}>Отклонить</button>
+                                </>
+                            )}
+                            <select className="ath-filters__select" value="" style={{ minWidth: 170 }} onChange={e => { doLifecycle(da.id, e.target.value); setDrawer(null) }}>
+                                <option value="">Сменить статус…</option>
+                                {LIFECYCLE.map(l => <option key={l.code} value={l.code}>{l.label}</option>)}
+                            </select>
                             <button className="ath-btn ath-btn--outline" style={{ padding: '10px 20px', fontSize: 13 }} onClick={() => toast('Печать паспорта спортсмена')}>{t('athletes.actions.printPassport')}</button>
-                            <button className="ath-btn ath-btn--red" style={{ padding: '10px 20px', fontSize: 13 }} onClick={() => toast('Архивирование')}>{t('athletes.actions.archive')}</button>
                         </div>
                     </div>
                 </div>
@@ -434,7 +511,7 @@ export default function Athletes() {
                         </div>
                         <div className="ath-modal__footer">
                             <button className="ath-btn ath-btn--outline" onClick={() => setAddModal(false)}>{t('common.cancel')}</button>
-                            <button className="ath-btn ath-btn--primary" style={{ padding: '10px 24px' }} onClick={() => { toast('Спортсмен сохранён (демо)'); setAddModal(false) }}>{t('common.save')}</button>
+                            <button className="ath-btn ath-btn--primary" style={{ padding: '10px 24px' }} onClick={saveNew}>{t('common.save')}</button>
                         </div>
                     </div>
                 </div>

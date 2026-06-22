@@ -1,6 +1,7 @@
 package kg.gov.gafkis.esport.repository;
 
 import kg.gov.gafkis.esport.entity.Athlete;
+import kg.gov.gafkis.esport.entity.enums.AthleteVerificationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,6 @@ public interface AthleteRepository extends JpaRepository<Athlete, Long>, JpaSpec
     long countByRankAndIsArchivedFalse(String rank);
 
     Page<Athlete> findByIsArchivedFalse(Pageable pageable);
+
+    Page<Athlete> findByIsArchivedFalseAndVerificationStatus(AthleteVerificationStatus verificationStatus, Pageable pageable);
 }
