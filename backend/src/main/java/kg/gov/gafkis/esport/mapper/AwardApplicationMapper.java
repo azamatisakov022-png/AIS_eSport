@@ -23,11 +23,15 @@ public interface AwardApplicationMapper {
     @Mapping(target = "athleteId", expression = "java(app.getAthlete() != null ? app.getAthlete().getId() : null)")
     @Mapping(target = "athleteName", expression = "java(app.getAthlete() != null ? app.getAthlete().getFullName() : null)")
     @Mapping(target = "remainingDays", expression = "java(computeRemainingDays(app.getDeadline()))")
+    @Mapping(target = "routingLevel", expression = "java(routingLevel(app.getAward()))")
+    @Mapping(target = "routingBody", expression = "java(routingBody(app.getAward()))")
     @Mapping(target = "commissionMembers", source = "commissionMembers")
     @Mapping(target = "history", source = "history")
     AwardApplicationResponse toResponse(AwardApplication app);
 
     @Mapping(target = "remainingDays", expression = "java(computeRemainingDays(app.getDeadline()))")
+    @Mapping(target = "routingLevel", expression = "java(routingLevel(app.getAward()))")
+    @Mapping(target = "routingBody", expression = "java(routingBody(app.getAward()))")
     AwardApplicationListResponse toListResponse(AwardApplication app);
 
     List<AwardApplicationListResponse> toListResponse(List<AwardApplication> apps);
@@ -59,5 +63,26 @@ public interface AwardApplicationMapper {
         }
         long days = ChronoUnit.DAYS.between(LocalDate.now(), deadline);
         return Math.max(days, 0);
+    }
+
+    /** Уровень маршрута присвоения по званию/разряду (ответ Управления развития массового спорта). */
+    @Named("routingLevel")
+    default String routingLevel(String award) {
+        if (award == null) return "-";
+        String u = award.toUpperCase();
+        if (u.contains("ЗМС") || u.contains("ЗАСЛУЖЕНН")) return "Кабинет Министров";
+        if (u.contains("МСМК") || u.contains("МС КР") || u.contains("МАСТЕР СПОРТА")
+                || u.contains("КМС") || u.contains("КАНДИДАТ")) return "Агентство";
+        return "Региональный орган";
+    }
+
+    /** Кто принимает решение по уровню маршрута. */
+    @Named("routingBody")
+    default String routingBody(String award) {
+        return switch (routingLevel(award)) {
+            case "Кабинет Министров" -> "Представление Агентства в Кабинет Министров (ЗМС)";
+            case "Агентство" -> "Приказ Агентства через комиссию (КМС/МС/МСМК)";
+            default -> "Решение регионального органа (разряды I-III)";
+        };
     }
 }

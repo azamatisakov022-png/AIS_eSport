@@ -106,6 +106,34 @@ export const athletesApi = {
   lifecycle(id, status, reason) { return authFetch(`/athletes/${id}/lifecycle`, { method: 'POST', body: JSON.stringify({ status, reason }) }) },
 }
 
+// ── Заявления на звание/разряд ──────────────────────────────────────────────
+export const awardsApi = {
+  async list({ search, group, status, size = 100 } = {}) {
+    const p = new URLSearchParams()
+    if (search) p.set('search', search)
+    if (group) p.set('group', group)
+    if (status) p.set('status', status)
+    p.set('size', size)
+    const data = await authFetch(`/award-applications?${p.toString()}`)
+    return { items: data.content || [], total: data.totalElements }
+  },
+  get(id) { return authFetch(`/award-applications/${id}`) },
+  create(payload) { return authFetch('/award-applications', { method: 'POST', body: JSON.stringify(payload) }) },
+  changeStatus(id, status, reason) {
+    return authFetch(`/award-applications/${id}/status`, { method: 'PUT', body: JSON.stringify({ status, reason }) })
+  },
+}
+
+// допустимые переходы статуса заявки (зеркало бэкенда)
+export const AWARD_NEXT = {
+  'Подана': ['На рассмотрении', 'Отклонена', 'Отозвана'],
+  'На рассмотрении': ['Одобрена', 'Отклонена', 'На доработке'],
+  'На доработке': ['На рассмотрении', 'Отозвана'],
+  'Одобрена': ['Награждена'],
+  'Отклонена': ['Подана'],
+  'Отозвана': ['Подана'],
+}
+
 // ── Публичный портал ────────────────────────────────────────────────────────
 export const publicApi = {
   async athletes({ size = 200 } = {}) {

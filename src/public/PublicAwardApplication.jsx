@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+import { awardsApi } from '../api/esport'
 
 const SPORTS = [
     'Дзюдо', 'Бокс', 'Борьба', 'Тхэквондо', 'Каратэ', 'Лёгкая атлетика',
@@ -148,13 +149,30 @@ export default function PublicAwardApplication() {
     }
     const handleBack = () => { if (step > 1) setStep(step - 1) }
 
-    const handleSubmit = () => {
-        if (!step3Valid) return
+    const [sending, setSending] = useState(false)
+
+    const handleSubmit = async () => {
+        if (!step3Valid || sending) return
         const data = getValues()
+        const name = `${data.lastName} ${data.firstName} ${data.middleName || ''}`.trim()
+        let number = generateAppNumber()
+        setSending(true)
+        try {
+            // Реальная подача в бэкенд: заявка попадает в очередь специалиста
+            const created = await awardsApi.create({
+                applicantName: name,
+                award: awardObj?.label || award,
+                sport: data.sport,
+            })
+            if (created?.appNo) number = created.appNo
+        } catch {
+            // Демо-режим: бэкенд недоступен — используем локально сгенерированный номер
+        }
+        setSending(false)
         setSubmitted({
-            number: generateAppNumber(),
+            number,
             date: new Date().toLocaleDateString('ru-RU'),
-            name: `${data.lastName} ${data.firstName} ${data.middleName || ''}`.trim(),
+            name,
             award: awardObj?.label || award,
             sport: data.sport,
             docCount: docList.filter(d => docs[d.key]).length,
@@ -549,11 +567,11 @@ export default function PublicAwardApplication() {
                         <div style={s.stepFooter}>
                             <button style={s.btnOutline} onClick={handleBack}>{t('public.backBtn')}</button>
                             <button
-                                style={{ ...s.btnPrimary, padding: '14px 40px', fontSize: 15, opacity: step3Valid ? 1 : 0.4, cursor: step3Valid ? 'pointer' : 'not-allowed' }}
+                                style={{ ...s.btnPrimary, padding: '14px 40px', fontSize: 15, opacity: (step3Valid && !sending) ? 1 : 0.4, cursor: (step3Valid && !sending) ? 'pointer' : 'not-allowed' }}
                                 onClick={handleSubmit}
-                                disabled={!step3Valid}
+                                disabled={!step3Valid || sending}
                             >
-                                {t('public.submitApplication')}
+                                {sending ? t('public.sending', 'Отправка…') : t('public.submitApplication')}
                             </button>
                         </div>
                     </div>

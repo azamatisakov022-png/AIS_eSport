@@ -19,6 +19,8 @@ public class AwardApplicationListResponse {
     private int docsUploaded;
     private int docsTotal;
     private String awardGroup;
+    private String routingLevel;
+    private String routingBody;
     private LocalDate deadline;
     private Long remainingDays;
 }

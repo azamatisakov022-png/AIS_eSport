@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useToast } from '../context/ToastContext'
+import { awardsApi } from '../api/esport'
 import { MetricIcons } from '../components/CabinetIcons'
 import './AwardApplications.css'
 import Portal from '../components/Portal'
@@ -34,9 +35,13 @@ const COLORS = ['#2563EB', '#059669', '#7c3aed', '#d97706', '#e11d48', '#0d9488'
 function getColor(id) { return COLORS[id % COLORS.length] }
 
 function awardGroup(award) {
-    if (['ЗМС КР', 'ЗМСвет КР', 'ЗТ КР', 'МСМК', 'МСМКвет', 'МС КР', 'МСвет КР'].includes(award)) return 'A'
-    if (award === 'КМС') return 'B'
-    return 'C'
+    if (!award) return 'C'
+    const u = award.toUpperCase()
+    if (u.includes('КМС') || u.includes('КАНДИДАТ')) return 'B'               // группа B
+    if (u.includes('ЗАСЛУЖЕНН') || u.includes('ЗМС') || u.includes('ЗТ')
+        || u.includes('МСМК') || u.includes('МАСТЕР СПОРТА') || u.includes('МС КР')
+        || u.includes('МСВЕТ')) return 'A'                                   // высшие звания
+    return 'C'                                                                // разряды
 }
 function deadlineDays(group) { return group === 'A' ? 30 : group === 'B' ? 20 : 15 }
 
@@ -96,13 +101,40 @@ export default function AwardApplications() {
     const [search, setSearch] = useState('')
     const [groupF, setGroupF] = useState('')
     const [statusF, setStatusF] = useState('all')
+    const [rows, setRows] = useState(MOCK)
 
-    const enriched = useMemo(() => MOCK.map(a => {
+    // Загрузка из бэкенда (с фолбэком на демо-данные при недоступности API)
+    useEffect(() => {
+        let alive = true
+        awardsApi.list({ size: 200 })
+            .then(({ items }) => {
+                if (!alive || !items.length) return
+                setRows(items.map(a => ({
+                    id: a.id,
+                    appNo: a.appNo,
+                    name: a.applicantName || a.athleteName || '—',
+                    award: a.award,
+                    sport: a.sport || '—',
+                    submitDate: a.submitDate,
+                    status: a.status,
+                    docsUploaded: a.docsUploaded ?? 0,
+                    docsTotal: a.docsTotal ?? 0,
+                    _group: a.awardGroup,
+                    _routing: a.routingLevel,
+                    _deadline: a.deadline,
+                    _remain: a.remainingDays,
+                })))
+            })
+            .catch(() => { /* остаёмся на демо-данных */ })
+        return () => { alive = false }
+    }, [])
+
+    const enriched = useMemo(() => rows.map(a => {
         const g = awardGroup(a.award)
-        const dl = addWorkDays(a.submitDate, deadlineDays(g))
-        const remain = daysUntil(dl)
-        return { ...a, group: g, deadline: dl, remain }
-    }), [])
+        const dl = a._deadline || addWorkDays(a.submitDate, deadlineDays(g))
+        const remain = a._remain != null ? a._remain : daysUntil(dl)
+        return { ...a, group: g, deadline: dl, remain, routing: a._routing }
+    }), [rows])
 
     const filtered = useMemo(() => {
         return enriched.filter(a => {
@@ -117,8 +149,8 @@ export default function AwardApplications() {
         total: enriched.length,
         reviewing: enriched.filter(a => a.status === 'На рассмотрении').length,
         expiring: enriched.filter(a => (a.status === 'На рассмотрении' || a.status === 'Подана') && a.remain <= 5 && a.remain > 0).length,
-        awarded: enriched.filter(a => a.status === 'Присвоено').length,
-        rejected: enriched.filter(a => a.status === 'Отказано').length,
+        awarded: enriched.filter(a => a.status === 'Присвоено' || a.status === 'Награждена').length,
+        rejected: enriched.filter(a => a.status === 'Отказано' || a.status === 'Отклонена').length,
     }), [enriched])
 
     const statusBadge = (status) => {
@@ -126,8 +158,13 @@ export default function AwardApplications() {
             'Подана':              'aw-badge--blue',
             'На рассмотрении':     'aw-badge--yellow',
             'Требует доработки':   'aw-badge--orange',
+            'На доработке':        'aw-badge--orange',
+            'Одобрена':            'aw-badge--green',
+            'Награждена':          'aw-badge--green',
             'Присвоено':           'aw-badge--green',
             'Отказано':            'aw-badge--red',
+            'Отклонена':           'aw-badge--red',
+            'Отозвана':            'aw-badge--gray',
             'Лишён':               'aw-badge--gray',
         }
         const icons = {
@@ -239,6 +276,7 @@ export default function AwardApplications() {
                                     <th>{t('awardApplications.table.applicant')}</th>
                                     <th>{t('awardApplications.table.rank')}</th>
                                     <th>{t('fields.sport')}</th>
+                                    <th>Маршрут</th>
                                     <th>{t('awardApplications.table.submitDate')}</th>
                                     <th>{t('awardApplications.table.remaining')}</th>
                                     <th>{t('awardApplications.table.completeness')}</th>
@@ -248,11 +286,11 @@ export default function AwardApplications() {
                             </thead>
                             <tbody>
                                 {filtered.length === 0 && (
-                                    <tr><td colSpan={9} className="aw-table__empty">Заявки не найдены</td></tr>
+                                    <tr><td colSpan={10} className="aw-table__empty">Заявки не найдены</td></tr>
                                 )}
                                 {filtered.map(a => {
                                     const daysClass = a.remain <= 0 ? 'aw-days--danger' : a.remain <= 5 ? 'aw-days--danger' : a.remain <= 10 ? 'aw-days--warn' : 'aw-days--ok'
-                                    const isTerminal = a.status === 'Присвоено' || a.status === 'Отказано'
+                                    const isTerminal = ['Присвоено', 'Награждена', 'Отказано', 'Отклонена', 'Отозвана'].includes(a.status)
                                     return (
                                         <tr key={a.id}>
                                             <td><span className="aw-appno">{a.appNo}</span></td>
@@ -269,6 +307,7 @@ export default function AwardApplications() {
                                                 </div>
                                             </td>
                                             <td>{a.sport}</td>
+                                            <td style={{ whiteSpace: 'nowrap', fontSize: 12, color: '#475569' }}>{a.routing || '—'}</td>
                                             <td style={{ whiteSpace: 'nowrap' }}>{fmt(a.submitDate)}</td>
                                             <td>
                                                 {!isTerminal ? (

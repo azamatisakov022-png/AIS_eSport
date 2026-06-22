@@ -51,7 +51,8 @@ public class AwardApplicationService {
     private final AthleteRepository athleteRepository;
     private final AwardApplicationMapper awardApplicationMapper;
 
-    private static final DateTimeFormatter APP_NO_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd'-'HHmmss");
+    // включает миллисекунды, чтобы номера заявок не совпадали при подаче в одну секунду
+    private static final DateTimeFormatter APP_NO_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd'-'HHmmssSSS");
 
     /**
      * Valid status transitions: from -> allowed targets.
@@ -155,6 +156,19 @@ public class AwardApplicationService {
         }
 
         app.setStatus(newStatus);
+
+        // При присвоении (Награждена) - обновляем разряд/звание спортсмена в реестре
+        if ("Награждена".equals(newStatus) && app.getAthlete() != null) {
+            Athlete athlete = app.getAthlete();
+            athlete.setRank(app.getAward());
+            athleteRepository.save(athlete);
+            app.getHistory().add(AwardApplicationHistory.builder()
+                    .awardApplication(app)
+                    .action("Звание/разряд «" + app.getAward() + "» присвоено и отражено в реестре спортсмена")
+                    .userName("system")
+                    .build());
+            log.info("Спортсмену {} (id={}) присвоено: {}", athlete.getFullName(), athlete.getId(), app.getAward());
+        }
 
         // Add history record
         AwardApplicationHistory historyEntry = AwardApplicationHistory.builder()
