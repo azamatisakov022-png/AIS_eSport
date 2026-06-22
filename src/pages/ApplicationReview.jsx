@@ -2,19 +2,21 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useToast } from '../context/ToastContext'
-import { awardsApi, AWARD_NEXT } from '../api/esport'
+import { awardsApi } from '../api/esport'
 import Breadcrumbs from '../components/Breadcrumbs'
 import './ApplicationReview.css'
 
 // Подписи и стиль кнопок для каждого целевого статуса (зеркало статусной машины бэкенда)
 const ACTIONS = {
-    'На рассмотрении': { label: 'Принять на рассмотрение', cls: 'ar-btn--green' },
-    'Одобрена':        { label: 'Одобрить', cls: 'ar-btn--green' },
-    'Награждена':      { label: 'Присвоить звание', cls: 'ar-btn--green' },
-    'На доработке':    { label: 'На доработку', cls: 'ar-btn--orange', needReason: true },
-    'Отклонена':       { label: 'Отказать', cls: 'ar-btn--red', needReason: true },
-    'Отозвана':        { label: 'Отозвать', cls: 'ar-btn--outline' },
-    'Подана':          { label: 'Вернуть в работу', cls: 'ar-btn--outline' },
+    'Проверка комплектности':   { label: 'Взять на проверку', cls: 'ar-btn--outline' },
+    'На рассмотрении':          { label: 'Документы приняты — на рассмотрение', cls: 'ar-btn--green' },
+    'На доработке':             { label: 'Вернуть на доработку', cls: 'ar-btn--orange', needReason: true },
+    'Одобрено':                 { label: 'Одобрить', cls: 'ar-btn--green' },
+    'Ожидание решения Кабмина': { label: 'Передать в Кабинет Министров', cls: 'ar-btn--green' },
+    'Приказ подписан':          { label: 'Подписать приказ (директор, ЭЦП)', cls: 'ar-btn--green' },
+    'Присвоено':                { label: 'Звание присвоено', cls: 'ar-btn--green' },
+    'Отклонена':                { label: 'Отказать (директор)', cls: 'ar-btn--red', needReason: true },
+    'Отозвана':                 { label: 'Отозвать', cls: 'ar-btn--outline' },
 }
 
 // Hardcoded mock data to simulate DB
@@ -81,6 +83,9 @@ export default function ApplicationReview() {
                     group: a.awardGroup,
                     routingLevel: a.routingLevel,
                     routingBody: a.routingBody,
+                    track: a.track,
+                    trackLabel: a.trackLabel,
+                    nextStatuses: a.nextStatuses || [],
                     athleteName: a.athleteName,
                     history: a.history || [],
                     _live: true,
@@ -92,7 +97,7 @@ export default function ApplicationReview() {
 
     const group = awardGroup(app.award)
     const docs = getDocList(app.award)
-    const transitions = AWARD_NEXT[app.status] || []
+    const transitions = app.nextStatuses || []
 
     const handleAction = async (target) => {
         const cfg = ACTIONS[target] || {}
@@ -108,7 +113,7 @@ export default function ApplicationReview() {
         setBusy(true)
         try {
             await awardsApi.changeStatus(app.id, target, conclusion.trim() || undefined)
-            toast(target === 'Награждена'
+            toast(target === 'Присвоено'
                 ? 'Звание присвоено — внесено в карточку спортсмена в реестре'
                 : `Статус изменён: ${target}`)
             setTimeout(() => navigate('/award-applications'), 1200)
@@ -171,6 +176,11 @@ export default function ApplicationReview() {
                                 <div className="ar-info-item__label">Маршрут присвоения</div>
                                 <div className="ar-info-item__value" style={{ fontWeight: 700 }}>{app.routingLevel}</div>
                                 <div style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>{app.routingBody}</div>
+                                {app.trackLabel && (
+                                    <div style={{ fontSize: 12, color: '#2563EB', marginTop: 6, fontWeight: 600 }}>
+                                        Порядок: {app.trackLabel}
+                                    </div>
+                                )}
                             </div>
                         )}
 

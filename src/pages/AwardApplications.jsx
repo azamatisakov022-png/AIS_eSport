@@ -10,11 +10,16 @@ import { useNavigate } from 'react-router-dom'
 
 const GROUP_KEYS = { A: 'awardApplications.groups.A', B: 'awardApplications.groups.B', C: 'awardApplications.groups.C' }
 const STATUS_KEYS = [
-    { value: 'Подана',              labelKey: 'awardApplications.statuses.submitted' },
-    { value: 'На рассмотрении',     labelKey: 'awardApplications.statuses.underReview' },
-    { value: 'Требует доработки',   labelKey: 'awardApplications.statuses.needsRevision' },
-    { value: 'Присвоено',           labelKey: 'awardApplications.statuses.awarded' },
-    { value: 'Отказано',            labelKey: 'awardApplications.statuses.rejected' },
+    { value: 'Подана',                   label: 'Подана' },
+    { value: 'Проверка комплектности',   label: 'Проверка комплектности' },
+    { value: 'На доработке',             label: 'На доработке' },
+    { value: 'На рассмотрении',          label: 'На рассмотрении' },
+    { value: 'Одобрено',                 label: 'Одобрено' },
+    { value: 'Ожидание решения Кабмина', label: 'Ожидание решения Кабмина' },
+    { value: 'Приказ подписан',          label: 'Приказ подписан' },
+    { value: 'Присвоено',                label: 'Присвоено' },
+    { value: 'Отклонена',                label: 'Отклонена' },
+    { value: 'Отозвана',                 label: 'Отозвана' },
 ]
 const DEPRIVE_REASONS = ['Допинг', 'Судимость', 'Недостоверные документы', 'Нарушение этики']
 
@@ -155,17 +160,21 @@ export default function AwardApplications() {
 
     const statusBadge = (status) => {
         const map = {
-            'Подана':              'aw-badge--blue',
-            'На рассмотрении':     'aw-badge--yellow',
-            'Требует доработки':   'aw-badge--orange',
-            'На доработке':        'aw-badge--orange',
-            'Одобрена':            'aw-badge--green',
-            'Награждена':          'aw-badge--green',
-            'Присвоено':           'aw-badge--green',
-            'Отказано':            'aw-badge--red',
-            'Отклонена':           'aw-badge--red',
-            'Отозвана':            'aw-badge--gray',
-            'Лишён':               'aw-badge--gray',
+            'Подана':                   'aw-badge--blue',
+            'Проверка комплектности':   'aw-badge--blue',
+            'Требует доработки':        'aw-badge--orange',
+            'На доработке':             'aw-badge--orange',
+            'На рассмотрении':          'aw-badge--yellow',
+            'Ожидание решения Кабмина': 'aw-badge--yellow',
+            'Одобрено':                 'aw-badge--green',
+            'Одобрена':                 'aw-badge--green',
+            'Приказ подписан':          'aw-badge--green',
+            'Награждена':               'aw-badge--green',
+            'Присвоено':                'aw-badge--green',
+            'Отказано':                 'aw-badge--red',
+            'Отклонена':                'aw-badge--red',
+            'Отозвана':                 'aw-badge--gray',
+            'Лишён':                    'aw-badge--gray',
         }
         const icons = {
             'Подана': '', 'На рассмотрении': '', 'Требует доработки': '',
@@ -263,7 +272,7 @@ export default function AwardApplications() {
                         </select>
                         <select className="aw-filters__select" value={statusF} onChange={e => setStatusF(e.target.value)}>
                             <option value="all">{t('common.allStatuses')}</option>
-                            {STATUS_KEYS.map(st => <option key={st.value} value={st.value}>{t(st.labelKey)}</option>)}
+                            {STATUS_KEYS.map(st => <option key={st.value} value={st.value}>{st.label}</option>)}
                         </select>
                     </div>
 

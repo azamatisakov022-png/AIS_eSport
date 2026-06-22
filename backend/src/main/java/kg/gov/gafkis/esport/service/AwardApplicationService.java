@@ -36,8 +36,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -53,18 +51,6 @@ public class AwardApplicationService {
 
     // включает миллисекунды, чтобы номера заявок не совпадали при подаче в одну секунду
     private static final DateTimeFormatter APP_NO_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd'-'HHmmssSSS");
-
-    /**
-     * Valid status transitions: from -> allowed targets.
-     */
-    private static final Map<String, Set<String>> STATUS_TRANSITIONS = Map.of(
-            "Подана", Set.of("На рассмотрении", "Отклонена", "Отозвана"),
-            "На рассмотрении", Set.of("Одобрена", "Отклонена", "На доработке"),
-            "На доработке", Set.of("На рассмотрении", "Отозвана"),
-            "Одобрена", Set.of("Награждена"),
-            "Отклонена", Set.of("Подана"),
-            "Отозвана", Set.of("Подана")
-    );
 
     // ======================== Award Applications ========================
 
@@ -97,8 +83,8 @@ public class AwardApplicationService {
 
         String awardGroup = computeAwardGroup(request.getAward());
         LocalDate submitDate = LocalDate.now();
-        int workingDays = getWorkingDaysForGroup(awardGroup);
-        LocalDate deadline = addWorkingDays(submitDate, workingDays);
+        // На старте действует срок проверки комплектности; срок услуги стартует после приёма документов
+        LocalDate deadline = addWorkingDays(submitDate, AwardWorkflow.COMPLETENESS_DAYS);
         int docsTotal = request.getDocsTotal() != null ? request.getDocsTotal() : getDefaultDocsTotal(awardGroup);
 
         AwardApplication app = AwardApplication.builder()
@@ -107,7 +93,7 @@ public class AwardApplicationService {
                 .award(request.getAward())
                 .sport(request.getSport())
                 .submitDate(submitDate)
-                .status("Подана")
+                .status(AwardWorkflow.SUBMITTED)
                 .docsUploaded(0)
                 .docsTotal(docsTotal)
                 .awardGroup(awardGroup)
@@ -139,26 +125,32 @@ public class AwardApplicationService {
 
         String currentStatus = app.getStatus();
         String newStatus = request.getStatus();
+        String track = AwardWorkflow.track(app.getAward());
 
-        // Validate transition
-        Set<String> allowed = STATUS_TRANSITIONS.get(currentStatus);
-        if (allowed == null || !allowed.contains(newStatus)) {
+        // Валидация перехода с учётом трека (прямой / комиссия / Кабинет Министров)
+        if (!AwardWorkflow.nextStatuses(currentStatus, track).contains(newStatus)) {
             throw new BadRequestException(
                     String.format("Недопустимый переход статуса: '%s' -> '%s'", currentStatus, newStatus));
         }
 
-        // If rejecting, reason is required
-        if ("Отклонена".equals(newStatus)) {
+        // Отказ подписывает директор — причина обязательна
+        if (AwardWorkflow.REJECTED.equals(newStatus)) {
             if (request.getReason() == null || request.getReason().isBlank()) {
-                throw new BadRequestException("Причина отклонения обязательна");
+                throw new BadRequestException("Причина отказа обязательна");
             }
             app.setRejectReason(request.getReason());
         }
 
+        // Приём документов: стартует срок услуги (15/20/30 раб. дней по группе)
+        if (AwardWorkflow.REVIEW.equals(newStatus) && AwardWorkflow.COMPLETENESS.equals(currentStatus)) {
+            int term = AwardWorkflow.serviceTermDays(app.getAwardGroup());
+            app.setDeadline(addWorkingDays(LocalDate.now(), term));
+        }
+
         app.setStatus(newStatus);
 
-        // При присвоении (Награждена) - обновляем разряд/звание спортсмена в реестре
-        if ("Награждена".equals(newStatus) && app.getAthlete() != null) {
+        // Присвоено — обновляем разряд/звание спортсмена в реестре
+        if (AwardWorkflow.ASSIGNED.equals(newStatus) && app.getAthlete() != null) {
             Athlete athlete = app.getAthlete();
             athlete.setRank(app.getAward());
             athleteRepository.save(athlete);
@@ -288,20 +280,6 @@ public class AwardApplicationService {
             return "B";
         }
         return "C";
-    }
-
-    /**
-     * Returns the number of working days for the deadline based on the award group:
-     * - A = 30 working days
-     * - B = 20 working days
-     * - C = 15 working days
-     */
-    private int getWorkingDaysForGroup(String group) {
-        return switch (group) {
-            case "A" -> 30;
-            case "B" -> 20;
-            default -> 15;
-        };
     }
 
     /**

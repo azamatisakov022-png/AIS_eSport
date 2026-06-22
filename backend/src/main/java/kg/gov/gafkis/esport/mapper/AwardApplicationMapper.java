@@ -25,6 +25,9 @@ public interface AwardApplicationMapper {
     @Mapping(target = "remainingDays", expression = "java(computeRemainingDays(app.getDeadline()))")
     @Mapping(target = "routingLevel", expression = "java(routingLevel(app.getAward()))")
     @Mapping(target = "routingBody", expression = "java(routingBody(app.getAward()))")
+    @Mapping(target = "track", expression = "java(kg.gov.gafkis.esport.service.AwardWorkflow.track(app.getAward()))")
+    @Mapping(target = "trackLabel", expression = "java(kg.gov.gafkis.esport.service.AwardWorkflow.trackLabel(kg.gov.gafkis.esport.service.AwardWorkflow.track(app.getAward())))")
+    @Mapping(target = "nextStatuses", expression = "java(kg.gov.gafkis.esport.service.AwardWorkflow.nextStatuses(app.getStatus(), kg.gov.gafkis.esport.service.AwardWorkflow.track(app.getAward())))")
     @Mapping(target = "commissionMembers", source = "commissionMembers")
     @Mapping(target = "history", source = "history")
     AwardApplicationResponse toResponse(AwardApplication app);
@@ -32,6 +35,8 @@ public interface AwardApplicationMapper {
     @Mapping(target = "remainingDays", expression = "java(computeRemainingDays(app.getDeadline()))")
     @Mapping(target = "routingLevel", expression = "java(routingLevel(app.getAward()))")
     @Mapping(target = "routingBody", expression = "java(routingBody(app.getAward()))")
+    @Mapping(target = "track", expression = "java(kg.gov.gafkis.esport.service.AwardWorkflow.track(app.getAward()))")
+    @Mapping(target = "trackLabel", expression = "java(kg.gov.gafkis.esport.service.AwardWorkflow.trackLabel(kg.gov.gafkis.esport.service.AwardWorkflow.track(app.getAward())))")
     AwardApplicationListResponse toListResponse(AwardApplication app);
 
     List<AwardApplicationListResponse> toListResponse(List<AwardApplication> apps);

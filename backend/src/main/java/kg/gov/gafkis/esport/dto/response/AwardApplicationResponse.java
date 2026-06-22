@@ -25,6 +25,9 @@ public class AwardApplicationResponse {
     private String awardGroup;
     private String routingLevel;
     private String routingBody;
+    private String track;
+    private String trackLabel;
+    private List<String> nextStatuses;
     private LocalDate deadline;
     private Long remainingDays;
     private String conclusion;
