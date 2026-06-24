@@ -23,6 +23,7 @@ public class AthleteResponse {
 
     private String coachName;
     private Long coachId;
+    private String club;
     private String organizationName;
     private Long organizationId;
     private String teamName;

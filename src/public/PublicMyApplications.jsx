@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { awardsApi, judgeAppsApi, trainerAppsApi, restorationApi } from '../api/esport'
+import { awardsApi, judgeAppsApi, trainerAppsApi, restorationApi, transferApi } from '../api/esport'
 
 // Человекочитаемые подписи статусов тренерских заявок (на бэке — коды)
 const TRAINER_LABELS = {
@@ -13,7 +13,7 @@ const TRAINER_LABELS = {
 }
 
 // Классификация статуса для цвета: done / rejected / progress
-const DONE = ['Присвоено', 'Выдано удостоверение', 'Записано', 'Зарегистрирован', 'Выдан дубликат']
+const DONE = ['Присвоено', 'Выдано удостоверение', 'Записано', 'Зарегистрирован', 'Выдан дубликат', 'Переход оформлен']
 const NEGATIVE = ['Отклонена', 'Отказано', 'Отозвана', 'Аннулировано']
 function stateClass(label) {
     if (DONE.includes(label)) return 'done'
@@ -26,6 +26,7 @@ const SERVICES = {
     judge: { name: 'Судейская категория', color: '#7C3AED' },
     trainer: { name: 'Свидетельство тренера', color: '#16a34a' },
     restoration: { name: 'Восстановление документа', color: '#d97706' },
+    transfer: { name: 'Переход в другой клуб', color: '#0d9488' },
 }
 
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
@@ -43,7 +44,8 @@ export default function PublicMyApplications() {
             judgeAppsApi.list({ size: 100 }),
             trainerAppsApi.list({ size: 100 }),
             restorationApi.list({ size: 100 }),
-        ]).then(([aw, jd, tr, rd]) => {
+            transferApi.list({ size: 100 }),
+        ]).then(([aw, jd, tr, rd, tf]) => {
             if (!alive) return
             const out = []
             if (aw.status === 'fulfilled') {
@@ -72,7 +74,13 @@ export default function PublicMyApplications() {
                     sport: a.reason, date: a.submitDate, label: a.status,
                 })
             }
-            if (aw.status === 'rejected' && jd.status === 'rejected' && tr.status === 'rejected' && rd.status === 'rejected') setError(true)
+            if (tf.status === 'fulfilled') {
+                for (const a of tf.value.items) out.push({
+                    key: 'F' + a.id, service: 'transfer', appNo: a.appNo, applicant: a.athleteName,
+                    subject: a.newClub ? `→ ${a.newClub}` : 'Переход', sport: a.sport, date: a.submitDate, label: a.status,
+                })
+            }
+            if (aw.status === 'rejected' && jd.status === 'rejected' && tr.status === 'rejected' && rd.status === 'rejected' && tf.status === 'rejected') setError(true)
             out.sort((x, y) => (y.date || '').localeCompare(x.date || ''))
             setRows(out)
             setLoading(false)

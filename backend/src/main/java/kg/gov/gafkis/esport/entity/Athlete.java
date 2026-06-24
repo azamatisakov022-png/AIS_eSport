@@ -53,6 +53,10 @@ public class Athlete {
     @Column(name = "coach_name")
     private String coachName;
 
+    /** Текущий клуб/спортшкола спортсмена (обновляется при оформлении перехода). */
+    @Column(name = "club")
+    private String club;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coach_id")
     private Coach coach;

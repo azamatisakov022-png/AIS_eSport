@@ -23,6 +23,9 @@ import RestorationApplicationReview from './pages/RestorationApplicationReview'
 import AccreditationApplications from './pages/AccreditationApplications'
 import AccreditationApplicationReview from './pages/AccreditationApplicationReview'
 import PublicAccreditation from './public/PublicAccreditation'
+import TransferApplications from './pages/TransferApplications'
+import TransferApplicationReview from './pages/TransferApplicationReview'
+import PublicTransfer from './public/PublicTransfer'
 import Staff from './pages/Staff'
 import MedicalCertificates from './pages/MedicalCertificates'
 import Inventory from './pages/Inventory'
@@ -120,6 +123,8 @@ export default function App() {
                 <Route path="/restoration-applications/:id" element={<RestorationApplicationReview />} />
                 <Route path="/accreditation-applications" element={<AccreditationApplications />} />
                 <Route path="/accreditation-applications/:id" element={<AccreditationApplicationReview />} />
+                <Route path="/transfer-applications" element={<TransferApplications />} />
+                <Route path="/transfer-applications/:id" element={<TransferApplicationReview />} />
                 <Route path="/settings" element={<Settings />} />
 
                 {/* Intranet - internal corporate portal */}
@@ -204,6 +209,7 @@ export default function App() {
                 <Route path="judge-category" element={<PublicJudgeCategory />} />
                 <Route path="document-restoration" element={<PublicDocumentRestoration />} />
                 <Route path="accreditation" element={<PublicAccreditation />} />
+                <Route path="transfer" element={<PublicTransfer />} />
                 <Route path="antidoping" element={<PublicAntidoping />} />
                 <Route path="anticorruption" element={<PublicAnticorruption />} />
                 <Route path="reception" element={<PublicReception />} />
