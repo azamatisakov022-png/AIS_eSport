@@ -268,6 +268,10 @@ export const publicApi = {
   async athlete(id) {
     return mapAthlete(await publicFetch(`/public/athletes/${id}`))
   },
+  // Публичная проверка документа по номеру (QR) — без авторизации
+  verify(code) {
+    return publicFetch(`/public/verify?code=${encodeURIComponent(code)}`)
+  },
 }
 
 // Статусы для фильтров/действий

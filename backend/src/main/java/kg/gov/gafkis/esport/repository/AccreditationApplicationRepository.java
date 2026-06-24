@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface AccreditationApplicationRepository extends JpaRepository<AccreditationApplication, Long>,
         JpaSpecificationExecutor<AccreditationApplication> {
@@ -13,4 +15,7 @@ public interface AccreditationApplicationRepository extends JpaRepository<Accred
 
     /** Сколько свидетельств об аккредитации уже выдано (для генерации сквозного номера). */
     long countByAccreditationNumberNotNull();
+
+    /** Поиск по номеру свидетельства об аккредитации (для публичной проверки). */
+    Optional<AccreditationApplication> findFirstByAccreditationNumber(String accreditationNumber);
 }

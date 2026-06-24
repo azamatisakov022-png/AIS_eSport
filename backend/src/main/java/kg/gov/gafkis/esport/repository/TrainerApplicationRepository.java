@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface TrainerApplicationRepository extends JpaRepository<TrainerApplication, Long>,
         JpaSpecificationExecutor<TrainerApplication> {
@@ -13,4 +15,7 @@ public interface TrainerApplicationRepository extends JpaRepository<TrainerAppli
 
     /** Сколько свидетельств уже выдано (сквозная нумерация, без коллизий при registered→annulled). */
     long countByCertNumberNotNull();
+
+    /** Поиск по номеру свидетельства (для публичной проверки). */
+    Optional<TrainerApplication> findFirstByCertNumber(String certNumber);
 }

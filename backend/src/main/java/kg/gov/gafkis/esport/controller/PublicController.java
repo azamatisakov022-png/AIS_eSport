@@ -19,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("/public")
 @RequiredArgsConstructor
@@ -37,6 +39,9 @@ public class PublicController {
     private final EventMapper eventMapper;
     private final FacilityMapper facilityMapper;
     private final OrganizationMapper organizationMapper;
+    private final TrainerApplicationRepository trainerApplicationRepository;
+    private final AccreditationApplicationRepository accreditationApplicationRepository;
+    private final RestorationApplicationRepository restorationApplicationRepository;
 
     // ─── Athletes ───────────────────────────────────────────────────────
 
@@ -168,5 +173,88 @@ public class PublicController {
                 .map(organizationMapper::toListResponse);
 
         return ResponseEntity.ok(PagedResponse.from(page));
+    }
+
+    // ─── Публичная проверка документа по номеру (QR) ────────────────────
+    @GetMapping("/verify")
+    @Operation(summary = "Проверка документа по номеру",
+            description = "Публичная проверка действительности документа; причина отзыва видна всем (№14)")
+    @Transactional(readOnly = true)
+    public ResponseEntity<DocumentVerifyResponse> verify(@RequestParam String code) {
+        return ResponseEntity.ok(verifyCode(code == null ? "" : code.trim()));
+    }
+
+    private DocumentVerifyResponse verifyCode(String code) {
+        if (code.isEmpty()) {
+            return notFound(code);
+        }
+        LocalDate today = LocalDate.now();
+
+        // 1) Документ, признанный недействительным при восстановлении (выдан дубликат)
+        RestorationApplication restored = restorationApplicationRepository
+                .findFirstByOldNumberAndOldInvalidatedTrue(code).orElse(null);
+        if (restored != null) {
+            return DocumentVerifyResponse.builder()
+                    .code(code).found(true).docType(restored.getDocType()).holder(restored.getApplicantName())
+                    .statusLabel("Недействителен").valid(false)
+                    .reason("Документ утрачен/испорчен, выдан дубликат"
+                            + (restored.getDupNumber() != null ? " " + restored.getDupNumber() : "")
+                            + ". Оригинал недействителен.")
+                    .build();
+        }
+
+        // 2) Судейское удостоверение
+        Judge judge = judgeRepository.findByCertNumber(code).orElse(null);
+        if (judge != null) {
+            boolean expired = judge.getEndDate() != null && judge.getEndDate().isBefore(today);
+            boolean ok = !judge.isAnnulled() && !expired;
+            return DocumentVerifyResponse.builder()
+                    .code(code).found(true).docType("Судейское удостоверение").holder(judge.getFullName())
+                    .statusLabel(ok ? "Действителен" : "Недействителен").valid(ok)
+                    .reason(judge.isAnnulled() ? "Удостоверение аннулировано" : expired ? "Истёк срок действия" : null)
+                    .issued(judge.getAttestDate()).validUntil(judge.getEndDate())
+                    .extra(judge.getCategory())
+                    .build();
+        }
+
+        // 3) Свидетельство тренера
+        TrainerApplication tr = trainerApplicationRepository.findFirstByCertNumber(code).orElse(null);
+        if (tr != null) {
+            boolean expired = tr.getCertEndDate() != null && tr.getCertEndDate().isBefore(today);
+            boolean ok = "registered".equals(tr.getStatus()) && !expired;
+            return DocumentVerifyResponse.builder()
+                    .code(code).found(true).docType("Свидетельство тренера").holder(tr.getApplicantName())
+                    .statusLabel(ok ? "Действителен" : "Недействителен").valid(ok)
+                    .reason("annulled".equals(tr.getStatus()) ? "Свидетельство аннулировано"
+                            : expired ? "Истёк срок действия" : (!ok ? "Свидетельство не действует" : null))
+                    .issued(tr.getCertIssueDate()).validUntil(tr.getCertEndDate())
+                    .extra(tr.getSport())
+                    .build();
+        }
+
+        // 4) Свидетельство об аккредитации федерации
+        AccreditationApplication ac = accreditationApplicationRepository.findFirstByAccreditationNumber(code).orElse(null);
+        if (ac != null) {
+            String s = ac.getStatus();
+            boolean ok = "Аккредитована".equals(s);
+            boolean suspended = "Приостановлена".equals(s);
+            return DocumentVerifyResponse.builder()
+                    .code(code).found(true).docType("Свидетельство об аккредитации").holder(ac.getFederationName())
+                    .statusLabel(ok ? "Действителен" : suspended ? "Приостановлен" : "Недействителен").valid(ok)
+                    .reason(suspended ? ac.getSuspensionReason()
+                            : "Аккредитация отозвана".equals(s) ? ac.getRejectReason() : null)
+                    .validUntil(ac.getAccreditationEnd())
+                    .extra(ac.getSport())
+                    .build();
+        }
+
+        return notFound(code);
+    }
+
+    private DocumentVerifyResponse notFound(String code) {
+        return DocumentVerifyResponse.builder()
+                .code(code).found(false).statusLabel("Не найден").valid(false)
+                .reason("Документ с таким номером не найден в реестрах")
+                .build();
     }
 }

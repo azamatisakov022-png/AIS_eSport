@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { publicApi } from '../api/esport'
+
+const fmtDate = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : null
 
 function ShieldIcon() {
     return (
@@ -37,21 +40,31 @@ export default function PublicVerify() {
     const { t } = useTranslation()
     const [code, setCode] = useState('')
     const [result, setResult] = useState(null)
+    const [loading, setLoading] = useState(false)
 
-    const handleVerify = () => {
-        if (code.trim().length > 3) {
+    const handleVerify = async () => {
+        const c = code.trim()
+        if (!c || loading) return
+        setLoading(true)
+        try {
+            const r = await publicApi.verify(c)
             setResult({
-                found: true,
-                docType: 'Удостоверение спортивного звания',
-                holder: 'Асанов Бекболот Маратович',
-                number: 'СЗ-2025-003891',
-                issued: '10.01.2025',
-                validUntil: 'Бессрочно',
+                found: r.found,
+                valid: r.valid,
+                status: r.statusLabel,
+                reason: r.reason,
+                docType: r.docType,
+                holder: r.holder,
+                number: r.code,
+                issued: fmtDate(r.issued) || '—',
+                validUntil: fmtDate(r.validUntil) || 'Бессрочно',
+                extra: r.extra,
                 issuedBy: 'ГАФКиС Кыргызской Республики',
             })
-        } else {
+        } catch {
             setResult({ found: false })
         }
+        setLoading(false)
     }
 
     return (
@@ -87,22 +100,25 @@ export default function PublicVerify() {
                                 onChange={(e) => setCode(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleVerify()}
                             />
-                            <button className="verifyx-btn" onClick={handleVerify}>
-                                {t('public.verifyBtn')}
+                            <button className="verifyx-btn" onClick={handleVerify} disabled={loading}>
+                                {loading ? 'Проверка…' : t('public.verifyBtn')}
                             </button>
                         </div>
 
                         <p className="verifyx-hint">
-                            {t('public.verifyDocHint', { defaultValue: 'Для демо-режима введите любой код длиннее 3 символов.' })}
+                            Введите номер удостоверения, свидетельства или аккредитации (например, УД-КР-2026-0001).
+                            Сведения о действительности и причинах отзыва доступны всем.
                         </p>
 
-                        {result && result.found && (
+                        {/* Действителен */}
+                        {result && result.found && result.valid && (
                             <div className="verifyx-result verifyx-result--success">
-                                <div className="verifyx-result__status">{t('public.verifyDocFound')}</div>
+                                <div className="verifyx-result__status">✅ {result.status || t('public.verifyDocFound')}</div>
                                 <div className="verifyx-result__grid">
                                     <ResultRow label={t('public.verifyDocTypeLabel')} value={result.docType} />
                                     <ResultRow label={t('public.verifyDocOwner')} value={result.holder} />
                                     <ResultRow label={t('public.verifyDocNumberLabel')} value={result.number} />
+                                    {result.extra && <ResultRow label="Сведения" value={result.extra} />}
                                     <ResultRow label={t('public.verifyDocIssuedDate')} value={result.issued} />
                                     <ResultRow label={t('public.verifyDocValidUntil')} value={result.validUntil} />
                                     <ResultRow label={t('public.verifyDocIssuedBy')} value={result.issuedBy} />
@@ -110,10 +126,28 @@ export default function PublicVerify() {
                             </div>
                         )}
 
+                        {/* Найден, но недействителен / приостановлен — причина видна всем (№14) */}
+                        {result && result.found && !result.valid && (
+                            <div className="verifyx-result verifyx-result--error">
+                                <div className="verifyx-result__status">⛔ {result.status}</div>
+                                <div className="verifyx-result__grid">
+                                    <ResultRow label={t('public.verifyDocTypeLabel')} value={result.docType} />
+                                    <ResultRow label={t('public.verifyDocOwner')} value={result.holder} />
+                                    <ResultRow label={t('public.verifyDocNumberLabel')} value={result.number} />
+                                </div>
+                                {result.reason && (
+                                    <p className="verifyx-result__text" style={{ marginTop: 10 }}>
+                                        <strong>Причина:</strong> {result.reason}
+                                    </p>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Не найден */}
                         {result && !result.found && (
                             <div className="verifyx-result verifyx-result--error">
                                 <div className="verifyx-result__status">{t('public.verifyDocNotFoundTitle')}</div>
-                                <p className="verifyx-result__text">{t('public.verifyDocNotFoundDesc')}</p>
+                                <p className="verifyx-result__text">{result.reason || t('public.verifyDocNotFoundDesc')}</p>
                             </div>
                         )}
                     </section>
