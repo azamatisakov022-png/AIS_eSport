@@ -248,6 +248,17 @@ export const transferApi = {
   },
 }
 
+// ── Уведомления заявителю (email) ───────────────────────────────────────────
+export const notificationsApi = {
+  async list({ email, size = 50 } = {}) {
+    const p = new URLSearchParams()
+    if (email) p.set('email', email)
+    p.set('size', size)
+    const data = await authFetch(`/applicant-notifications?${p.toString()}`)
+    return { items: data.content || [], total: data.totalElements }
+  },
+}
+
 // ── Публичный портал ────────────────────────────────────────────────────────
 export const publicApi = {
   async athletes({ size = 200 } = {}) {

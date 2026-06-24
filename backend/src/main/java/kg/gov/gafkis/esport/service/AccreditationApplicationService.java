@@ -37,6 +37,7 @@ public class AccreditationApplicationService {
 
     private final AccreditationApplicationRepository accreditationApplicationRepository;
     private final AccreditationApplicationMapper accreditationApplicationMapper;
+    private final ApplicantNotificationService applicantNotificationService;
     private final OrganizationRepository organizationRepository;
 
     private static final DateTimeFormatter APP_NO_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd'-'HHmmssSSS");
@@ -145,6 +146,7 @@ public class AccreditationApplicationService {
         app.getHistory().add(history(app, "Статус изменён: " + currentStatus + " -> " + newStatus));
 
         app = accreditationApplicationRepository.save(app);
+        applicantNotificationService.notify(app.getEmail(), app.getFederationName(), "Аккредитация федерации", app.getAppNo(), newStatus);
         log.info("Изменён статус заявки на аккредитацию {} на '{}' (id={})", app.getAppNo(), newStatus, app.getId());
         return accreditationApplicationMapper.toResponse(app);
     }

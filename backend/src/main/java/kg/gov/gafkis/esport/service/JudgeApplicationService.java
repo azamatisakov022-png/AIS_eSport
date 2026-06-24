@@ -36,6 +36,7 @@ public class JudgeApplicationService {
 
     private final JudgeApplicationRepository judgeApplicationRepository;
     private final JudgeApplicationMapper judgeApplicationMapper;
+    private final ApplicantNotificationService applicantNotificationService;
     private final JudgeService judgeService;
 
     private static final DateTimeFormatter APP_NO_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd'-'HHmmssSSS");
@@ -149,6 +150,7 @@ public class JudgeApplicationService {
                 .build());
 
         app = judgeApplicationRepository.save(app);
+        applicantNotificationService.notify(app.getEmail(), app.getApplicantName(), "Судейская категория", app.getAppNo(), newStatus);
         log.info("Изменён статус заявки {} на '{}' (id={})", app.getAppNo(), newStatus, app.getId());
         return judgeApplicationMapper.toResponse(app);
     }

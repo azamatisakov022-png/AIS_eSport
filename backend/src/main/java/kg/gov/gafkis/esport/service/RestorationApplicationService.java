@@ -35,6 +35,7 @@ public class RestorationApplicationService {
 
     private final RestorationApplicationRepository restorationApplicationRepository;
     private final RestorationApplicationMapper restorationApplicationMapper;
+    private final ApplicantNotificationService applicantNotificationService;
 
     private static final DateTimeFormatter APP_NO_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd'-'HHmmssSSS");
 
@@ -136,6 +137,7 @@ public class RestorationApplicationService {
                 .build());
 
         app = restorationApplicationRepository.save(app);
+        applicantNotificationService.notify(app.getEmail(), app.getApplicantName(), "Восстановление документа", app.getAppNo(), newStatus);
         log.info("Изменён статус заявки на восстановление {} на '{}' (id={})", app.getAppNo(), newStatus, app.getId());
         return restorationApplicationMapper.toResponse(app);
     }

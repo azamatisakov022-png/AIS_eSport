@@ -34,6 +34,7 @@ public class TrainerApplicationService {
 
     private final TrainerApplicationRepository trainerApplicationRepository;
     private final TrainerApplicationMapper trainerApplicationMapper;
+    private final ApplicantNotificationService applicantNotificationService;
 
     // миллисекунды — чтобы номера заявок не совпадали при подаче в одну секунду
     private static final DateTimeFormatter APP_NO_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd'-'HHmmssSSS");
@@ -114,6 +115,7 @@ public class TrainerApplicationService {
         }
 
         app = trainerApplicationRepository.save(app);
+        applicantNotificationService.notify(app.getEmail(), app.getApplicantName(), "Свидетельство тренера", app.getAppNo(), newStatus);
         log.info("Изменён статус заявки тренера {} на '{}' (id={})", app.getAppNo(), newStatus, app.getId());
         return trainerApplicationMapper.toResponse(app);
     }

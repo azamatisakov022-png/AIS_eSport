@@ -49,12 +49,15 @@ export default function PublicCabinetLayout() {
                     <Link to="/public/cabinet/applications" style={s.navLink} className="hide-mobile">
                         Мои заявления
                     </Link>
+                    <Link to="/public/cabinet/notifications" style={s.navLink} className="hide-mobile">
+                        Уведомления
+                    </Link>
 
                     <button style={s.notifBtn} onClick={toggleTheme} title="Toggle Theme">
                         {theme === 'dark' ? <TbSun size={20} /> : <TbMoon size={20} />}
                     </button>
 
-                    <button style={s.notifBtn} title={t('public.notifications')}>
+                    <button style={s.notifBtn} title={t('public.notifications')} onClick={() => navigate('/public/cabinet/notifications')}>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--text-primary)' }}>
                             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" strokeWidth="1.8" fill="currentColor" fillOpacity="0.06" />
                             <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" strokeWidth="1.8" />

@@ -48,6 +48,7 @@ public class AwardApplicationService {
     private final AwardRestorationRepository awardRestorationRepository;
     private final AthleteRepository athleteRepository;
     private final AwardApplicationMapper awardApplicationMapper;
+    private final ApplicantNotificationService applicantNotificationService;
 
     // включает миллисекунды, чтобы номера заявок не совпадали при подаче в одну секунду
     private static final DateTimeFormatter APP_NO_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd'-'HHmmssSSS");
@@ -171,6 +172,7 @@ public class AwardApplicationService {
         app.getHistory().add(historyEntry);
 
         app = awardApplicationRepository.save(app);
+        applicantNotificationService.notify(null, app.getApplicantName(), "Звание/разряд", app.getAppNo(), newStatus);
         log.info("Изменён статус заявки {} на '{}' (id={})", app.getAppNo(), newStatus, app.getId());
         return awardApplicationMapper.toResponse(app);
     }

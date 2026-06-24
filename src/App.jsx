@@ -73,6 +73,7 @@ import PublicEventDetail from './public/PublicEventDetail'
 import PublicOrganizations from './public/PublicOrganizations'
 import PublicCabinet from './public/PublicCabinet'
 import PublicMyApplications from './public/PublicMyApplications'
+import PublicNotifications from './public/PublicNotifications'
 import PublicFacilities from './public/PublicFacilities'
 import PublicSchools from './public/PublicSchools'
 import PublicNPA from './public/PublicNPA'
@@ -176,6 +177,7 @@ export default function App() {
             <Route path="/public" element={<PublicCabinetLayout />}>
                 <Route path="cabinet" element={<PublicCabinet />} />
                 <Route path="cabinet/applications" element={<PublicMyApplications />} />
+                <Route path="cabinet/notifications" element={<PublicNotifications />} />
             </Route>
 
             {/* Public External Portal */}

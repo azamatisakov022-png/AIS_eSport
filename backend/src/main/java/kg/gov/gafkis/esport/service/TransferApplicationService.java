@@ -35,6 +35,7 @@ public class TransferApplicationService {
 
     private final TransferApplicationRepository transferApplicationRepository;
     private final TransferApplicationMapper transferApplicationMapper;
+    private final ApplicantNotificationService applicantNotificationService;
     private final AthleteRepository athleteRepository;
 
     private static final DateTimeFormatter APP_NO_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd'-'HHmmssSSS");
@@ -127,6 +128,7 @@ public class TransferApplicationService {
         app.getHistory().add(history(app, "Статус изменён: " + currentStatus + " -> " + newStatus));
 
         app = transferApplicationRepository.save(app);
+        applicantNotificationService.notify(app.getEmail(), app.getAthleteName(), "Переход в другой клуб", app.getAppNo(), newStatus);
         log.info("Изменён статус заявки на переход {} на '{}' (id={})", app.getAppNo(), newStatus, app.getId());
         return transferApplicationMapper.toResponse(app);
     }
