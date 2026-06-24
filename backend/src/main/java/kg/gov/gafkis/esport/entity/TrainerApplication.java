@@ -56,6 +56,12 @@ public class TrainerApplication {
     @Column(name = "cert_number")
     private String certNumber;
 
+    @Column(name = "cert_issue_date")
+    private LocalDate certIssueDate;
+
+    @Column(name = "cert_end_date")
+    private LocalDate certEndDate;
+
     @Column(name = "tunduk_verified", nullable = false)
     @Builder.Default
     private boolean tundukVerified = false;

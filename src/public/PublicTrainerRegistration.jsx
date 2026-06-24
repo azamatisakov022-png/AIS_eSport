@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+import { trainerAppsApi } from '../api/esport'
 
 const SPORTS = [
     'Дзюдо', 'Бокс', 'Борьба', 'Тхэквондо', 'Каратэ', 'Лёгкая атлетика',
@@ -60,6 +61,7 @@ export default function PublicTrainerRegistration() {
     const [tunduk, setTunduk] = useState(false)
     const [dragOver, setDragOver] = useState(null)
     const [submitted, setSubmitted] = useState(null)
+    const [sending, setSending] = useState(false)
     const fileRefs = useRef({})
 
     const handleFile = (key, file) => {
@@ -93,13 +95,26 @@ export default function PublicTrainerRegistration() {
         { labelKey: 'public.personalDataFilled', done: isValid },
     ]
 
-    const onSubmit = (data) => {
-        if (!canSubmit) return
-        setSubmitted({
-            number: generateAppNumber(),
-            date: new Date().toLocaleDateString('ru-RU'),
-            name: `${data.lastName} ${data.firstName} ${data.middleName || ''}`.trim(),
-        })
+    const onSubmit = async (data) => {
+        if (!canSubmit || sending) return
+        const name = `${data.lastName} ${data.firstName} ${data.middleName || ''}`.trim()
+        let number = generateAppNumber()
+        setSending(true)
+        try {
+            // Реальная подача в бэкенд: заявка попадает в очередь специалиста
+            const created = await trainerAppsApi.create({
+                applicantName: name,
+                birthDate: data.birthDate || null,
+                phone: data.phone,
+                email: data.email,
+                sport: data.sport,
+            })
+            if (created?.appNo) number = created.appNo
+        } catch {
+            // Демо-режим: бэкенд недоступен — локальный номер
+        }
+        setSending(false)
+        setSubmitted({ number, date: new Date().toLocaleDateString('ru-RU'), name })
     }
 
     if (submitted) {
@@ -295,16 +310,16 @@ export default function PublicTrainerRegistration() {
                     <div style={{ textAlign: 'center', marginTop: 24 }}>
                         <button
                             type="submit"
-                            disabled={!canSubmit}
+                            disabled={!canSubmit || sending}
                             className="pub-login-btn"
                             style={{
                                 padding: '14px 48px',
                                 fontSize: 16,
-                                opacity: canSubmit ? 1 : 0.4,
-                                cursor: canSubmit ? 'pointer' : 'not-allowed',
+                                opacity: (canSubmit && !sending) ? 1 : 0.4,
+                                cursor: (canSubmit && !sending) ? 'pointer' : 'not-allowed',
                             }}
                         >
-                            {t('public.submitApplication')}
+                            {sending ? 'Отправка…' : t('public.submitApplication')}
                         </button>
                         {!canSubmit && (
                             <p style={{ marginTop: 8, fontSize: 12, color: 'var(--pub-text-muted)' }}>

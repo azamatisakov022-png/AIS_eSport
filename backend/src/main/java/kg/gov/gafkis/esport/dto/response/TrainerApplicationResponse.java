@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -22,9 +23,12 @@ public class TrainerApplicationResponse {
     private int docsUploaded;
     private int docsTotal;
     private String certNumber;
+    private LocalDate certIssueDate;
+    private LocalDate certEndDate;
     private boolean tundukVerified;
     private LocalDate deadline;
     private Long remainingDays;
+    private List<String> nextStatuses;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

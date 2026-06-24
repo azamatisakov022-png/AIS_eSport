@@ -15,6 +15,7 @@ import java.util.List;
 public interface TrainerApplicationMapper {
 
     @Mapping(target = "remainingDays", expression = "java(computeRemainingDays(app.getDeadline()))")
+    @Mapping(target = "nextStatuses", expression = "java(kg.gov.gafkis.esport.service.TrainerWorkflow.nextStatuses(app.getStatus()))")
     TrainerApplicationResponse toResponse(TrainerApplication app);
 
     @Mapping(target = "remainingDays", expression = "java(computeRemainingDays(app.getDeadline()))")

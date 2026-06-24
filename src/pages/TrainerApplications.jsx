@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useToast } from '../context/ToastContext'
+import { trainerAppsApi } from '../api/esport'
 import { MetricIcons } from '../components/CabinetIcons'
 import './TrainerApplications.css'
 import Portal from '../components/Portal'
@@ -66,6 +67,32 @@ export default function TrainerApplications() {
     const [dateTo, setDateTo] = useState('')
     const [drawer, setDrawer] = useState(null) // index or null
 
+    // Загрузка заявок из бэкенда (с фолбэком на демо-данные)
+    useEffect(() => {
+        let alive = true
+        trainerAppsApi.list({ size: 200 })
+            .then(({ items }) => {
+                if (!alive || !items.length) return
+                setData(items.map(a => ({
+                    _id: a.id,
+                    id: a.appNo,
+                    name: a.applicantName,
+                    date: a.submitDate,
+                    sport: a.sport || '',
+                    status: a.status,
+                    docs: Array.from({ length: a.docsTotal || 0 }, (_, i) => i < a.docsUploaded ? 1 : 0),
+                    phone: a.phone || '',
+                    email: a.email || '',
+                    birth: a.birthDate || null,
+                    tunduk: !!a.tundukVerified,
+                    certNumber: a.certNumber || null,
+                    certEnd: a.certEndDate || null,
+                })))
+            })
+            .catch(() => { /* остаёмся на демо-данных */ })
+        return () => { alive = false }
+    }, [])
+
     // Filtered data
     const filtered = useMemo(() => {
         return data.filter(app => {
@@ -86,13 +113,26 @@ export default function TrainerApplications() {
         return { total, onReview, expiring, registered }
     }, [data])
 
-    const changeStatus = (idx, newStatus) => {
-        setData(prev => prev.map((app, i) => {
-            if (i !== idx) return app
-            const updated = { ...app, status: newStatus }
-            if (newStatus === 'registered' && !updated.certNumber) {
-                updated.certNumber = generateCertNumber()
+    const changeStatus = async (idx, newStatus) => {
+        const app = data[idx]
+        if (app?._id) {
+            // Живой бэкенд: переход валидируется статусной машиной
+            try {
+                const updated = await trainerAppsApi.changeStatus(app._id, newStatus)
+                setData(prev => prev.map((a, i) => i === idx
+                    ? { ...a, status: updated.status, certNumber: updated.certNumber || a.certNumber, certEnd: updated.certEndDate || a.certEnd }
+                    : a))
+                toast(newStatus === 'registered' ? 'Свидетельство выдано (срок 3 года)' : 'Статус обновлён')
+            } catch (e) {
+                toast(e.message || 'Недопустимый переход статуса')
             }
+            return
+        }
+        // Демо-режим (бэкенд недоступен)
+        setData(prev => prev.map((a, i) => {
+            if (i !== idx) return a
+            const updated = { ...a, status: newStatus }
+            if (newStatus === 'registered' && !updated.certNumber) updated.certNumber = generateCertNumber()
             return updated
         }))
     }
@@ -255,7 +295,10 @@ export default function TrainerApplications() {
                                 {t(STATUSES[drawerApp.status].labelKey)}
                             </span>
                             {drawerApp.certNumber && (
-                                <span className="ta-cert-number">{t('trainerApplications.certificate')} {drawerApp.certNumber}</span>
+                                <span className="ta-cert-number">
+                                    {t('trainerApplications.certificate')} {drawerApp.certNumber}
+                                    {drawerApp.certEnd && <> · действует до {formatDate(drawerApp.certEnd)}</>}
+                                </span>
                             )}
                         </div>
 

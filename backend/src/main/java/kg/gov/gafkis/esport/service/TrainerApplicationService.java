@@ -25,8 +25,6 @@ import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -37,19 +35,8 @@ public class TrainerApplicationService {
     private final TrainerApplicationRepository trainerApplicationRepository;
     private final TrainerApplicationMapper trainerApplicationMapper;
 
-    private static final DateTimeFormatter APP_NO_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd'-'HHmmss");
-
-    /**
-     * Valid status transitions: from -> allowed targets.
-     */
-    private static final Map<String, Set<String>> STATUS_TRANSITIONS = Map.of(
-            "submitted", Set.of("under_review", "rejected", "withdrawn"),
-            "under_review", Set.of("approved", "rejected", "revision"),
-            "revision", Set.of("under_review", "withdrawn"),
-            "approved", Set.of("registered"),
-            "rejected", Set.of("submitted"),
-            "withdrawn", Set.of("submitted")
-    );
+    // миллисекунды — чтобы номера заявок не совпадали при подаче в одну секунду
+    private static final DateTimeFormatter APP_NO_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd'-'HHmmssSSS");
 
     @Transactional(readOnly = true)
     public PagedResponse<TrainerApplicationListResponse> getAll(String search, String status, Pageable pageable) {
@@ -77,7 +64,7 @@ public class TrainerApplicationService {
     public TrainerApplicationResponse create(TrainerApplicationCreateRequest request) {
         String appNo = "TR-" + LocalDateTime.now().format(APP_NO_FORMATTER);
         LocalDate submitDate = LocalDate.now();
-        LocalDate deadline = AwardApplicationService.addWorkingDays(submitDate, 15);
+        LocalDate deadline = AwardApplicationService.addWorkingDays(submitDate, TrainerWorkflow.TERM_DAYS);
 
         TrainerApplication app = TrainerApplication.builder()
                 .appNo(appNo)
@@ -106,41 +93,52 @@ public class TrainerApplicationService {
         String currentStatus = app.getStatus();
         String newStatus = request.getStatus();
 
-        Set<String> allowed = STATUS_TRANSITIONS.get(currentStatus);
-        if (allowed == null || !allowed.contains(newStatus)) {
+        if (!TrainerWorkflow.nextStatuses(currentStatus).contains(newStatus)) {
             throw new BadRequestException(
                     String.format("Недопустимый переход статуса: '%s' -> '%s'", currentStatus, newStatus));
         }
 
         app.setStatus(newStatus);
+
+        // Регистрация → выдаём свидетельство тренера сроком на 3 года (ответ Адыла №9)
+        if (TrainerWorkflow.REGISTERED.equals(newStatus) && app.getCertNumber() == null) {
+            issueCertificate(app);
+        }
+
         app = trainerApplicationRepository.save(app);
         log.info("Изменён статус заявки тренера {} на '{}' (id={})", app.getAppNo(), newStatus, app.getId());
         return trainerApplicationMapper.toResponse(app);
     }
 
     /**
-     * Register a trainer application: set status to "registered" and generate certificate number.
-     * Certificate number format: СВ-КР-{year}-{5-digit sequential number}
+     * Регистрация одобренной заявки: статус → registered, генерация номера и срока свидетельства.
      */
     public TrainerApplicationResponse register(Long id) {
         TrainerApplication app = trainerApplicationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Заявка тренера", "id", id));
 
-        if (!"approved".equals(app.getStatus())) {
-            throw new BadRequestException("Регистрация возможна только для одобренных заявок (статус 'approved')");
+        if (!TrainerWorkflow.REVIEW.equals(app.getStatus())) {
+            throw new BadRequestException("Регистрация возможна только из статуса «на рассмотрении»");
         }
 
-        app.setStatus("registered");
-
-        // Generate certificate number: СВ-КР-{year}-{5-digit}
-        int year = Year.now().getValue();
-        long count = trainerApplicationRepository.countByStatus("registered");
-        String certNumber = String.format("СВ-КР-%d-%05d", year, count + 1);
-        app.setCertNumber(certNumber);
+        app.setStatus(TrainerWorkflow.REGISTERED);
+        if (app.getCertNumber() == null) {
+            issueCertificate(app);
+        }
 
         app = trainerApplicationRepository.save(app);
-        log.info("Зарегистрирована заявка тренера: {} cert={} (id={})", app.getAppNo(), certNumber, app.getId());
+        log.info("Зарегистрирована заявка тренера: {} cert={} (id={})", app.getAppNo(), app.getCertNumber(), app.getId());
         return trainerApplicationMapper.toResponse(app);
+    }
+
+    /** Выдача свидетельства: номер СВ-КР-{год}-{N}, дата выдачи и срок действия 3 года. */
+    private void issueCertificate(TrainerApplication app) {
+        int year = Year.now().getValue();
+        long count = trainerApplicationRepository.countByStatus(TrainerWorkflow.REGISTERED);
+        app.setCertNumber(String.format("СВ-КР-%d-%05d", year, count + 1));
+        LocalDate issue = LocalDate.now();
+        app.setCertIssueDate(issue);
+        app.setCertEndDate(issue.plusYears(TrainerWorkflow.CERT_VALIDITY_YEARS));
     }
 
     private Specification<TrainerApplication> buildSpecification(String search, String status) {

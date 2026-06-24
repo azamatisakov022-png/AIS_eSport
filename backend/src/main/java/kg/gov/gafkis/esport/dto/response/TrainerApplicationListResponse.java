@@ -18,6 +18,7 @@ public class TrainerApplicationListResponse {
     private int docsUploaded;
     private int docsTotal;
     private String certNumber;
+    private LocalDate certEndDate;
     private boolean tundukVerified;
     private LocalDate deadline;
     private Long remainingDays;
