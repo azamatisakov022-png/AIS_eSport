@@ -1125,3 +1125,18 @@
     .pa-hero { aspect-ratio: 4 / 5; max-height: none; }
     .pa-dept__list { grid-template-columns: 1fr; }
 }
+
+/* Строки результатов в форме загрузки протокола соревнования */
+.pp-inline-input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--theme-border, #d2d2d7);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    background: var(--theme-bg-card, #fff);
+    color: var(--theme-text, #1a1a1a);
+    box-sizing: border-box;
+    outline: none;
+}
+.pp-inline-input:focus { border-color: #2563EB; }

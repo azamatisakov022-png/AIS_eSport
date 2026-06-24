@@ -259,6 +259,23 @@ export const notificationsApi = {
   },
 }
 
+// ── Протоколы соревнований (загрузка федерациями) ───────────────────────────
+export const protocolsApi = {
+  async list({ search, status, size = 100 } = {}) {
+    const p = new URLSearchParams()
+    if (search) p.set('search', search)
+    if (status && status !== 'all') p.set('status', status)
+    p.set('size', size)
+    const data = await authFetch(`/protocol-submissions?${p.toString()}`)
+    return { items: data.content || [], total: data.totalElements }
+  },
+  get(id) { return authFetch(`/protocol-submissions/${id}`) },
+  create(payload) { return authFetch('/protocol-submissions', { method: 'POST', body: JSON.stringify(payload) }) },
+  changeStatus(id, status, reason) {
+    return authFetch(`/protocol-submissions/${id}/status`, { method: 'PUT', body: JSON.stringify({ status, reason }) })
+  },
+}
+
 // ── Публичный портал ────────────────────────────────────────────────────────
 export const publicApi = {
   async athletes({ size = 200 } = {}) {
