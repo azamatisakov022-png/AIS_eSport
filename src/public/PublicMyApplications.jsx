@@ -123,7 +123,6 @@ export default function PublicMyApplications() {
                             const cls = stateClass(r.label)
                             return (
                                 <div key={r.key} style={st.card}>
-                                    <div style={{ ...st.svcBar, background: svc.color }} />
                                     <div style={st.cardMain}>
                                         <div style={st.cardTop}>
                                             <span style={{ ...st.svcTag, color: svc.color, background: `${svc.color}14` }}>{svc.name}</span>
@@ -170,7 +169,6 @@ const st = {
         border: '1px solid var(--border-color)', borderRadius: 14, overflow: 'hidden',
         boxShadow: 'var(--shadow-sm)',
     },
-    svcBar: { width: 5, flexShrink: 0 },
     cardMain: { flex: 1, padding: '14px 18px', minWidth: 0 },
     cardTop: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' },
     svcTag: { fontSize: 12, fontWeight: 700, padding: '2px 10px', borderRadius: 20 },

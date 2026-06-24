@@ -101,22 +101,7 @@
     position: relative;
 }
 
-/* Color accents — left border strip */
-.db-metric::before {
-    content: '';
-    position: absolute;
-    top: 12px; bottom: 12px; left: 0;
-    width: 3px;
-    border-radius: 0 3px 3px 0;
-}
-
-.db-metric--blue::before { background: var(--accent); }
-.db-metric--green::before { background: var(--green); }
-.db-metric--violet::before { background: var(--purple); }
-.db-metric--amber::before { background: var(--amber); }
-.db-metric--red::before { background: var(--rose); }
-.db-metric--teal::before { background: var(--cyan); }
-
+/* без цветных боковых полос — акцент даёт только мягкая иконка-плитка */
 .db-metric--blue .db-metric__icon { background: var(--accent-light); }
 .db-metric--green .db-metric__icon { background: var(--green-light); }
 .db-metric--violet .db-metric__icon { background: var(--violet-light); }
@@ -196,10 +181,7 @@
     background: var(--bg-card);
 }
 
-.db-alert--red { border-left: 3px solid var(--rose); }
-.db-alert--orange { border-left: 3px solid var(--amber); }
-.db-alert--yellow { border-left: 3px solid var(--amber); }
-.db-alert--blue { border-left: 3px solid var(--accent); }
+/* без цветных боковых линий — нейтральные карточки сводки */
 
 .db-alert__icon {
     font-size: 14px;

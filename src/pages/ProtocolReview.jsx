@@ -108,7 +108,7 @@ export default function ProtocolReview() {
                                         <td>{r.discipline || '—'}</td>
                                         <td>{r.place ?? '—'}</td>
                                         <td>{r.medalType
-                                            ? <span style={{ color: medalColor(r.medalType), fontWeight: 700 }}>● {r.medalType}</span>
+                                            ? <span style={{ color: medalColor(r.medalType), fontWeight: 700 }}>{r.medalType}</span>
                                             : '—'}</td>
                                     </tr>
                                 ))}

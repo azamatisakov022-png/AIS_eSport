@@ -101,7 +101,7 @@ export default function JudgeApplicationReview() {
                             <div className="ar-info-item"><div className="ar-info-item__label">Комплектность</div><div className="ar-info-item__value">{app.docsUploaded}/{app.docsTotal}</div></div>
                         </div>
 
-                        <div style={{ marginTop: 20, padding: '14px 16px', background: '#f1f5f9', borderRadius: 10, borderLeft: '3px solid #2563EB' }}>
+                        <div style={{ marginTop: 20, padding: '14px 16px', background: '#f1f5f9', borderRadius: 10, border: '1px solid #e2e8f0' }}>
                             <div className="ar-info-item__label">Кто присваивает</div>
                             <div className="ar-info-item__value" style={{ fontWeight: 700 }}>{app.assignedBy}</div>
                             {app.trackLabel && <div style={{ fontSize: 12, color: '#2563EB', marginTop: 6, fontWeight: 600 }}>Порядок: {app.trackLabel}</div>}

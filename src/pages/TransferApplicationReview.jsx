@@ -95,8 +95,8 @@ export default function TransferApplicationReview() {
                             {CHAIN.map(c => {
                                 const done = stageIdx >= c.key
                                 return (
-                                    <div key={c.key} style={{ flex: 1, textAlign: 'center', padding: '10px 6px', borderRadius: 10, background: done ? '#dcfce7' : '#f1f5f9', border: `1px solid ${done ? '#86efac' : '#e2e8f0'}` }}>
-                                        <div style={{ fontSize: 18 }}>{done ? '✅' : '⏳'}</div>
+                                    <div key={c.key} style={{ flex: 1, textAlign: 'center', padding: '12px 6px', borderRadius: 10, background: done ? '#dcfce7' : '#f1f5f9', border: `1px solid ${done ? '#86efac' : '#e2e8f0'}` }}>
+                                        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.4, textTransform: 'uppercase', color: done ? '#15803d' : '#94a3b8', marginBottom: 4 }}>{done ? 'Подтверждено' : 'Ожидание'}</div>
                                         <div style={{ fontSize: 12, fontWeight: 600, color: done ? '#15803d' : '#64748b' }}>{c.label}</div>
                                     </div>
                                 )

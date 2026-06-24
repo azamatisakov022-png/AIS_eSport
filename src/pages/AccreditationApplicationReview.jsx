@@ -105,7 +105,7 @@ export default function AccreditationApplicationReview() {
                         </div>
 
                         {app.accreditationNumber && (
-                            <div style={{ marginTop: 20, padding: '14px 16px', background: '#f0fdf4', borderRadius: 10, borderLeft: '3px solid #16a34a' }}>
+                            <div style={{ marginTop: 20, padding: '14px 16px', background: '#f8fafc', borderRadius: 10, border: '1px solid #e2e8f0' }}>
                                 <div className="ar-info-item__label">Свидетельство об аккредитации</div>
                                 <div className="ar-info-item__value" style={{ fontWeight: 700 }}>{app.accreditationNumber}</div>
                                 <div style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>действует до {fmt(app.accreditationEnd)}</div>
@@ -113,7 +113,7 @@ export default function AccreditationApplicationReview() {
                         )}
 
                         {app.status === 'Приостановлена' && app.suspensionReason && (
-                            <div style={{ marginTop: 12, padding: '14px 16px', background: '#fffbeb', borderRadius: 10, borderLeft: '3px solid #d97706' }}>
+                            <div style={{ marginTop: 12, padding: '14px 16px', background: '#fffbeb', borderRadius: 10, border: '1px solid #fde68a' }}>
                                 <div className="ar-info-item__label">Основание приостановки</div>
                                 <div style={{ fontSize: 13, color: '#92400e', marginTop: 4 }}>{app.suspensionReason}</div>
                                 <div style={{ fontSize: 12, color: '#92400e', marginTop: 6 }}>

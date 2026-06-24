@@ -113,7 +113,7 @@ export default function PublicVerify() {
                         {/* Действителен */}
                         {result && result.found && result.valid && (
                             <div className="verifyx-result verifyx-result--success">
-                                <div className="verifyx-result__status">✅ {result.status || t('public.verifyDocFound')}</div>
+                                <div className="verifyx-result__status">{result.status || t('public.verifyDocFound')}</div>
                                 <div className="verifyx-result__grid">
                                     <ResultRow label={t('public.verifyDocTypeLabel')} value={result.docType} />
                                     <ResultRow label={t('public.verifyDocOwner')} value={result.holder} />
@@ -129,7 +129,7 @@ export default function PublicVerify() {
                         {/* Найден, но недействителен / приостановлен — причина видна всем (№14) */}
                         {result && result.found && !result.valid && (
                             <div className="verifyx-result verifyx-result--error">
-                                <div className="verifyx-result__status">⛔ {result.status}</div>
+                                <div className="verifyx-result__status">{result.status}</div>
                                 <div className="verifyx-result__grid">
                                     <ResultRow label={t('public.verifyDocTypeLabel')} value={result.docType} />
                                     <ResultRow label={t('public.verifyDocOwner')} value={result.holder} />

@@ -55,7 +55,6 @@ export default function PublicNotifications() {
                             const color = SERVICE_COLOR[n.serviceType] || '#64748b'
                             return (
                                 <div key={n.id} style={st.card}>
-                                    <div style={{ ...st.bar, background: color }} />
                                     <div style={st.body}>
                                         <div style={st.top}>
                                             <span style={{ ...st.svc, color, background: `${color}14` }}>{n.serviceType}</span>
@@ -64,7 +63,7 @@ export default function PublicNotifications() {
                                         </div>
                                         <div style={st.msg}>{n.message}</div>
                                         <div style={st.meta}>
-                                            📧 {n.recipientEmail
+                                            {n.recipientEmail
                                                 ? <>отправлено на <b>{n.recipientEmail}</b></>
                                                 : <>уведомление в кабинете</>}
                                             {' · '}{fmt(n.createdAt)}
@@ -99,7 +98,6 @@ const st = {
         display: 'flex', background: 'var(--bg-card)', border: '1px solid var(--border-color)',
         borderRadius: 12, overflow: 'hidden', boxShadow: 'var(--shadow-sm)',
     },
-    bar: { width: 4, flexShrink: 0 },
     body: { flex: 1, padding: '12px 16px', minWidth: 0 },
     top: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 5, flexWrap: 'wrap' },
     svc: { fontSize: 12, fontWeight: 700, padding: '2px 10px', borderRadius: 20 },

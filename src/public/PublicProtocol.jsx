@@ -66,7 +66,7 @@ export default function PublicProtocol() {
             <div className="pub-section">
                 <div className="pub-container pp-wrap" style={{ paddingTop: 32 }}>
                     <div className="pp-success" style={{ margin: '0 auto' }}>
-                        <strong>📥 Протокол принят · № {submitted.no}</strong>
+                        <strong>Протокол принят · № {submitted.no}</strong>
                         Протокол соревнования «{submitted.event}» ({submitted.count} результатов) зарегистрирован {submitted.date}. После проверки специалистом результаты будут опубликованы. Срок — 5 рабочих дней.
                         <div style={{ marginTop: 16 }}>
                             <Link to="/public/cabinet" className="pp-row__action pp-row__action--primary" style={{ display: 'inline-block' }}>Вернуться в кабинет</Link>

@@ -63,7 +63,7 @@ export default function PublicAccreditation() {
             <div className="pub-section">
                 <div className="pub-container pp-wrap" style={{ paddingTop: 32 }}>
                     <div className="pp-success" style={{ margin: '0 auto' }}>
-                        <strong>📥 Заявление принято · № {submitted.no}</strong>
+                        <strong>Заявление принято · № {submitted.no}</strong>
                         Заявление на аккредитацию «{submitted.name}» зарегистрировано {submitted.date}. Срок рассмотрения — 14 рабочих дней. Статус можно отследить в личном кабинете.
                         <div style={{ marginTop: 16 }}>
                             <Link to="/public/cabinet" className="pp-row__action pp-row__action--primary" style={{ display: 'inline-block' }}>Вернуться в кабинет</Link>

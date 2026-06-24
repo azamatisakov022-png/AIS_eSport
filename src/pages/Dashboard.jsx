@@ -19,11 +19,11 @@ const METRICS = [
 ]
 
 const ALERTS = [
-    { level: 'red', icon: '●', text: '3 заявки на регистрацию тренеров истекают через < 3 дней', link: '/trainer-applications' },
-    { level: 'orange', icon: '●', text: '2 заявки на спортивное звание истекают через < 5 р.д.', link: '/award-applications' },
-    { level: 'yellow', icon: '●', text: '8 свидетельств тренеров истекают в течение 30 дней', link: '/coaches' },
-    { level: 'yellow', icon: '●', text: '5 удостоверений судей истекают в течение 30 дней', link: '/judges' },
-    { level: 'blue', icon: '●', text: '12 спортсменов с просроченной медсправкой', link: '/athletes' },
+    { level: 'red', text: '3 заявки на регистрацию тренеров истекают через < 3 дней', link: '/trainer-applications' },
+    { level: 'orange', text: '2 заявки на спортивное звание истекают через < 5 р.д.', link: '/award-applications' },
+    { level: 'yellow', text: '8 свидетельств тренеров истекают в течение 30 дней', link: '/coaches' },
+    { level: 'yellow', text: '5 удостоверений судей истекают в течение 30 дней', link: '/judges' },
+    { level: 'blue', text: '12 спортсменов с просроченной медсправкой', link: '/athletes' },
 ]
 
 const RECENT_APPS = [
@@ -169,7 +169,6 @@ export default function Dashboard() {
                 <div className="db-alerts__list">
                     {ALERTS.map((a, i) => (
                         <div key={i} className={`db-alert db-alert--${a.level}`}>
-                            <span className="db-alert__icon" style={{ color: a.level === 'red' ? '#ef4444' : a.level === 'orange' ? '#f59e0b' : a.level === 'yellow' ? '#d97706' : '#3b82f6' }}>{a.icon}</span>
                             <span className="db-alert__text">{a.text}</span>
                             <Link to={a.link} className="db-alert__btn">{t('dashboard.goTo')}</Link>
                         </div>

@@ -62,7 +62,7 @@ export default function PublicTransfer() {
             <div className="pub-section">
                 <div className="pub-container pp-wrap" style={{ paddingTop: 32 }}>
                     <div className="pp-success" style={{ margin: '0 auto' }}>
-                        <strong>📥 Заявление принято · № {submitted.no}</strong>
+                        <strong>Заявление принято · № {submitted.no}</strong>
                         Заявление на переход «{submitted.name}» в «{submitted.club}» зарегистрировано {submitted.date}. Переход подтверждают старый клуб, новый клуб и федерация. Статус — в личном кабинете.
                         <div style={{ marginTop: 16 }}>
                             <Link to="/public/cabinet" className="pp-row__action pp-row__action--primary" style={{ display: 'inline-block' }}>Вернуться в кабинет</Link>

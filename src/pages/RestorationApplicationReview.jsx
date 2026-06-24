@@ -96,7 +96,7 @@ export default function RestorationApplicationReview() {
                         </div>
 
                         {(app.dupNumber || app.oldInvalidated) && (
-                            <div style={{ marginTop: 20, padding: '14px 16px', background: '#f0fdf4', borderRadius: 10, borderLeft: '3px solid #16a34a' }}>
+                            <div style={{ marginTop: 20, padding: '14px 16px', background: '#f8fafc', borderRadius: 10, border: '1px solid #e2e8f0' }}>
                                 <div className="ar-info-item__label">Результат</div>
                                 {app.dupNumber && <div className="ar-info-item__value" style={{ fontWeight: 700 }}>Дубликат {app.dupNumber}</div>}
                                 {app.oldInvalidated && <div style={{ fontSize: 12, color: '#b91c1c', marginTop: 4, fontWeight: 600 }}>Старый документ {app.oldNumber || ''} признан недействительным</div>}

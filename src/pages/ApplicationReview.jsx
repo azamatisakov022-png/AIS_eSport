@@ -172,7 +172,7 @@ export default function ApplicationReview() {
                         </div>
 
                         {app.routingLevel && (
-                            <div style={{ marginTop: 20, padding: '14px 16px', background: '#f1f5f9', borderRadius: 10, borderLeft: '3px solid #2563EB' }}>
+                            <div style={{ marginTop: 20, padding: '14px 16px', background: '#f1f5f9', borderRadius: 10, border: '1px solid #e2e8f0' }}>
                                 <div className="ar-info-item__label">Маршрут присвоения</div>
                                 <div className="ar-info-item__value" style={{ fontWeight: 700 }}>{app.routingLevel}</div>
                                 <div style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>{app.routingBody}</div>
@@ -213,7 +213,7 @@ export default function ApplicationReview() {
                         <span>Просмотр документа</span>
                         {activeDoc && (
                             <button className="ar-btn ar-btn--outline" style={{ padding: '6px 12px', fontSize: 13 }}>
-                                📥 Скачать
+                                Скачать
                             </button>
                         )}
                     </div>
