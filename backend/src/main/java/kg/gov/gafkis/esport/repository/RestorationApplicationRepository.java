@@ -10,4 +10,7 @@ public interface RestorationApplicationRepository extends JpaRepository<Restorat
         JpaSpecificationExecutor<RestorationApplication> {
 
     long countByStatus(String status);
+
+    /** Сквозная нумерация выданных дубликатов (без зависимости от текущего статуса). */
+    long countByDupNumberNotNull();
 }

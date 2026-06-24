@@ -65,12 +65,4 @@ public class TrainerApplicationController {
         TrainerApplicationResponse response = trainerApplicationService.changeStatus(id, request);
         return ResponseEntity.ok(response);
     }
-
-    @PostMapping("/{id}/register")
-    @Operation(summary = "Зарегистрировать тренера",
-            description = "Регистрация тренера с присвоением номера свидетельства")
-    public ResponseEntity<TrainerApplicationResponse> register(@PathVariable Long id) {
-        TrainerApplicationResponse response = trainerApplicationService.register(id);
-        return ResponseEntity.ok(response);
-    }
 }

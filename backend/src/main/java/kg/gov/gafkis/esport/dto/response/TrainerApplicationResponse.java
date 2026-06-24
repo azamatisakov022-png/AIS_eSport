@@ -28,6 +28,7 @@ public class TrainerApplicationResponse {
     private boolean tundukVerified;
     private LocalDate deadline;
     private Long remainingDays;
+    private String rejectReason;
     private List<String> nextStatuses;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

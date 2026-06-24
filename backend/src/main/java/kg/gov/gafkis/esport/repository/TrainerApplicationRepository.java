@@ -10,4 +10,7 @@ public interface TrainerApplicationRepository extends JpaRepository<TrainerAppli
         JpaSpecificationExecutor<TrainerApplication> {
 
     long countByStatus(String status);
+
+    /** Сколько свидетельств уже выдано (сквозная нумерация, без коллизий при registered→annulled). */
+    long countByCertNumberNotNull();
 }

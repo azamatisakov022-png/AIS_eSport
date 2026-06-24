@@ -204,7 +204,7 @@ public class JudgeService {
         int year = attestDate.getYear();
         String prefix = "УД-КР-" + year + "-";
 
-        long maxSeq = judgeRepository.findAll().stream()
+        long maxSeq = judgeRepository.findByCertNumberStartingWith(prefix).stream()
                 .filter(j -> j.getCertNumber() != null && j.getCertNumber().startsWith(prefix))
                 .map(j -> {
                     try {

@@ -98,6 +98,14 @@ public class TrainerApplicationService {
                     String.format("Недопустимый переход статуса: '%s' -> '%s'", currentStatus, newStatus));
         }
 
+        // Отказ требует причины (как в остальных модулях)
+        if (TrainerWorkflow.REJECTED.equals(newStatus)) {
+            if (request.getReason() == null || request.getReason().isBlank()) {
+                throw new BadRequestException("Причина отказа обязательна");
+            }
+            app.setRejectReason(request.getReason());
+        }
+
         app.setStatus(newStatus);
 
         // Регистрация → выдаём свидетельство тренера сроком на 3 года (ответ Адыла №9)
@@ -110,31 +118,10 @@ public class TrainerApplicationService {
         return trainerApplicationMapper.toResponse(app);
     }
 
-    /**
-     * Регистрация одобренной заявки: статус → registered, генерация номера и срока свидетельства.
-     */
-    public TrainerApplicationResponse register(Long id) {
-        TrainerApplication app = trainerApplicationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Заявка тренера", "id", id));
-
-        if (!TrainerWorkflow.REVIEW.equals(app.getStatus())) {
-            throw new BadRequestException("Регистрация возможна только из статуса «на рассмотрении»");
-        }
-
-        app.setStatus(TrainerWorkflow.REGISTERED);
-        if (app.getCertNumber() == null) {
-            issueCertificate(app);
-        }
-
-        app = trainerApplicationRepository.save(app);
-        log.info("Зарегистрирована заявка тренера: {} cert={} (id={})", app.getAppNo(), app.getCertNumber(), app.getId());
-        return trainerApplicationMapper.toResponse(app);
-    }
-
     /** Выдача свидетельства: номер СВ-КР-{год}-{N}, дата выдачи и срок действия 3 года. */
     private void issueCertificate(TrainerApplication app) {
         int year = Year.now().getValue();
-        long count = trainerApplicationRepository.countByStatus(TrainerWorkflow.REGISTERED);
+        long count = trainerApplicationRepository.countByCertNumberNotNull();
         app.setCertNumber(String.format("СВ-КР-%d-%05d", year, count + 1));
         LocalDate issue = LocalDate.now();
         app.setCertIssueDate(issue);

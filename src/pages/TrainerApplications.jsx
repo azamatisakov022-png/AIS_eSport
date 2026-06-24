@@ -113,12 +113,18 @@ export default function TrainerApplications() {
         return { total, onReview, expiring, registered }
     }, [data])
 
-    const changeStatus = async (idx, newStatus) => {
+    const changeStatus = async (idx, newStatus, reason) => {
         const app = data[idx]
         if (app?._id) {
+            // Отказ требует причины (бэкенд её валидирует и сохраняет)
+            let r = reason
+            if (newStatus === 'rejected' && !r) {
+                r = window.prompt('Укажите причину отказа:')
+                if (!r || !r.trim()) { toast('Отказ отменён: причина не указана'); return }
+            }
             // Живой бэкенд: переход валидируется статусной машиной
             try {
-                const updated = await trainerAppsApi.changeStatus(app._id, newStatus)
+                const updated = await trainerAppsApi.changeStatus(app._id, newStatus, r)
                 setData(prev => prev.map((a, i) => i === idx
                     ? { ...a, status: updated.status, certNumber: updated.certNumber || a.certNumber, certEnd: updated.certEndDate || a.certEnd }
                     : a))

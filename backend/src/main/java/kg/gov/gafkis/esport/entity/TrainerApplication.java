@@ -69,6 +69,9 @@ public class TrainerApplication {
     @Column(name = "deadline")
     private LocalDate deadline;
 
+    @Column(name = "reject_reason")
+    private String rejectReason;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

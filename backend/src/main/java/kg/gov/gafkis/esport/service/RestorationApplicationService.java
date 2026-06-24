@@ -117,7 +117,7 @@ public class RestorationApplicationService {
         // Выдан дубликат: генерируем номер дубликата, помечаем старый документ недействительным
         if (RestorationWorkflow.DUPLICATE_ISSUED.equals(newStatus) && app.getDupNumber() == null) {
             int year = Year.now().getValue();
-            long count = restorationApplicationRepository.countByStatus(RestorationWorkflow.DUPLICATE_ISSUED);
+            long count = restorationApplicationRepository.countByDupNumberNotNull();
             app.setDupNumber(String.format("ДУБ-КР-%d-%04d", year, count + 1));
             app.setOldInvalidated(true);
             app.getHistory().add(RestorationApplicationHistory.builder()
