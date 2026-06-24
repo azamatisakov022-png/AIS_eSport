@@ -46,6 +46,10 @@ export default function PublicCabinetLayout() {
                 </Link>
 
                 <div style={s.actions} className="pub-actions">
+                    <Link to="/public/cabinet/applications" style={s.navLink} className="hide-mobile">
+                        Мои заявления
+                    </Link>
+
                     <button style={s.notifBtn} onClick={toggleTheme} title="Toggle Theme">
                         {theme === 'dark' ? <TbSun size={20} /> : <TbMoon size={20} />}
                     </button>
@@ -119,6 +123,11 @@ const s = {
 
     /* Right actions */
     actions: { display: 'flex', alignItems: 'center', gap: 16 },
+
+    navLink: {
+        textDecoration: 'none', color: 'var(--text-primary)', fontSize: 13, fontWeight: 700,
+        padding: '7px 14px', borderRadius: 20, background: 'var(--bg-panel)',
+    },
 
     notifBtn: {
         position: 'relative', background: 'var(--bg-panel)', border: 'none',

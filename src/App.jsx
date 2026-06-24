@@ -64,6 +64,7 @@ import PublicEvents from './public/PublicEvents'
 import PublicEventDetail from './public/PublicEventDetail'
 import PublicOrganizations from './public/PublicOrganizations'
 import PublicCabinet from './public/PublicCabinet'
+import PublicMyApplications from './public/PublicMyApplications'
 import PublicFacilities from './public/PublicFacilities'
 import PublicSchools from './public/PublicSchools'
 import PublicNPA from './public/PublicNPA'
@@ -160,6 +161,7 @@ export default function App() {
             {/* Cabinet layout - personal cabinet (header + sidebar) */}
             <Route path="/public" element={<PublicCabinetLayout />}>
                 <Route path="cabinet" element={<PublicCabinet />} />
+                <Route path="cabinet/applications" element={<PublicMyApplications />} />
             </Route>
 
             {/* Public External Portal */}
