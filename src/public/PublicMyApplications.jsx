@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { awardsApi, judgeAppsApi, trainerAppsApi } from '../api/esport'
+import { awardsApi, judgeAppsApi, trainerAppsApi, restorationApi } from '../api/esport'
 
 // Человекочитаемые подписи статусов тренерских заявок (на бэке — коды)
 const TRAINER_LABELS = {
@@ -13,7 +13,7 @@ const TRAINER_LABELS = {
 }
 
 // Классификация статуса для цвета: done / rejected / progress
-const DONE = ['Присвоено', 'Выдано удостоверение', 'Записано', 'Зарегистрирован']
+const DONE = ['Присвоено', 'Выдано удостоверение', 'Записано', 'Зарегистрирован', 'Выдан дубликат']
 const NEGATIVE = ['Отклонена', 'Отказано', 'Отозвана', 'Аннулировано']
 function stateClass(label) {
     if (DONE.includes(label)) return 'done'
@@ -25,6 +25,7 @@ const SERVICES = {
     award: { name: 'Звание / разряд', color: '#2563EB' },
     judge: { name: 'Судейская категория', color: '#7C3AED' },
     trainer: { name: 'Свидетельство тренера', color: '#16a34a' },
+    restoration: { name: 'Восстановление документа', color: '#d97706' },
 }
 
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
@@ -41,7 +42,8 @@ export default function PublicMyApplications() {
             awardsApi.list({ size: 100 }),
             judgeAppsApi.list({ size: 100 }),
             trainerAppsApi.list({ size: 100 }),
-        ]).then(([aw, jd, tr]) => {
+            restorationApi.list({ size: 100 }),
+        ]).then(([aw, jd, tr, rd]) => {
             if (!alive) return
             const out = []
             if (aw.status === 'fulfilled') {
@@ -63,7 +65,14 @@ export default function PublicMyApplications() {
                     sport: a.sport, date: a.submitDate, label: TRAINER_LABELS[a.status] || a.status,
                 })
             }
-            if (aw.status === 'rejected' && jd.status === 'rejected' && tr.status === 'rejected') setError(true)
+            if (rd.status === 'fulfilled') {
+                for (const a of rd.value.items) out.push({
+                    key: 'R' + a.id, service: 'restoration', appNo: a.appNo, applicant: a.applicantName,
+                    subject: a.dupNumber ? `Дубликат ${a.dupNumber}` : a.docType,
+                    sport: a.reason, date: a.submitDate, label: a.status,
+                })
+            }
+            if (aw.status === 'rejected' && jd.status === 'rejected' && tr.status === 'rejected' && rd.status === 'rejected') setError(true)
             out.sort((x, y) => (y.date || '').localeCompare(x.date || ''))
             setRows(out)
             setLoading(false)

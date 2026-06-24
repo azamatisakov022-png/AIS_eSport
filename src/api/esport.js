@@ -197,6 +197,23 @@ export const trainerAppsApi = {
   },
 }
 
+// ── Восстановление документа (дубликат) ─────────────────────────────────────
+export const restorationApi = {
+  async list({ search, status, size = 100 } = {}) {
+    const p = new URLSearchParams()
+    if (search) p.set('search', search)
+    if (status && status !== 'all') p.set('status', status)
+    p.set('size', size)
+    const data = await authFetch(`/restoration-applications?${p.toString()}`)
+    return { items: data.content || [], total: data.totalElements }
+  },
+  get(id) { return authFetch(`/restoration-applications/${id}`) },
+  create(payload) { return authFetch('/restoration-applications', { method: 'POST', body: JSON.stringify(payload) }) },
+  changeStatus(id, status, reason) {
+    return authFetch(`/restoration-applications/${id}/status`, { method: 'PUT', body: JSON.stringify({ status, reason }) })
+  },
+}
+
 // ── Публичный портал ────────────────────────────────────────────────────────
 export const publicApi = {
   async athletes({ size = 200 } = {}) {

@@ -18,6 +18,8 @@ import AwardApplications from './pages/AwardApplications'
 import ApplicationReview from './pages/ApplicationReview'
 import JudgeApplications from './pages/JudgeApplications'
 import JudgeApplicationReview from './pages/JudgeApplicationReview'
+import RestorationApplications from './pages/RestorationApplications'
+import RestorationApplicationReview from './pages/RestorationApplicationReview'
 import Staff from './pages/Staff'
 import MedicalCertificates from './pages/MedicalCertificates'
 import Inventory from './pages/Inventory'
@@ -111,6 +113,8 @@ export default function App() {
                 <Route path="/award-applications/:id" element={<ApplicationReview />} />
                 <Route path="/judge-applications" element={<JudgeApplications />} />
                 <Route path="/judge-applications/:id" element={<JudgeApplicationReview />} />
+                <Route path="/restoration-applications" element={<RestorationApplications />} />
+                <Route path="/restoration-applications/:id" element={<RestorationApplicationReview />} />
                 <Route path="/settings" element={<Settings />} />
 
                 {/* Intranet - internal corporate portal */}

@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import PublicHero from './components/PublicHero'
+import { restorationApi } from '../api/esport'
 import './pages/publicPages.css'
 
 const DOC_TYPES = [
@@ -33,6 +34,7 @@ export default function PublicDocumentRestoration() {
     const [docs, setDocs] = useState({})
     const [confirm, setConfirm] = useState(false)
     const [submitted, setSubmitted] = useState(null)
+    const [sending, setSending] = useState(false)
     const fileRefs = useRef({})
 
     const set = (k, v) => setForm(p => ({ ...p, [k]: v }))
@@ -42,10 +44,30 @@ export default function PublicDocumentRestoration() {
     const requiredDocs = DOCS.filter(d => !d.optional).every(d => docs[d.key])
     const canSubmit = required && requiredDocs && confirm
 
-    const submit = () => {
-        if (!canSubmit) return
-        setSubmitted({ no: genNo(), date: new Date().toLocaleDateString('ru-RU'),
-            doc: DOC_TYPES.find(d => d.value === form.docType)?.label || form.docType })
+    const submit = async () => {
+        if (!canSubmit || sending) return
+        const docLabel = DOC_TYPES.find(d => d.value === form.docType)?.label || form.docType
+        const reasonLabel = REASONS.find(r => r.value === form.reason)?.label || form.reason
+        let no = genNo()
+        setSending(true)
+        try {
+            // Реальная подача в бэкенд: заявка попадает в очередь специалиста
+            const created = await restorationApi.create({
+                applicantName: form.fio,
+                inn: form.inn,
+                phone: form.phone,
+                email: form.email,
+                docType: docLabel,
+                reason: reasonLabel,
+                oldNumber: form.oldNumber || null,
+                issueDate: form.issueDate || null,
+            })
+            if (created?.appNo) no = created.appNo
+        } catch {
+            // Демо-режим: бэкенд недоступен — локальный номер
+        }
+        setSending(false)
+        setSubmitted({ no, date: new Date().toLocaleDateString('ru-RU'), doc: docLabel })
     }
 
     if (submitted) {
@@ -110,8 +132,8 @@ export default function PublicDocumentRestoration() {
                                 <span>Подтверждаю достоверность указанных данных и согласие на обработку персональных данных.</span>
                             </label>
 
-                            <button type="submit" className="pp-form__submit" disabled={!canSubmit} style={{ opacity: canSubmit ? 1 : 0.4, cursor: canSubmit ? 'pointer' : 'not-allowed' }}>
-                                Подать заявление
+                            <button type="submit" className="pp-form__submit" disabled={!canSubmit || sending} style={{ opacity: (canSubmit && !sending) ? 1 : 0.4, cursor: (canSubmit && !sending) ? 'pointer' : 'not-allowed' }}>
+                                {sending ? 'Отправка…' : 'Подать заявление'}
                             </button>
                         </form>
                     </div>
