@@ -20,6 +20,9 @@ import JudgeApplications from './pages/JudgeApplications'
 import JudgeApplicationReview from './pages/JudgeApplicationReview'
 import RestorationApplications from './pages/RestorationApplications'
 import RestorationApplicationReview from './pages/RestorationApplicationReview'
+import AccreditationApplications from './pages/AccreditationApplications'
+import AccreditationApplicationReview from './pages/AccreditationApplicationReview'
+import PublicAccreditation from './public/PublicAccreditation'
 import Staff from './pages/Staff'
 import MedicalCertificates from './pages/MedicalCertificates'
 import Inventory from './pages/Inventory'
@@ -115,6 +118,8 @@ export default function App() {
                 <Route path="/judge-applications/:id" element={<JudgeApplicationReview />} />
                 <Route path="/restoration-applications" element={<RestorationApplications />} />
                 <Route path="/restoration-applications/:id" element={<RestorationApplicationReview />} />
+                <Route path="/accreditation-applications" element={<AccreditationApplications />} />
+                <Route path="/accreditation-applications/:id" element={<AccreditationApplicationReview />} />
                 <Route path="/settings" element={<Settings />} />
 
                 {/* Intranet - internal corporate portal */}
@@ -198,6 +203,7 @@ export default function App() {
                 <Route path="award-application" element={<PublicAwardApplication />} />
                 <Route path="judge-category" element={<PublicJudgeCategory />} />
                 <Route path="document-restoration" element={<PublicDocumentRestoration />} />
+                <Route path="accreditation" element={<PublicAccreditation />} />
                 <Route path="antidoping" element={<PublicAntidoping />} />
                 <Route path="anticorruption" element={<PublicAnticorruption />} />
                 <Route path="reception" element={<PublicReception />} />

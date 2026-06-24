@@ -214,6 +214,23 @@ export const restorationApi = {
   },
 }
 
+// ── Аккредитация спортивных федераций ───────────────────────────────────────
+export const accreditationApi = {
+  async list({ search, status, size = 100 } = {}) {
+    const p = new URLSearchParams()
+    if (search) p.set('search', search)
+    if (status && status !== 'all') p.set('status', status)
+    p.set('size', size)
+    const data = await authFetch(`/accreditation-applications?${p.toString()}`)
+    return { items: data.content || [], total: data.totalElements }
+  },
+  get(id) { return authFetch(`/accreditation-applications/${id}`) },
+  create(payload) { return authFetch('/accreditation-applications', { method: 'POST', body: JSON.stringify(payload) }) },
+  changeStatus(id, status, reason) {
+    return authFetch(`/accreditation-applications/${id}/status`, { method: 'PUT', body: JSON.stringify({ status, reason }) })
+  },
+}
+
 // ── Публичный портал ────────────────────────────────────────────────────────
 export const publicApi = {
   async athletes({ size = 200 } = {}) {
