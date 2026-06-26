@@ -6,7 +6,7 @@ import { TableSkeleton, MetricSkeleton } from '../components/Skeleton'
 import './Events.css'
 import Portal from '../components/Portal'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { PageHeader, Button, MetricCard, Badge } from '../components/ui'
+import { PageHeader, Button, MetricCard, Badge, Table } from '../components/ui'
 
 const SPORTS = ['Бокс', 'Борьба', 'Дзюдо', 'Футбол', 'Плавание', 'Лёгкая атлетика', 'Каратэ', 'Тхэквондо', 'Гимнастика', 'Шахматы', 'Волейбол', 'Баскетбол', 'Тяжёлая атлетика', 'Кок-бору']
 const REGIONS = ['Бишкек', 'Ош', 'Каракол', 'Джалал-Абад', 'Нарын', 'Талас', 'Баткен', 'Токмок', 'Балыкчы']
@@ -209,8 +209,7 @@ export default function Events() {
             </div>
 
             {/* Table */}
-            <div className="ev-table-wrap">
-                <table className="ev-table">
+            <Table>
                     <thead>
                         <tr>
                             <th>{t('events.table.name')}</th>
@@ -225,7 +224,7 @@ export default function Events() {
                         </tr>
                     </thead>
                     <tbody>
-                        {filtered.length === 0 && <tr><td colSpan={9} className="ev-table__empty">Мероприятия не найдены</td></tr>}
+                        {filtered.length === 0 && <tr><td colSpan={9} className="ui-table__empty">Мероприятия не найдены</td></tr>}
                         {filtered.map(ev => (
                             <tr key={ev.id}>
                                 <td>
@@ -251,8 +250,7 @@ export default function Events() {
                             </tr>
                         ))}
                     </tbody>
-                </table>
-            </div>
+            </Table>
             </>
             )}
 
