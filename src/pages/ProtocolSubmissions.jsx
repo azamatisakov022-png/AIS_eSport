@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { protocolsApi } from '../api/esport'
 import { MetricIcons } from '../components/CabinetIcons'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { PageHeader, MetricCard } from '../components/ui'
+import { PageHeader, MetricCard, Badge } from '../components/ui'
 import './AwardApplications.css'
 
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
@@ -11,16 +11,16 @@ const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
 const STATUSES = ['Подан', 'На проверке', 'На доработке', 'Опубликован', 'Отклонён', 'Отозван']
 const TERMINAL = ['Опубликован', 'Отклонён', 'Отозван']
 
-function badgeClass(status) {
+function statusVariant(status) {
     const map = {
-        'Подан': 'aw-badge--blue',
-        'На проверке': 'aw-badge--yellow',
-        'На доработке': 'aw-badge--orange',
-        'Опубликован': 'aw-badge--green',
-        'Отклонён': 'aw-badge--red',
-        'Отозван': 'aw-badge--gray',
+        'Подан': 'blue',
+        'На проверке': 'amber',
+        'На доработке': 'amber',
+        'Опубликован': 'green',
+        'Отклонён': 'red',
+        'Отозван': 'gray',
     }
-    return map[status] || 'aw-badge--gray'
+    return map[status] || 'gray'
 }
 
 export default function ProtocolSubmissions() {
@@ -103,7 +103,7 @@ export default function ProtocolSubmissions() {
                                 <td>{a.sport || '—'}</td>
                                 <td><span className="aw-completeness aw-completeness--full">{a.resultsCount}</span></td>
                                 <td style={{ whiteSpace: 'nowrap' }}>{fmt(a.submitDate)}</td>
-                                <td><span className={`aw-badge ${badgeClass(a.status)}`}>{a.status}</span></td>
+                                <td><Badge variant={statusVariant(a.status)}>{a.status}</Badge></td>
                                 <td><button className="aw-btn aw-btn--primary" onClick={() => navigate(`/protocol-submissions/${a.id}`)}>Открыть</button></td>
                             </tr>
                         ))}

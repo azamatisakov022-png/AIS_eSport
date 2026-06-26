@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { judgeAppsApi } from '../api/esport'
 import { MetricIcons } from '../components/CabinetIcons'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { PageHeader, MetricCard } from '../components/ui'
+import { PageHeader, MetricCard, Badge } from '../components/ui'
 import './AwardApplications.css'
 
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
@@ -18,22 +18,22 @@ const STATUSES = [
 const TERMINAL = ['Выдано удостоверение', 'Записано', 'Отклонена', 'Отозвана']
 const IN_PROGRESS = ['Проверка документов', 'Аттестация', 'Рассмотрение комиссией', 'Согласование Агентства', 'Передано в международную федерацию', 'Присвоено']
 
-function badgeClass(status) {
+function statusVariant(status) {
     const map = {
-        'Подана': 'aw-badge--blue',
-        'Проверка документов': 'aw-badge--blue',
-        'Передано в международную федерацию': 'aw-badge--blue',
-        'На доработке': 'aw-badge--orange',
-        'Аттестация': 'aw-badge--yellow',
-        'Рассмотрение комиссией': 'aw-badge--yellow',
-        'Согласование Агентства': 'aw-badge--yellow',
-        'Присвоено': 'aw-badge--green',
-        'Выдано удостоверение': 'aw-badge--green',
-        'Записано': 'aw-badge--green',
-        'Отклонена': 'aw-badge--red',
-        'Отозвана': 'aw-badge--gray',
+        'Подана': 'blue',
+        'Проверка документов': 'blue',
+        'Передано в международную федерацию': 'blue',
+        'На доработке': 'amber',
+        'Аттестация': 'amber',
+        'Рассмотрение комиссией': 'amber',
+        'Согласование Агентства': 'amber',
+        'Присвоено': 'green',
+        'Выдано удостоверение': 'green',
+        'Записано': 'green',
+        'Отклонена': 'red',
+        'Отозвана': 'gray',
     }
-    return map[status] || 'aw-badge--gray'
+    return map[status] || 'gray'
 }
 
 export default function JudgeApplications() {
@@ -134,7 +134,7 @@ export default function JudgeApplications() {
                                             {a.docsUploaded}/{a.docsTotal}
                                         </span>
                                     </td>
-                                    <td><span className={`aw-badge ${badgeClass(a.status)}`}>{a.status}</span></td>
+                                    <td><Badge variant={statusVariant(a.status)}>{a.status}</Badge></td>
                                     <td><button className="aw-btn aw-btn--primary" onClick={() => navigate(`/judge-applications/${a.id}`)}>Открыть</button></td>
                                 </tr>
                             )

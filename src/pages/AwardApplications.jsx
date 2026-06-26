@@ -6,7 +6,7 @@ import { MetricIcons } from '../components/CabinetIcons'
 import './AwardApplications.css'
 import Portal from '../components/Portal'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { PageHeader, Button, MetricCard } from '../components/ui'
+import { PageHeader, MetricCard, Badge } from '../components/ui'
 import { useNavigate } from 'react-router-dom'
 
 const GROUP_KEYS = { A: 'awardApplications.groups.A', B: 'awardApplications.groups.B', C: 'awardApplications.groups.C' }
@@ -156,25 +156,21 @@ export default function AwardApplications() {
 
     const statusBadge = (status) => {
         const map = {
-            'Подана':                   'aw-badge--blue',
-            'Проверка комплектности':   'aw-badge--blue',
-            'Требует доработки':        'aw-badge--orange',
-            'На доработке':             'aw-badge--orange',
-            'На рассмотрении':          'aw-badge--yellow',
-            'Ожидание решения Кабмина': 'aw-badge--yellow',
-            'Одобрено':                 'aw-badge--green',
-            'Одобрена':                 'aw-badge--green',
-            'Приказ подписан':          'aw-badge--green',
-            'Награждена':               'aw-badge--green',
-            'Присвоено':                'aw-badge--green',
-            'Отказано':                 'aw-badge--red',
-            'Отклонена':                'aw-badge--red',
-            'Отозвана':                 'aw-badge--gray',
-            'Лишён':                    'aw-badge--gray',
-        }
-        const icons = {
-            'Подана': '', 'На рассмотрении': '', 'Требует доработки': '',
-            'Присвоено': '', 'Отказано': '', 'Лишён': '',
+            'Подана':                   'blue',
+            'Проверка комплектности':   'blue',
+            'Требует доработки':        'amber',
+            'На доработке':             'amber',
+            'На рассмотрении':          'amber',
+            'Ожидание решения Кабмина': 'amber',
+            'Одобрено':                 'green',
+            'Одобрена':                 'green',
+            'Приказ подписан':          'green',
+            'Награждена':               'green',
+            'Присвоено':                'green',
+            'Отказано':                 'red',
+            'Отклонена':                'red',
+            'Отозвана':                 'gray',
+            'Лишён':                    'gray',
         }
         const labelMap = {
             'Подана': t('awardApplications.statuses.submitted'),
@@ -183,7 +179,7 @@ export default function AwardApplications() {
             'Присвоено': t('awardApplications.statuses.awarded'),
             'Отказано': t('awardApplications.statuses.rejected'),
         }
-        return <span className={`aw-badge ${map[status] || 'aw-badge--gray'}`}>{icons[status] || ''} {labelMap[status] || status}</span>
+        return <Badge variant={map[status] || 'gray'}>{labelMap[status] || status}</Badge>
     }
 
     const groupBadge = (group) => {

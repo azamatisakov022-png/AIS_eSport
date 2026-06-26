@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { restorationApi } from '../api/esport'
 import { MetricIcons } from '../components/CabinetIcons'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { PageHeader, MetricCard } from '../components/ui'
+import { PageHeader, MetricCard, Badge } from '../components/ui'
 import './AwardApplications.css'
 
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
@@ -12,17 +12,17 @@ const STATUSES = ['Подана', 'Проверка документов', 'На
 const TERMINAL = ['Выдан дубликат', 'Отклонена', 'Отозвана']
 const IN_PROGRESS = ['Проверка документов', 'Приказ подписан']
 
-function badgeClass(status) {
+function statusVariant(status) {
     const map = {
-        'Подана': 'aw-badge--blue',
-        'Проверка документов': 'aw-badge--blue',
-        'На доработке': 'aw-badge--orange',
-        'Приказ подписан': 'aw-badge--yellow',
-        'Выдан дубликат': 'aw-badge--green',
-        'Отклонена': 'aw-badge--red',
-        'Отозвана': 'aw-badge--gray',
+        'Подана': 'blue',
+        'Проверка документов': 'blue',
+        'На доработке': 'amber',
+        'Приказ подписан': 'amber',
+        'Выдан дубликат': 'green',
+        'Отклонена': 'red',
+        'Отозвана': 'gray',
     }
-    return map[status] || 'aw-badge--gray'
+    return map[status] || 'gray'
 }
 
 export default function RestorationApplications() {
@@ -119,7 +119,7 @@ export default function RestorationApplications() {
                                             ? <span className={`aw-days ${daysClass}`}>{rd > 0 ? `${rd} дн.` : 'просрочено'}</span>
                                             : <span style={{ color: '#94a3b8', fontSize: 12 }}>—</span>}
                                     </td>
-                                    <td><span className={`aw-badge ${badgeClass(a.status)}`}>{a.status}</span></td>
+                                    <td><Badge variant={statusVariant(a.status)}>{a.status}</Badge></td>
                                     <td><button className="aw-btn aw-btn--primary" onClick={() => navigate(`/restoration-applications/${a.id}`)}>Открыть</button></td>
                                 </tr>
                             )

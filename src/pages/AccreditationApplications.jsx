@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { accreditationApi } from '../api/esport'
 import { MetricIcons } from '../components/CabinetIcons'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { PageHeader, MetricCard } from '../components/ui'
+import { PageHeader, MetricCard, Badge } from '../components/ui'
 import './AwardApplications.css'
 
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
@@ -11,18 +11,18 @@ const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
 const STATUSES = ['Подана', 'Проверка документов', 'На доработке', 'Аккредитована', 'Приостановлена', 'Аккредитация отозвана', 'Отклонена', 'Отозвана']
 const TERMINAL = ['Аккредитация отозвана', 'Отклонена', 'Отозвана']
 
-function badgeClass(status) {
+function statusVariant(status) {
     const map = {
-        'Подана': 'aw-badge--blue',
-        'Проверка документов': 'aw-badge--blue',
-        'На доработке': 'aw-badge--orange',
-        'Аккредитована': 'aw-badge--green',
-        'Приостановлена': 'aw-badge--yellow',
-        'Аккредитация отозвана': 'aw-badge--red',
-        'Отклонена': 'aw-badge--red',
-        'Отозвана': 'aw-badge--gray',
+        'Подана': 'blue',
+        'Проверка документов': 'blue',
+        'На доработке': 'amber',
+        'Аккредитована': 'green',
+        'Приостановлена': 'amber',
+        'Аккредитация отозвана': 'red',
+        'Отклонена': 'red',
+        'Отозвана': 'gray',
     }
-    return map[status] || 'aw-badge--gray'
+    return map[status] || 'gray'
 }
 
 export default function AccreditationApplications() {
@@ -114,7 +114,7 @@ export default function AccreditationApplications() {
                                             ? <span className={`aw-days ${daysClass}`}>{rd > 0 ? `${rd} дн.` : 'просрочено'}</span>
                                             : <span style={{ color: '#94a3b8', fontSize: 12 }}>—</span>}
                                     </td>
-                                    <td><span className={`aw-badge ${badgeClass(a.status)}`}>{a.status}</span></td>
+                                    <td><Badge variant={statusVariant(a.status)}>{a.status}</Badge></td>
                                     <td><button className="aw-btn aw-btn--primary" onClick={() => navigate(`/accreditation-applications/${a.id}`)}>Открыть</button></td>
                                 </tr>
                             )
