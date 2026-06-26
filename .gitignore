@@ -6,3 +6,8 @@ dist/
 .env
 .env.local
 desktop.ini
+
+# Editor / tooling artifacts
+.vscode/
+.claude/
+.playwright-mcp/
