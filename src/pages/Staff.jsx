@@ -3,6 +3,7 @@ import { useToast } from '../context/ToastContext'
 import { MetricIcons } from '../components/CabinetIcons'
 import Portal from '../components/Portal'
 import Breadcrumbs from '../components/Breadcrumbs'
+import { PageHeader, Button, MetricCard } from '../components/ui'
 import './registries.css'
 
 /* Реестр сотрудников (ТЗ 5.2): staff_id, ФИО, должность, подразделение,
@@ -13,11 +14,8 @@ const STATUSES = { active: 'Активен', vacation: 'Отпуск', dismissed
 const STATUS_BADGE = { active: 'reg-badge--green', vacation: 'reg-badge--orange', dismissed: 'reg-badge--gray' }
 const ROLES = ['superadmin', 'admin', 'employee', 'readonly']
 const ROLE_LABELS = { superadmin: 'Суперадмин', admin: 'Администратор', employee: 'Сотрудник', readonly: 'Просмотр' }
-const COLORS = ['#2563EB', '#059669', '#7c3aed', '#d97706', '#e11d48', '#0d9488']
 
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '-'
-const getInitials = (n) => { const p = n.split(' '); return (p[0]?.[0] || '') + (p[1]?.[0] || '') }
-const getColor = (id) => COLORS[id % COLORS.length]
 
 const MOCK = [
     { id: 1, empNo: 'СТ-0001', name: 'Касымов Адил Турдубекович', birth: '1972-05-14', phone: '+996 312 21-00-01', email: 'kasymov@gafkis.gov.kg', position: 'Директор', dept: 'Руководство', hireDate: '2021-02-01', status: 'active', role: 'superadmin', adAccount: 'GAFKIS\\a.kasymov' },
@@ -67,16 +65,16 @@ export default function Staff() {
     return (
         <div className="reg-page">
             <Breadcrumbs current="Реестр сотрудников" />
-            <div className="reg-header">
-                <h1 className="reg-header__title">Реестр сотрудников</h1>
-                <button className="reg-header__btn" onClick={() => { setForm(EMPTY); setAddModal(true) }}><span>+</span> Добавить сотрудника</button>
-            </div>
+            <PageHeader
+                title="Реестр сотрудников"
+                actions={<Button variant="primary" onClick={() => { setForm(EMPTY); setAddModal(true) }}><span>+</span> Добавить сотрудника</Button>}
+            />
 
             <div className="reg-metrics">
-                <div className="reg-metric reg-metric--blue"><div className="reg-metric__icon">{MetricIcons.users()}</div><div><div className="reg-metric__value">{metrics.total}</div><div className="reg-metric__label">Всего сотрудников</div></div></div>
-                <div className="reg-metric reg-metric--green"><div className="reg-metric__icon">{MetricIcons.active()}</div><div><div className="reg-metric__value">{metrics.active}</div><div className="reg-metric__label">Активны</div></div></div>
-                <div className="reg-metric reg-metric--orange"><div className="reg-metric__icon">{MetricIcons.clock()}</div><div><div className="reg-metric__value">{metrics.vacation}</div><div className="reg-metric__label">В отпуске</div></div></div>
-                <div className="reg-metric reg-metric--gray"><div className="reg-metric__icon">{MetricIcons.blocked()}</div><div><div className="reg-metric__value">{metrics.dismissed}</div><div className="reg-metric__label">Уволены</div></div></div>
+                <MetricCard tone="blue" icon={MetricIcons.users()} value={metrics.total} label="Всего сотрудников" />
+                <MetricCard tone="green" icon={MetricIcons.active()} value={metrics.active} label="Активны" />
+                <MetricCard tone="orange" icon={MetricIcons.clock()} value={metrics.vacation} label="В отпуске" />
+                <MetricCard icon={MetricIcons.blocked()} value={metrics.dismissed} label="Уволены" />
             </div>
 
             <div className="reg-filters">
@@ -105,7 +103,6 @@ export default function Staff() {
                             <tr key={s.id}>
                                 <td>
                                     <div className="reg-person">
-                                        <div className="reg-avatar" style={{ background: getColor(s.id) }}>{getInitials(s.name)}</div>
                                         <div><div className="reg-person__name">{s.name}</div><div className="reg-person__sub">{fmt(s.birth)}</div></div>
                                     </div>
                                 </td>
@@ -128,7 +125,6 @@ export default function Staff() {
                         <div className="reg-drawer" onClick={e => e.stopPropagation()}>
                             <div className="reg-drawer__header">
                                 <div className="reg-drawer__profile">
-                                    <div className="reg-drawer__avatar" style={{ background: getColor(cur.id) }}>{getInitials(cur.name)}</div>
                                     <div><div className="reg-drawer__name">{cur.name}</div>{badge(cur.status)}</div>
                                 </div>
                                 <button className="reg-drawer__close" onClick={() => setDrawer(null)}>✕</button>

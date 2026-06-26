@@ -6,6 +6,34 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { awardsApi } from '../api/esport'
 
+/* Сдержанные иконки вместо эмодзи (✅ / ⬜ / 📎) */
+const CheckMark = ({ done }) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+        <circle cx="12" cy="12" r="9" />
+        {done && <path d="M8.5 12.5l2.5 2.5 4.5-5" />}
+    </svg>
+)
+const ClipIcon = () => (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+    </svg>
+)
+const AthleteIcon = () => (
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7.21 2L9 7h6l1.79-5" />
+        <circle cx="12" cy="14" r="6" />
+        <path d="M12 11v3l2 1" />
+    </svg>
+)
+const TrainerIcon = () => (
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="10" cy="7" r="4" />
+        <path d="M2 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1" />
+        <circle cx="19" cy="8" r="2.5" />
+        <path d="M19 10.5v2" />
+    </svg>
+)
+
 const SPORTS = [
     'Дзюдо', 'Бокс', 'Борьба', 'Тхэквондо', 'Каратэ', 'Лёгкая атлетика',
     'Плавание', 'Футбол', 'Баскетбол', 'Волейбол', 'Хоккей', 'Тяжёлая атлетика',
@@ -262,7 +290,9 @@ export default function PublicAwardApplication() {
 
                 {/* Info banner */}
                 <div style={s.infoBanner}>
-                    <span style={{ fontSize: 20, flexShrink: 0 }}>ℹ️</span>
+                    <span style={{ flexShrink: 0, display: 'inline-flex', color: 'var(--accent)' }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
+                    </span>
                     <div>
                         <strong>{t('public.awardAppBasis')}</strong> {t('public.awardAppBasisText')}
                     </div>
@@ -281,14 +311,14 @@ export default function PublicAwardApplication() {
                                 style={{ ...s.typeCard, ...(applicantType === 'athlete' ? s.typeCardActive : {}) }}
                                 onClick={() => { setApplicantType('athlete'); setAward('') }}
                             >
-                                <span style={s.typeIcon}>🏅</span>
+                                <span style={s.typeIcon}><AthleteIcon /></span>
                                 <span style={s.typeLabel}>{t('public.applicantAthlete')}</span>
                             </div>
                             <div
                                 style={{ ...s.typeCard, ...(applicantType === 'trainer' ? s.typeCardActive : {}) }}
                                 onClick={() => { setApplicantType('trainer'); setAward('ЗТ КР') }}
                             >
-                                <span style={s.typeIcon}>👨‍🏫</span>
+                                <span style={s.typeIcon}><TrainerIcon /></span>
                                 <span style={s.typeLabel}>{t('public.applicantTrainer')}</span>
                                 <span style={s.typeHint}>(ЗТ КР)</span>
                             </div>
@@ -445,7 +475,10 @@ export default function PublicAwardApplication() {
                                         <label style={s.label}>{doc.label} <span style={s.req}>*</span></label>
                                         {docs[doc.key] ? (
                                             <div style={s.fileUploaded}>
-                                                <span>✅ {docs[doc.key].name}</span>
+                                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                                                    <span style={{ color: '#059669', display: 'inline-flex' }}><CheckMark done /></span>
+                                                    {docs[doc.key].name}
+                                                </span>
                                                 <button type="button" onClick={() => removeFile(doc.key)} style={s.removeBtn}>✕</button>
                                             </div>
                                         ) : (
@@ -456,7 +489,7 @@ export default function PublicAwardApplication() {
                                                 onDrop={e => handleDrop(doc.key, e)}
                                                 onClick={() => fileRefs.current[doc.key]?.click()}
                                             >
-                                                <span style={{ fontSize: 22 }}>📎</span>
+                                                <span style={{ color: 'var(--theme-text-secondary)', display: 'inline-flex' }}><ClipIcon /></span>
                                                 <span>{t('public.dragFileOrClickShort')}</span>
                                                 <span style={{ fontSize: 11, color: 'var(--theme-text-secondary)' }}>{t('public.fileHint')}</span>
                                                 <input
@@ -477,7 +510,7 @@ export default function PublicAwardApplication() {
                                     {docList.map(d => (
                                         <div key={d.key} style={s.checklistItem}>
                                             <span style={{ color: docs[d.key] ? '#059669' : '#86868b', fontSize: 16 }}>
-                                                {docs[d.key] ? '✅' : '⬜'}
+                                                <CheckMark done={!!docs[d.key]} />
                                             </span>
                                             <span style={{ color: docs[d.key] ? '#1a1a1a' : '#86868b', fontSize: 13 }}>
                                                 {d.label}
@@ -486,7 +519,7 @@ export default function PublicAwardApplication() {
                                     ))}
                                     <div style={{ ...s.checklistItem, marginTop: 4, paddingTop: 8, borderTop: '1px solid #d2d2d7' }}>
                                         <span style={{ color: isValid ? '#059669' : '#86868b', fontSize: 16 }}>
-                                            {isValid ? '✅' : '⬜'}
+                                            <CheckMark done={isValid} />
                                         </span>
                                         <span style={{ color: isValid ? '#1a1a1a' : '#86868b', fontSize: 13 }}>
                                             {t('public.personalDataFilled')}
@@ -632,7 +665,7 @@ const s = {
         borderColor: '#1a1a1a', background: '#f5f5f7',
         boxShadow: '0 0 0 3px rgba(37,99,235,0.1)',
     },
-    typeIcon: { fontSize: 36 },
+    typeIcon: { display: 'flex', color: 'var(--accent)' },
     typeLabel: { fontSize: 16, fontWeight: 700, color: '#1a1a1a' },
     typeHint: { fontSize: 12, color: 'var(--theme-text-secondary)' },
 

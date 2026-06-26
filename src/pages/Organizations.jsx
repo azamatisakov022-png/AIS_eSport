@@ -5,6 +5,7 @@ import { MetricIcons } from '../components/CabinetIcons'
 import './Organizations.css'
 import Portal from '../components/Portal'
 import Breadcrumbs from '../components/Breadcrumbs'
+import { PageHeader, Button, MetricCard } from '../components/ui'
 
 /* ── Shared data ── */
 const TYPES_MAP = {
@@ -280,48 +281,18 @@ export default function Organizations() {
         <div className="og-page">
             <Breadcrumbs current={t('organizations.registryTitle')} />
             {/* Header */}
-            <div className="og-header">
-                <h1 className="og-header__title">{t('organizations.registryTitle')}</h1>
-                <button className="og-header__btn" onClick={() => setModal(true)}>+ {t('organizations.addNew')}</button>
-            </div>
+            <PageHeader
+                title={t('organizations.registryTitle')}
+                actions={<Button variant="primary" onClick={() => setModal(true)}>+ {t('organizations.addNew')}</Button>}
+            />
 
             {/* Metrics */}
             <div className="og-metrics">
-                <div className="og-metric og-metric--blue">
-                    <div className="og-metric__icon">{MetricIcons.building()}</div>
-                    <div className="og-metric__body">
-                        <span className="og-metric__value">{ORGS_DATA.length}</span>
-                        <span className="og-metric__label">{t('organizations.metricsTotal')}</span>
-                    </div>
-                </div>
-                <div className="og-metric og-metric--gold">
-                    <div className="og-metric__icon">{MetricIcons.government()}</div>
-                    <div className="og-metric__body">
-                        <span className="og-metric__value">{fedCnt}</span>
-                        <span className="og-metric__label">{t('organizations.metricsFederations')}</span>
-                    </div>
-                </div>
-                <div className="og-metric og-metric--cyan">
-                    <div className="og-metric__icon">{MetricIcons.school()}</div>
-                    <div className="og-metric__body">
-                        <span className="og-metric__value">{schoolCnt}</span>
-                        <span className="og-metric__label">{t('organizations.metricsSchools')}</span>
-                    </div>
-                </div>
-                <div className="og-metric og-metric--purple">
-                    <div className="og-metric__icon">{MetricIcons.trophy()}</div>
-                    <div className="og-metric__body">
-                        <span className="og-metric__value">{clubCnt}</span>
-                        <span className="og-metric__label">{t('organizations.metricsClubs')}</span>
-                    </div>
-                </div>
-                <div className="og-metric og-metric--green">
-                    <div className="og-metric__icon">{MetricIcons.active()}</div>
-                    <div className="og-metric__body">
-                        <span className="og-metric__value">{accredCnt}</span>
-                        <span className="og-metric__label">{t('organizations.metricsAccredited')}</span>
-                    </div>
-                </div>
+                <MetricCard tone="blue" icon={MetricIcons.building()} value={ORGS_DATA.length} label={t('organizations.metricsTotal')} />
+                <MetricCard tone="amber" icon={MetricIcons.government()} value={fedCnt} label={t('organizations.metricsFederations')} />
+                <MetricCard tone="cyan" icon={MetricIcons.school()} value={schoolCnt} label={t('organizations.metricsSchools')} />
+                <MetricCard tone="purple" icon={MetricIcons.trophy()} value={clubCnt} label={t('organizations.metricsClubs')} />
+                <MetricCard tone="green" icon={MetricIcons.active()} value={accredCnt} label={t('organizations.metricsAccredited')} />
             </div>
 
             {/* Filters */}

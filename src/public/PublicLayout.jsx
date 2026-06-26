@@ -239,7 +239,7 @@ export default function PublicLayout() {
                                     className="pub-a11y-link"
                                     onClick={enableA11y}
                                 >
-                                    <span aria-hidden="true">👁</span> {t('a11y.enable')}
+                                    <span aria-hidden="true" style={{ display: 'inline-flex', verticalAlign: 'middle' }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" /><circle cx="12" cy="12" r="3" /></svg></span> {t('a11y.enable')}
                                 </button>
                             )}
                             <button
@@ -249,7 +249,10 @@ export default function PublicLayout() {
                                 aria-label={dark ? t('public.themeLight') : t('public.themeDark')}
                                 aria-pressed={dark}
                             >
-                                <span aria-hidden="true">{dark ? '☀️' : '🌙'}</span>
+                                <span aria-hidden="true" style={{ display: 'inline-flex' }}>{dark
+                                    ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4" /><path d="M12 3v1M12 20v1M5.6 5.6l.7.7M17.7 17.7l.7.7M3 12h1M20 12h1M5.6 18.4l.7-.7M17.7 6.3l.7-.7" /></svg>
+                                    : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>}
+                                </span>
                             </button>
                             {['ru', 'kg', 'en'].map(code => (
                                 <button
@@ -465,7 +468,7 @@ export default function PublicLayout() {
                     <div className="pub-footer__bottom">
                         <span>{t('public.copyright')} {t('public.footerAllRights')}</span>
                         <Link to="/public/statistics" className="pub-visit-counter">
-                            <span aria-hidden="true">👁</span> Посещений: <b>{visitTotal.toLocaleString('ru-RU')}</b>
+                            <span aria-hidden="true" style={{ display: 'inline-flex', verticalAlign: 'middle' }}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" /><circle cx="12" cy="12" r="3" /></svg></span> Посещений: <b>{visitTotal.toLocaleString('ru-RU')}</b>
                         </Link>
                         <span>{t('public.footerVersion')}</span>
                     </div>

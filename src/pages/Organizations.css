@@ -17,8 +17,9 @@
 
 .og-header__title {
     font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: -0.3px;
     color: var(--text-primary);
 }
 
@@ -64,38 +65,9 @@
     transition: all var(--transition-base);
 }
 
-.og-metric::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-}
-
 .og-metric:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
-}
-
-.og-metric--blue::before {
-    background: var(--accent);
-}
-
-.og-metric--gold::before {
-    background: #d97706;
-}
-
-.og-metric--cyan::before {
-    background: #0EA5E9;
-}
-
-.og-metric--purple::before {
-    background: #7C3AED;
-}
-
-.og-metric--green::before {
-    background: var(--green);
 }
 
 .og-metric__icon {

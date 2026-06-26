@@ -5,10 +5,7 @@ import { MetricIcons } from '../components/CabinetIcons'
 import Breadcrumbs from '../components/Breadcrumbs'
 import './AwardApplications.css'
 
-const COLORS = ['#2563EB', '#059669', '#7c3aed', '#d97706', '#e11d48', '#0d9488']
-const getColor = (id) => COLORS[id % COLORS.length]
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
-const initials = (name) => { const p = (name || '').split(' '); return (p[0]?.[0] || '') + (p[1]?.[0] || '') }
 
 const STATUSES = ['Подана', 'Подтверждён старым клубом', 'Подтверждён новым клубом', 'Подтверждён федерацией', 'Переход оформлен', 'Отклонена', 'Отозвана']
 const TERMINAL = ['Переход оформлен', 'Отклонена', 'Отозвана']
@@ -114,10 +111,7 @@ export default function TransferApplications() {
                             <tr key={a.id}>
                                 <td><span className="aw-appno">{a.appNo}</span></td>
                                 <td>
-                                    <div className="aw-person">
-                                        <div className="aw-avatar" style={{ background: getColor(a.id) }}>{initials(a.athleteName)}</div>
-                                        <span className="aw-person__name">{a.athleteName}</span>
-                                    </div>
+                                    <span className="aw-person__name">{a.athleteName}</span>
                                 </td>
                                 <td>{a.sport || '—'}</td>
                                 <td style={{ fontSize: 13, color: '#475569' }}>{a.oldClub || '—'}</td>

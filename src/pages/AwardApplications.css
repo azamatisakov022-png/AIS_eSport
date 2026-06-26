@@ -11,7 +11,7 @@
 }
 .aw-header__title {
     font-family: var(--font-display);
-    font-size: 22px; font-weight: 700; color: var(--text-primary);
+    font-size: 24px; font-weight: 300; letter-spacing: -0.3px; color: var(--text-primary);
 }
 .aw-header__btn {
     display: flex; align-items: center; gap: 6px;
@@ -62,16 +62,7 @@
     position: relative; overflow: hidden;
     box-shadow: var(--shadow-card); transition: all var(--transition-base);
 }
-.aw-metric::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-}
 .aw-metric:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-
-.aw-metric--blue::before   { background: var(--accent); }
-.aw-metric--yellow::before { background: var(--amber); }
-.aw-metric--red::before    { background: var(--rose); }
-.aw-metric--green::before  { background: var(--green); }
-.aw-metric--gray::before   { background: var(--text-muted); }
 
 .aw-metric__icon {
     width: 40px; height: 40px; border-radius: var(--radius-sm);

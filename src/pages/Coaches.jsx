@@ -5,11 +5,11 @@ import { MetricIcons } from '../components/CabinetIcons'
 import './Coaches.css'
 import Portal from '../components/Portal'
 import Breadcrumbs from '../components/Breadcrumbs'
+import { PageHeader, Button, MetricCard } from '../components/ui'
 
 const SPORTS = ['Бокс', 'Борьба', 'Дзюдо', 'Футбол', 'Плавание', 'Лёгкая атлетика', 'Каратэ', 'Тхэквондо', 'Гимнастика', 'Шахматы']
 const REGIONS = ['Бишкек', 'Ош', 'Чуйская', 'Иссык-Кульская', 'Джалал-Абадская', 'Нарынская', 'Баткенская', 'Таласская', 'Ошская']
 const ORGS = ['СДЮСШОР №3 г. Бишкек', 'ДЮСШ «Олимп»', 'Ошская СДЮСШОР', 'СК «Иссык-Куль»', 'ДЮСШ Нарынской области', 'Федерация тхэквондо КР', 'СДЮСШОР «Кубат»', 'ФК «Дордой» Академия', 'Шахматный клуб «Стратегия»', 'СДЮСШОР по гимнастике', 'ДЮСШ №5 г. Ош', 'Водный центр «Дельфин»']
-const COLORS = ['#2563EB', '#059669', '#7c3aed', '#d97706', '#e11d48', '#0d9488']
 
 const today = new Date()
 today.setHours(0, 0, 0, 0)
@@ -28,13 +28,6 @@ function daysUntil(dateStr) {
 function fmt(dateStr) {
     return new Date(dateStr).toLocaleDateString('ru-RU')
 }
-
-function getInitials(name) {
-    const p = name.split(' ')
-    return (p[0]?.[0] || '') + (p[1]?.[0] || '')
-}
-
-function getColor(id) { return COLORS[id % COLORS.length] }
 
 function computeStatus(coach) {
     if (coach.annulled) return 'annulled'
@@ -129,43 +122,17 @@ export default function Coaches() {
         <div className="co-page">
             <Breadcrumbs current={t('coaches.registryTitle')} />
             {/* Header */}
-            <div className="co-header">
-                <h1 className="co-header__title">{t('coaches.registryTitle')}</h1>
-                <button className="co-header__btn" onClick={() => { setForm(EMPTY_FORM); setAddModal(true) }}>
-                    <span>+</span> {t('coaches.addNew')}
-                </button>
-            </div>
+            <PageHeader
+                title={t('coaches.registryTitle')}
+                actions={<Button variant="primary" onClick={() => { setForm(EMPTY_FORM); setAddModal(true) }}><span>+</span> {t('coaches.addNew')}</Button>}
+            />
 
             {/* Metrics */}
             <div className="co-metrics">
-                <div className="co-metric co-metric--blue">
-                    <div className="co-metric__icon">{MetricIcons.teacher()}</div>
-                    <div className="co-metric__body">
-                        <span className="co-metric__value">{metrics.total}</span>
-                        <span className="co-metric__label">{t('coaches.metricsTotal')}</span>
-                    </div>
-                </div>
-                <div className="co-metric co-metric--green">
-                    <div className="co-metric__icon">{MetricIcons.active()}</div>
-                    <div className="co-metric__body">
-                        <span className="co-metric__value">{metrics.active}</span>
-                        <span className="co-metric__label">{t('coaches.metricsActive')}</span>
-                    </div>
-                </div>
-                <div className="co-metric co-metric--orange">
-                    <div className="co-metric__icon">{MetricIcons.warning()}</div>
-                    <div className="co-metric__body">
-                        <span className="co-metric__value">{metrics.expiring}</span>
-                        <span className="co-metric__label">{t('coaches.metricsExpiring')}</span>
-                    </div>
-                </div>
-                <div className="co-metric co-metric--gray">
-                    <div className="co-metric__icon">{MetricIcons.blocked()}</div>
-                    <div className="co-metric__body">
-                        <span className="co-metric__value">{metrics.annulled}</span>
-                        <span className="co-metric__label">{t('coaches.metricsRevoked')}</span>
-                    </div>
-                </div>
+                <MetricCard tone="blue" icon={MetricIcons.teacher()} value={metrics.total} label={t('coaches.metricsTotal')} />
+                <MetricCard tone="green" icon={MetricIcons.active()} value={metrics.active} label={t('coaches.metricsActive')} />
+                <MetricCard tone="orange" icon={MetricIcons.warning()} value={metrics.expiring} label={t('coaches.metricsExpiring')} />
+                <MetricCard icon={MetricIcons.blocked()} value={metrics.annulled} label={t('coaches.metricsRevoked')} />
             </div>
 
             {/* Filters */}
@@ -220,9 +187,6 @@ export default function Coaches() {
                                 <tr key={c.id}>
                                     <td>
                                         <div className="co-person">
-                                            <div className="co-avatar" style={{ background: getColor(c.id) }}>
-                                                {getInitials(c.name)}
-                                            </div>
                                             <div className="co-person__info">
                                                 <div className="co-person__name">{c.name}</div>
                                                 <div className="co-person__sub">{c.sex}, {fmt(c.birth)}</div>
@@ -262,9 +226,6 @@ export default function Coaches() {
                         {/* Header */}
                         <div className="co-drawer__header">
                             <div className="co-drawer__profile">
-                                <div className="co-drawer__avatar" style={{ background: getColor(drawerCoach.id) }}>
-                                    {getInitials(drawerCoach.name)}
-                                </div>
                                 <div>
                                     <div className="co-drawer__name">{drawerCoach.name}</div>
                                     {statusBadge(drawerCoach._status)}

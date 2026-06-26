@@ -281,7 +281,10 @@ export default function PublicCabinet() {
 
                 <div style={c.sidebarFooter}>
                     <button style={{...c.sidebarLogoutBtn, color: theme === 'dark' ? '#FFD60A' : '#FF9F0A'}} className="cab-theme-btn" onClick={toggleTheme}>
-                        <span style={{ fontSize: 16 }}>{theme === 'dark' ? '☀️' : '🌙'}</span>
+                        <span style={{ display: 'flex' }}>{theme === 'dark'
+                            ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4" /><path d="M12 3v1M12 20v1M5.6 5.6l.7.7M17.7 17.7l.7.7M3 12h1M20 12h1M5.6 18.4l.7-.7M17.7 6.3l.7-.7" /></svg>
+                            : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>}
+                        </span>
                         <span style={{color: 'var(--text-primary)'}}>{theme === 'dark' ? 'Светлая тема' : 'Темная тема'}</span>
                     </button>
                     <button style={c.sidebarLogoutBtn} className="cab-logout-btn" onClick={handleLogout}>

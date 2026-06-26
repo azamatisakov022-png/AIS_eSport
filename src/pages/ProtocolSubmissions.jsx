@@ -5,10 +5,7 @@ import { MetricIcons } from '../components/CabinetIcons'
 import Breadcrumbs from '../components/Breadcrumbs'
 import './AwardApplications.css'
 
-const COLORS = ['#2563EB', '#059669', '#7c3aed', '#d97706', '#e11d48', '#0d9488']
-const getColor = (id) => COLORS[id % COLORS.length]
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
-const initials = (name) => { const p = (name || '').replace(/Федерация\s*/i, '').split(' '); return (p[0]?.[0] || '') + (p[1]?.[0] || '') }
 
 const STATUSES = ['Подан', 'На проверке', 'На доработке', 'Опубликован', 'Отклонён', 'Отозван']
 const TERMINAL = ['Опубликован', 'Отклонён', 'Отозван']
@@ -113,10 +110,7 @@ export default function ProtocolSubmissions() {
                             <tr key={a.id}>
                                 <td><span className="aw-appno">{a.appNo}</span></td>
                                 <td>
-                                    <div className="aw-person">
-                                        <div className="aw-avatar" style={{ background: getColor(a.id) }}>{initials(a.federationName)}</div>
-                                        <span className="aw-person__name">{a.federationName}</span>
-                                    </div>
+                                    <span className="aw-person__name">{a.federationName}</span>
                                 </td>
                                 <td style={{ fontSize: 13 }}>{a.eventName}<div style={{ fontSize: 11, color: '#94a3b8' }}>{fmt(a.eventDate)}{a.level ? ` · ${a.level}` : ''}</div></td>
                                 <td>{a.sport || '—'}</td>

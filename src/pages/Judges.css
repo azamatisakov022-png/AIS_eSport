@@ -12,7 +12,7 @@
 
 .jd-header__title {
     font-family: var(--font-display);
-    font-size: 22px; font-weight: 700; color: var(--text-primary);
+    font-size: 24px; font-weight: 300; letter-spacing: -0.3px; color: var(--text-primary);
 }
 
 .jd-header__btn {
@@ -37,16 +37,7 @@
     position: relative; overflow: hidden;
     box-shadow: var(--shadow-card); transition: all var(--transition-base);
 }
-.jd-metric::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-}
 .jd-metric:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-
-.jd-metric--blue::before   { background: var(--accent); }
-.jd-metric--gold::before   { background: var(--amber); }
-.jd-metric--purple::before { background: var(--purple); }
-.jd-metric--orange::before { background: var(--amber); }
-.jd-metric--red::before    { background: var(--rose); }
 
 .jd-metric__icon {
     width: 40px; height: 40px; border-radius: var(--radius-sm);

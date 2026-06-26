@@ -6,6 +6,7 @@ import { MetricIcons } from '../components/CabinetIcons'
 import './AwardApplications.css'
 import Portal from '../components/Portal'
 import Breadcrumbs from '../components/Breadcrumbs'
+import { PageHeader, Button, MetricCard } from '../components/ui'
 import { useNavigate } from 'react-router-dom'
 
 const GROUP_KEYS = { A: 'awardApplications.groups.A', B: 'awardApplications.groups.B', C: 'awardApplications.groups.C' }
@@ -34,11 +35,6 @@ function addWorkDays(dateStr, days) {
     while (added < days) { d.setDate(d.getDate() + 1); const wd = d.getDay(); if (wd !== 0 && wd !== 6) added++ }
     return d.toISOString().slice(0, 10)
 }
-function getInitials(name) { const p = name.split(' '); return (p[0]?.[0] || '') + (p[1]?.[0] || '') }
-
-const COLORS = ['#2563EB', '#059669', '#7c3aed', '#d97706', '#e11d48', '#0d9488']
-function getColor(id) { return COLORS[id % COLORS.length] }
-
 function awardGroup(award) {
     if (!award) return 'C'
     const u = award.toUpperCase()
@@ -205,9 +201,7 @@ export default function AwardApplications() {
         <div className="aw-page">
             <Breadcrumbs current={t('awardApplications.registryTitle')} />
             {/* Header */}
-            <div className="aw-header">
-                <h1 className="aw-header__title">{t('awardApplications.registryTitle')}</h1>
-            </div>
+            <PageHeader title={t('awardApplications.registryTitle')} />
 
             {/* Main tabs */}
             <div className="aw-main-tabs">
@@ -221,41 +215,11 @@ export default function AwardApplications() {
                 <>
                     {/* Metrics */}
                     <div className="aw-metrics">
-                        <div className="aw-metric aw-metric--blue">
-                            <div className="aw-metric__icon">{MetricIcons.clipboard()}</div>
-                            <div className="aw-metric__body">
-                                <span className="aw-metric__value">{metrics.total}</span>
-                                <span className="aw-metric__label">{t('awardApplications.metricsTotal')}</span>
-                            </div>
-                        </div>
-                        <div className="aw-metric aw-metric--yellow">
-                            <div className="aw-metric__icon">{MetricIcons.search()}</div>
-                            <div className="aw-metric__body">
-                                <span className="aw-metric__value">{metrics.reviewing}</span>
-                                <span className="aw-metric__label">{t('awardApplications.metricsUnderReview')}</span>
-                            </div>
-                        </div>
-                        <div className="aw-metric aw-metric--red">
-                            <div className="aw-metric__icon">{MetricIcons.clock()}</div>
-                            <div className="aw-metric__body">
-                                <span className="aw-metric__value">{metrics.expiring}</span>
-                                <span className="aw-metric__label">{t('awardApplications.metricsExpiring')}</span>
-                            </div>
-                        </div>
-                        <div className="aw-metric aw-metric--green">
-                            <div className="aw-metric__icon">{MetricIcons.active()}</div>
-                            <div className="aw-metric__body">
-                                <span className="aw-metric__value">{metrics.awarded}</span>
-                                <span className="aw-metric__label">{t('awardApplications.metricsAwarded')}</span>
-                            </div>
-                        </div>
-                        <div className="aw-metric aw-metric--gray">
-                            <div className="aw-metric__icon">{MetricIcons.rejected()}</div>
-                            <div className="aw-metric__body">
-                                <span className="aw-metric__value">{metrics.rejected}</span>
-                                <span className="aw-metric__label">{t('awardApplications.metricsRejected')}</span>
-                            </div>
-                        </div>
+                        <MetricCard tone="blue" icon={MetricIcons.clipboard()} value={metrics.total} label={t('awardApplications.metricsTotal')} />
+                        <MetricCard tone="amber" icon={MetricIcons.search()} value={metrics.reviewing} label={t('awardApplications.metricsUnderReview')} />
+                        <MetricCard tone="red" icon={MetricIcons.clock()} value={metrics.expiring} label={t('awardApplications.metricsExpiring')} />
+                        <MetricCard tone="green" icon={MetricIcons.active()} value={metrics.awarded} label={t('awardApplications.metricsAwarded')} />
+                        <MetricCard icon={MetricIcons.rejected()} value={metrics.rejected} label={t('awardApplications.metricsRejected')} />
                     </div>
 
                     {/* Filters */}
@@ -304,10 +268,7 @@ export default function AwardApplications() {
                                         <tr key={a.id}>
                                             <td><span className="aw-appno">{a.appNo}</span></td>
                                             <td>
-                                                <div className="aw-person">
-                                                    <div className="aw-avatar" style={{ background: getColor(a.id) }}>{getInitials(a.name)}</div>
-                                                    <span className="aw-person__name">{a.name}</span>
-                                                </div>
+                                                <span className="aw-person__name">{a.name}</span>
                                             </td>
                                             <td>
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -376,10 +337,7 @@ export default function AwardApplications() {
                                 {DEPRIVE_MOCK.map(d => (
                                     <tr key={d.id}>
                                         <td>
-                                            <div className="aw-person">
-                                                <div className="aw-avatar" style={{ background: getColor(d.id) }}>{getInitials(d.name)}</div>
-                                                <span className="aw-person__name">{d.name}</span>
-                                            </div>
+                                            <span className="aw-person__name">{d.name}</span>
                                         </td>
                                         <td><span style={{ fontWeight: 600 }}>{d.award}</span></td>
                                         <td>{d.sport}</td>
@@ -436,10 +394,7 @@ export default function AwardApplications() {
                                 {RESTORE_MOCK.map(r => (
                                     <tr key={r.id}>
                                         <td>
-                                            <div className="aw-person">
-                                                <div className="aw-avatar" style={{ background: getColor(r.id) }}>{getInitials(r.name)}</div>
-                                                <span className="aw-person__name">{r.name}</span>
-                                            </div>
+                                            <span className="aw-person__name">{r.name}</span>
                                         </td>
                                         <td><span style={{ fontWeight: 600 }}>{r.award}</span></td>
                                         <td>{r.sport}</td>

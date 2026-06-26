@@ -16,8 +16,9 @@
 
 .co-header__title {
     font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: -0.3px;
     color: var(--text-primary);
 }
 
@@ -63,22 +64,10 @@
     transition: all var(--transition-base);
 }
 
-.co-metric::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-}
-
 .co-metric:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
 }
-
-.co-metric--blue::before   { background: var(--accent); }
-.co-metric--green::before  { background: var(--green); }
-.co-metric--orange::before { background: var(--amber); }
-.co-metric--gray::before   { background: var(--text-muted); }
 
 .co-metric__icon {
     width: 44px; height: 44px;

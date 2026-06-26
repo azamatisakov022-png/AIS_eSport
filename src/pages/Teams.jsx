@@ -6,6 +6,7 @@ import { CardSkeleton, MetricSkeleton } from '../components/Skeleton'
 import './Teams.css'
 import Portal from '../components/Portal'
 import Breadcrumbs from '../components/Breadcrumbs'
+import { PageHeader, Button, MetricCard } from '../components/ui'
 
 /* ── Mock data ── */
 const SPORTS = ['Бокс','Дзюдо','Борьба','Тхэквондо','Тяжёлая атлетика','Футбол','Волейбол','Плавание','Лёгкая атлетика','Стрельба']
@@ -289,10 +290,10 @@ export default function Teams() {
         <div className="tm-page">
             <Breadcrumbs current={t('teams.registryTitle')} />
             {/* Header */}
-            <div className="tm-header">
-                <h1 className="tm-header__title">{t('teams.registryTitle')}</h1>
-                <button className="tm-header__btn" onClick={() => setModal(true)}>{t('teams.createTeam')}</button>
-            </div>
+            <PageHeader
+                title={t('teams.registryTitle')}
+                actions={<Button variant="primary" onClick={() => setModal(true)}>{t('teams.createTeam')}</Button>}
+            />
 
             {isLoading ? (
                 <>
@@ -303,34 +304,10 @@ export default function Teams() {
                 <>
             {/* Metrics */}
             <div className="tm-metrics">
-                <div className="tm-metric tm-metric--blue">
-                    <div className="tm-metric__icon">{MetricIcons.stadium()}</div>
-                    <div className="tm-metric__body">
-                        <span className="tm-metric__value">{TEAMS_DATA.length}</span>
-                        <span className="tm-metric__label">{t('teams.metricsTotal')}</span>
-                    </div>
-                </div>
-                <div className="tm-metric tm-metric--green">
-                    <div className="tm-metric__icon">{MetricIcons.active()}</div>
-                    <div className="tm-metric__body">
-                        <span className="tm-metric__value">{activeCnt}</span>
-                        <span className="tm-metric__label">{t('teams.metricsActive')}</span>
-                    </div>
-                </div>
-                <div className="tm-metric tm-metric--purple">
-                    <div className="tm-metric__icon">{MetricIcons.target()}</div>
-                    <div className="tm-metric__body">
-                        <span className="tm-metric__value">{sportsCnt}</span>
-                        <span className="tm-metric__label">{t('teams.metricsSports')}</span>
-                    </div>
-                </div>
-                <div className="tm-metric tm-metric--cyan">
-                    <div className="tm-metric__icon">{MetricIcons.users()}</div>
-                    <div className="tm-metric__body">
-                        <span className="tm-metric__value">{totalAthletes}</span>
-                        <span className="tm-metric__label">{t('teams.metricsAthletes')}</span>
-                    </div>
-                </div>
+                <MetricCard tone="blue" icon={MetricIcons.stadium()} value={TEAMS_DATA.length} label={t('teams.metricsTotal')} />
+                <MetricCard tone="green" icon={MetricIcons.active()} value={activeCnt} label={t('teams.metricsActive')} />
+                <MetricCard tone="purple" icon={MetricIcons.target()} value={sportsCnt} label={t('teams.metricsSports')} />
+                <MetricCard tone="cyan" icon={MetricIcons.users()} value={totalAthletes} label={t('teams.metricsAthletes')} />
             </div>
 
             {/* Filters */}

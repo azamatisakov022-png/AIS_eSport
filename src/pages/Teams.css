@@ -12,7 +12,7 @@
 }
 .tm-header__title {
     font-family: var(--font-display);
-    font-size: 22px; font-weight: 700; color: var(--text-primary);
+    font-size: 24px; font-weight: 300; letter-spacing: -0.3px; color: var(--text-primary);
 }
 .tm-header__btn {
     display: flex; align-items: center; gap: 6px;

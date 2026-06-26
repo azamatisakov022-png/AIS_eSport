@@ -8,6 +8,24 @@
     height: 100vh;
 }
 
+/* ──────────────────────────────────────────────────────────
+   Theme-token aliases for intranet & registry pages
+   (Staff / Медсправки / Инвентарь + /intranet/*). These screens
+   were authored against a separate --theme-* namespace that was
+   never defined globally, so they fell back to hardcoded light
+   colors and ignored dark mode. Map the aliases to the core
+   palette (which already has light/dark variants) so they theme
+   correctly. Scoped to .layout → no effect on the public portal.
+   ────────────────────────────────────────────────────────── */
+.layout {
+    --theme-surface: var(--bg-card);
+    --theme-bg: var(--bg-secondary);
+    --theme-text: var(--text-primary);
+    --theme-text-secondary: var(--text-secondary);
+    --theme-border: var(--border-color);
+    --theme-border-light: var(--border-color);
+}
+
 .layout__main {
     margin-left: var(--sidebar-width);
     flex: 1;
@@ -19,7 +37,7 @@
 
 .layout__content {
     flex: 1;
-    padding: 24px 28px;
+    padding: 32px 36px;
     overflow-y: auto;
     background: var(--bg-body);
     animation: fadeIn 0.3s ease;
@@ -32,7 +50,7 @@
     }
 
     .layout__content {
-        padding: 20px;
+        padding: 24px 20px;
     }
 }
 

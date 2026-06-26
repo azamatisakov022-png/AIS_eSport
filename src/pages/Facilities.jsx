@@ -5,6 +5,7 @@ import { MetricIcons } from '../components/CabinetIcons'
 import './Facilities.css'
 import Breadcrumbs from '../components/Breadcrumbs'
 import Portal from '../components/Portal'
+import { PageHeader, Button, MetricCard } from '../components/ui'
 
 /* ══════════════════════════════════════════════════════
    MOCK DATA - 14 facilities across KR
@@ -149,23 +150,23 @@ export default function Facilities() {
     return (
         <div className="fc">
             <Breadcrumbs current={t('facilities.registryTitle')} />
-            <div className="fc-header">
-                <div className="fc-header__left">
-                    <h1 className="fc-header__title">{t('facilities.registryTitle')}</h1>
-                    <button className="fc-add-btn" onClick={() => setShowAdd(true)}>+ {t('facilities.addNew')}</button>
-                </div>
-                <div className="fc-view-toggle">
-                    <button className={`fc-view-btn ${view === 'list' ? 'fc-view-btn--active' : ''}`} onClick={() => setView('list')}>{t('facilities.viewList')}</button>
-                    <button className={`fc-view-btn ${view === 'map' ? 'fc-view-btn--active' : ''}`} onClick={() => setView('map')}>{t('facilities.viewMap')}</button>
-                </div>
-            </div>
+            <PageHeader
+                title={t('facilities.registryTitle')}
+                actions={<>
+                    <Button variant="primary" onClick={() => setShowAdd(true)}>+ {t('facilities.addNew')}</Button>
+                    <div className="fc-view-toggle">
+                        <button className={`fc-view-btn ${view === 'list' ? 'fc-view-btn--active' : ''}`} onClick={() => setView('list')}>{t('facilities.viewList')}</button>
+                        <button className={`fc-view-btn ${view === 'map' ? 'fc-view-btn--active' : ''}`} onClick={() => setView('map')}>{t('facilities.viewMap')}</button>
+                    </div>
+                </>}
+            />
 
             {/* ── Metrics ── */}
             <div className="fc-metrics">
-                <div className="fc-metric"><span className="fc-metric__icon fc-metric__icon--blue">{MetricIcons.stadium()}</span><div className="fc-metric__info"><span className="fc-metric__val">{FACILITIES_DATA.length}</span><span className="fc-metric__lbl">{t('facilities.metricsTotal')}</span></div></div>
-                <div className="fc-metric"><span className="fc-metric__icon fc-metric__icon--green">{MetricIcons.active()}</span><div className="fc-metric__info"><span className="fc-metric__val">{activeCount}</span><span className="fc-metric__lbl">{t('facilities.metricsActive')}</span></div></div>
-                <div className="fc-metric"><span className="fc-metric__icon fc-metric__icon--amber">{MetricIcons.wrench()}</span><div className="fc-metric__info"><span className="fc-metric__val">{reconCount}</span><span className="fc-metric__lbl">{t('facilities.metricsReconstruction')}</span></div></div>
-                <div className="fc-metric"><span className="fc-metric__icon fc-metric__icon--violet">{MetricIcons.mapPin()}</span><div className="fc-metric__info"><span className="fc-metric__val">{regionsCount}</span><span className="fc-metric__lbl">{t('facilities.metricsRegions')}</span></div></div>
+                <MetricCard tone="blue" icon={MetricIcons.stadium()} value={FACILITIES_DATA.length} label={t('facilities.metricsTotal')} />
+                <MetricCard tone="green" icon={MetricIcons.active()} value={activeCount} label={t('facilities.metricsActive')} />
+                <MetricCard tone="amber" icon={MetricIcons.wrench()} value={reconCount} label={t('facilities.metricsReconstruction')} />
+                <MetricCard tone="violet" icon={MetricIcons.mapPin()} value={regionsCount} label={t('facilities.metricsRegions')} />
             </div>
 
             {/* ── Filters ── */}

@@ -4,6 +4,7 @@ import { useToast } from '../context/ToastContext'
 import { MetricIcons } from '../components/CabinetIcons'
 import './Analytics.css'
 import Breadcrumbs from '../components/Breadcrumbs'
+import { PageHeader, Button, MetricCard } from '../components/ui'
 
 /* ══════════════════════════════════════════════════════
    MOCK DATA - 3 years
@@ -337,28 +338,28 @@ export default function Analytics() {
     return (
         <div className="an">
             <Breadcrumbs current={t('analytics.registryTitle')} />
-            <div className="an-header">
-                <div className="an-header__left">
-                    <h1 className="an-header__title">{t('analytics.registryTitle')}</h1>
-                </div>
-                <div className="an-header__controls">
-                    <div className="an-btn-group">
-                        {YEARS.map(y => (
-                            <button key={y} className={`an-btn ${year === y ? 'an-btn--active' : ''}`}
-                                onClick={() => setYear(y)}>{y}</button>
-                        ))}
+            <PageHeader
+                title={t('analytics.registryTitle')}
+                actions={
+                    <div className="an-header__controls">
+                        <div className="an-btn-group">
+                            {YEARS.map(y => (
+                                <button key={y} className={`an-btn ${year === y ? 'an-btn--active' : ''}`}
+                                    onClick={() => setYear(y)}>{y}</button>
+                            ))}
+                        </div>
+                        <div className="an-btn-group">
+                            {QUARTER_KEYS.map(q => (
+                                <button key={q.key} className={`an-btn an-btn--sm ${quarter === q.key ? 'an-btn--active' : ''}`}
+                                    onClick={() => setQuarter(q.key)}>{t(q.labelKey)}</button>
+                            ))}
+                        </div>
+                        <Button variant="primary" onClick={() => toast('Экспорт отчёта - в разработке')}>
+                            {t('analytics.exportReport')}
+                        </Button>
                     </div>
-                    <div className="an-btn-group">
-                        {QUARTER_KEYS.map(q => (
-                            <button key={q.key} className={`an-btn an-btn--sm ${quarter === q.key ? 'an-btn--active' : ''}`}
-                                onClick={() => setQuarter(q.key)}>{t(q.labelKey)}</button>
-                        ))}
-                    </div>
-                    <button className="an-export-btn" onClick={() => toast('Экспорт отчёта - в разработке')}>
-                        {t('analytics.exportReport')}
-                    </button>
-                </div>
-            </div>
+                }
+            />
 
             {/* ── 2. KPI Metrics ── */}
             <div className="an-kpis">

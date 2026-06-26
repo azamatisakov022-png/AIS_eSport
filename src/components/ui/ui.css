@@ -1,0 +1,84 @@
+/* ============================================================
+   Shared UI primitives — token-driven, theme-aware.
+   Used across the internal portal to stop per-page duplication.
+   ============================================================ */
+
+/* ── Button ── */
+.ui-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    font-family: inherit; font-weight: 600; border-radius: 10px; cursor: pointer;
+    border: 1px solid transparent; text-decoration: none; white-space: nowrap;
+    transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+.ui-btn--md { padding: 10px 18px; font-size: 13px; }
+.ui-btn--sm { padding: 6px 12px; font-size: 12px; }
+.ui-btn--primary { background: var(--accent); color: var(--text-inverse); }
+.ui-btn--primary:hover { background: var(--accent-dark); }
+.ui-btn--success { background: var(--green); color: var(--text-inverse); }
+.ui-btn--success:hover { background: var(--green-dark); }
+.ui-btn--danger { background: var(--rose); color: var(--text-inverse); }
+.ui-btn--danger:hover { background: var(--rose-dark); }
+.ui-btn--outline { background: transparent; border-color: var(--border-color); color: var(--text-secondary); }
+.ui-btn--outline:hover { border-color: var(--accent); color: var(--accent); }
+.ui-btn--ghost { background: var(--accent-light); color: var(--accent); }
+.ui-btn--ghost:hover { background: var(--accent); color: var(--text-inverse); }
+.ui-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Badge ── */
+.ui-badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600; white-space: nowrap;
+}
+.ui-badge--gray   { background: var(--badge-gray-bg); color: var(--badge-gray-text); }
+.ui-badge--blue   { background: var(--badge-blue-bg); color: var(--badge-blue-text); }
+.ui-badge--green  { background: var(--green-light); color: var(--green); }
+.ui-badge--amber  { background: var(--amber-light); color: var(--amber); }
+.ui-badge--red    { background: var(--rose-light); color: var(--rose); }
+.ui-badge--purple { background: var(--badge-purple-bg); color: var(--badge-purple-text); }
+
+/* ── Card ── */
+.ui-card {
+    background: var(--bg-card); border: 1px solid var(--border-color);
+    border-radius: 16px; box-shadow: var(--shadow-card); padding: 20px;
+}
+.ui-card__head {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
+}
+.ui-card__title { font-size: 15px; font-weight: 600; color: var(--text-primary); margin: 0; }
+.ui-card__actions { display: flex; gap: 8px; }
+
+/* ── PageHeader ── */
+.ui-page-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 16px; margin-bottom: 20px;
+}
+.ui-page-header__title {
+    font-size: 24px; font-weight: 300; letter-spacing: -0.3px;
+    color: var(--text-primary); margin: 0;
+}
+.ui-page-header__subtitle { font-size: 14px; color: var(--text-secondary); margin: 4px 0 0; max-width: 720px; }
+.ui-page-header__actions { display: flex; gap: 10px; flex-shrink: 0; flex-wrap: wrap; }
+
+/* ── MetricCard (no colored stripe — soft tinted icon tile only) ── */
+.ui-metric {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--bg-card); border: 1px solid var(--border-color);
+    border-radius: 16px; padding: 16px 18px; box-shadow: var(--shadow-card);
+}
+.ui-metric__icon {
+    width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--badge-gray-bg);
+}
+.ui-metric--blue   .ui-metric__icon { background: var(--accent-light); }
+.ui-metric--green  .ui-metric__icon { background: var(--green-light); }
+.ui-metric--amber  .ui-metric__icon,
+.ui-metric--orange .ui-metric__icon { background: var(--amber-light); }
+.ui-metric--red    .ui-metric__icon { background: var(--rose-light); }
+.ui-metric--cyan   .ui-metric__icon { background: var(--cyan-light); }
+.ui-metric--violet .ui-metric__icon,
+.ui-metric--purple .ui-metric__icon { background: var(--violet-light); }
+.ui-metric__body { display: flex; flex-direction: column; min-width: 0; }
+.ui-metric__value { font-size: 24px; font-weight: 700; color: var(--text-primary); line-height: 1.1; }
+.ui-metric__label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.ui-metric__trend { margin-left: auto; font-size: 11px; color: var(--text-muted); }

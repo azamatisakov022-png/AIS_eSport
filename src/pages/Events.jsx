@@ -6,6 +6,7 @@ import { TableSkeleton, MetricSkeleton } from '../components/Skeleton'
 import './Events.css'
 import Portal from '../components/Portal'
 import Breadcrumbs from '../components/Breadcrumbs'
+import { PageHeader, Button, MetricCard, Badge } from '../components/ui'
 
 const SPORTS = ['Бокс', 'Борьба', 'Дзюдо', 'Футбол', 'Плавание', 'Лёгкая атлетика', 'Каратэ', 'Тхэквондо', 'Гимнастика', 'Шахматы', 'Волейбол', 'Баскетбол', 'Тяжёлая атлетика', 'Кок-бору']
 const REGIONS = ['Бишкек', 'Ош', 'Каракол', 'Джалал-Абад', 'Нарын', 'Талас', 'Баткен', 'Токмок', 'Балыкчы']
@@ -13,12 +14,12 @@ const AGES_KEYS = ['ageGroup.adults', 'ageGroup.juniors', 'ageGroup.cadets', 'ag
 const AGES_VALUES = ['Взрослые', 'Юниоры', 'Кадеты', 'Ветераны']
 const LEVELS = ['Республиканский', 'Международный']
 const EVENT_TYPE_DEFS = [
-    { value: 'international', labelKey: 'events.types.international', icon: MetricIcons.globe('#F59E0B', 18), color: '#F59E0B' },
-    { value: 'championship',  labelKey: 'events.types.championship',  icon: MetricIcons.trophy('#2563EB', 18), color: '#2563EB' },
-    { value: 'premier',       labelKey: 'events.types.premier',       icon: MetricIcons.medal('#7C3AED', 18), color: '#7C3AED' },
-    { value: 'spartakiad',    labelKey: 'events.types.spartakiad',    icon: MetricIcons.target('#16A34A', 18), color: '#16A34A' },
-    { value: 'tournament',    labelKey: 'events.types.tournament',    icon: MetricIcons.medal('#0EA5E9', 18), color: '#0EA5E9' },
-    { value: 'other',         labelKey: 'events.types.other',         icon: MetricIcons.clipboard('#9ca3af', 18), color: '#9ca3af' },
+    { value: 'international', labelKey: 'events.types.international' },
+    { value: 'championship',  labelKey: 'events.types.championship' },
+    { value: 'premier',       labelKey: 'events.types.premier' },
+    { value: 'spartakiad',    labelKey: 'events.types.spartakiad' },
+    { value: 'tournament',    labelKey: 'events.types.tournament' },
+    { value: 'other',         labelKey: 'events.types.other' },
 ]
 const JUDGES_LIST = ['Абдраимов К.М.', 'Маматова Г.Т.', 'Сыдыков Э.Б.', 'Бекбоева А.К.', 'Турсунов Д.А.', 'Кадыров Р.Б.', 'Усенова Н.Э.', 'Жумабеков Т.С.', 'Касымова Ж.Б.', 'Калыков А.Н.']
 const ORGS_LIST = ['ГАФКиС КР', 'Федерация бокса КР', 'Федерация борьбы КР', 'Федерация дзюдо КР', 'ФФ КР', 'Федерация каратэ КР', 'Федерация тхэквондо КР', 'Федерация гимнастики КР', 'Федерация шахмат КР', 'Федерация плавания КР']
@@ -38,9 +39,6 @@ function computeStatus(ev) {
     if (today > e) return 'finished'
     return 'live'
 }
-
-const COLORS = ['#2563EB', '#059669', '#7c3aed', '#d97706', '#e11d48', '#0d9488']
-function getColor(id) { return COLORS[id % COLORS.length] }
 
 const MOCK = [
     { id: 1,  title: 'Чемпионат КР по дзюдо 2026',                    type: 'championship',  sport: 'Дзюдо',            start: '2026-03-15', end: '2026-03-17', city: 'Бишкек',       venue: 'Дворец спорта им. Кожомкула', age: 'Взрослые',  level: 'Республиканский', organizer: 'ГАФКиС КР',                  judge: 'Абдраимов К.М.',  inPlan: true,  funded: true,  cancelled: false },
@@ -72,17 +70,30 @@ const PARTICIPANTS_MOCK = [
     { name: 'Ормонов Алмаз',         region: 'Чуй',       rank: 'КМС',    weight: '68 кг' },
 ]
 
+const MEDAL_COLORS = { 1: '#C9A227', 2: '#9CA3AF', 3: '#B07A45' }
+const medalIcon = (place) => {
+    const c = MEDAL_COLORS[place]
+    if (!c) return null
+    return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M7.21 2L9 7h6l1.79-5" fill={c} fillOpacity="0.12" />
+            <circle cx="12" cy="14" r="6" fill={c} fillOpacity="0.15" />
+            <path d="M12 11.5v2.5l1.5 1" />
+        </svg>
+    )
+}
+
 const RESULTS_MOCK = [
-    { place: 1, medal: '●', name: 'Асанов Бакыт',      rank: 'МС КР', result: '1-е место' },
-    { place: 2, medal: '●', name: 'Джумабаев Эрлан',    rank: 'МСМК',  result: '2-е место' },
-    { place: 3, medal: '●', name: 'Бейшеналиев Данияр', rank: 'МС КР', result: '3-е место' },
-    { place: 4, medal: '',   name: 'Ормонов Алмаз',      rank: 'КМС',   result: '4-е место' },
+    { place: 1, name: 'Асанов Бакыт',      rank: 'МС КР', result: '1-е место' },
+    { place: 2, name: 'Джумабаев Эрлан',    rank: 'МСМК',  result: '2-е место' },
+    { place: 3, name: 'Бейшеналиев Данияр', rank: 'МС КР', result: '3-е место' },
+    { place: 4, name: 'Ормонов Алмаз',      rank: 'КМС',   result: '4-е место' },
 ]
 
 const DOCS_MOCK = [
-    { name: 'Положение о соревновании', icon: '○', ok: true },
-    { name: 'Приказ о проведении',      icon: '○', ok: true },
-    { name: 'Протокол результатов',     icon: '○', ok: false },
+    { name: 'Положение о соревновании', ok: true },
+    { name: 'Приказ о проведении',      ok: true },
+    { name: 'Протокол результатов',     ok: false },
 ]
 
 const EMPTY_FORM = {
@@ -135,21 +146,19 @@ export default function Events() {
     const setField = (k, v) => setForm(p => ({ ...p, [k]: v }))
 
     const statusBadge = (s) => {
-        const map = { planned: ['ev-badge--blue', t('events.statusPlanned')], live: ['ev-badge--red', t('events.statusLive')], finished: ['ev-badge--gray', t('events.statusFinished')], cancelled: ['ev-badge--dark', t('events.statusCancelled')] }
-        const [cls, text] = map[s] || ['ev-badge--gray', s]
-        return <span className={`ev-badge ${cls}`}>{text}</span>
+        const map = { planned: ['blue', t('events.statusPlanned')], live: ['red', t('events.statusLive')], finished: ['gray', t('events.statusFinished')], cancelled: ['gray', t('events.statusCancelled')] }
+        const [variant, text] = map[s] || ['gray', s]
+        return <Badge variant={variant}>{text}</Badge>
     }
 
     return (
         <div className="ev-page">
             <Breadcrumbs current={t('events.registryTitle')} />
             {/* Header */}
-            <div className="ev-header">
-                <h1 className="ev-header__title">{t('events.registryTitle', { year: 2026 })}</h1>
-                <button className="ev-header__btn" onClick={() => { setForm(EMPTY_FORM); setAddModal(true) }}>
-                    <span>+</span> {t('events.createEvent')}
-                </button>
-            </div>
+            <PageHeader
+                title={t('events.registryTitle', { year: 2026 })}
+                actions={<Button variant="primary" onClick={() => { setForm(EMPTY_FORM); setAddModal(true) }}>+ {t('events.createEvent')}</Button>}
+            />
 
             {isLoading ? (
                 <>
@@ -167,13 +176,7 @@ export default function Events() {
                     { color: 'green',  icon: MetricIcons.active(), value: metrics.finished, label: t('events.metricsFinished') },
                     { color: 'orange', icon: MetricIcons.warning(), value: metrics.outPlan,  label: t('events.metricsNotInPlan') },
                 ].map(m => (
-                    <div className={`ev-metric ev-metric--${m.color}`} key={m.label}>
-                        <div className="ev-metric__icon">{m.icon}</div>
-                        <div className="ev-metric__body">
-                            <span className="ev-metric__value">{m.value}</span>
-                            <span className="ev-metric__label">{m.label}</span>
-                        </div>
-                    </div>
+                    <MetricCard key={m.label} tone={m.color} icon={m.icon} value={m.value} label={m.label} />
                 ))}
             </div>
 
@@ -185,7 +188,7 @@ export default function Events() {
                 </div>
                 <select className="ev-filters__select" value={typeF} onChange={e => setTypeF(e.target.value)}>
                     <option value="">{t('common.all')} {t('common.type').toLowerCase()}</option>
-                    {EVENT_TYPE_DEFS.map(tp => <option key={tp.value} value={tp.value}>{tp.icon} {t(tp.labelKey)}</option>)}
+                    {EVENT_TYPE_DEFS.map(tp => <option key={tp.value} value={tp.value}>{t(tp.labelKey)}</option>)}
                 </select>
                 <select className="ev-filters__select" value={sportF} onChange={e => setSportF(e.target.value)}>
                     <option value="">Все виды спорта</option>
@@ -229,9 +232,7 @@ export default function Events() {
                                     <span className="ev-title-cell">{ev.title}</span>
                                 </td>
                                 <td>
-                                    <span className="ev-type-badge" style={{ background: ev._type.color + '18', color: ev._type.color, borderColor: ev._type.color + '40' }}>
-                                        {ev._type.icon} {t(ev._type.labelKey)}
-                                    </span>
+                                    <span className="ev-type-badge">{t(ev._type.labelKey)}</span>
                                 </td>
                                 <td>{ev.sport}</td>
                                 <td style={{ whiteSpace: 'nowrap', fontSize: 12 }}>{fmt(ev.start)} - {fmt(ev.end)}</td>
@@ -264,9 +265,7 @@ export default function Events() {
                             <div>
                                 <div className="ev-drawer__name">{drawerEv.title}</div>
                                 <div style={{ display: 'flex', gap: 8, marginTop: 6, flexWrap: 'wrap', alignItems: 'center' }}>
-                                    <span className="ev-type-badge" style={{ background: drawerEv._type.color + '18', color: drawerEv._type.color, borderColor: drawerEv._type.color + '40' }}>
-                                        {drawerEv._type.icon} {t(drawerEv._type.labelKey)}
-                                    </span>
+                                    <span className="ev-type-badge">{t(drawerEv._type.labelKey)}</span>
                                     {statusBadge(drawerEv._status)}
                                     {drawerEv.inPlan
                                         ? <span className="ev-plan ev-plan--in">{t('events.planInPlan')}</span>
@@ -300,7 +299,7 @@ export default function Events() {
                                     <div className="ev-info-grid">
                                         {[
                                             [t('events.table.name'), drawerEv.title],
-                                            [t('events.table.type'), `${drawerEv._type.icon} ${t(drawerEv._type.labelKey)}`],
+                                            [t('events.table.type'), t(drawerEv._type.labelKey)],
                                             [t('fields.sport'), drawerEv.sport],
                                             [t('events.info.ageGroup'), drawerEv.age],
                                             [t('events.info.level'), drawerEv.level],
@@ -361,7 +360,7 @@ export default function Events() {
                                                 {RESULTS_MOCK.map((r, i) => (
                                                     <tr key={i} style={r.place <= 3 ? { background: r.place === 1 ? '#fffbeb' : r.place === 2 ? '#f8fafc' : '#fefce8' } : {}}>
                                                         <td style={{ fontWeight: 700, fontSize: 15 }}>{r.place}</td>
-                                                        <td style={{ fontSize: 22 }}>{r.medal}</td>
+                                                        <td style={{ textAlign: 'center' }}>{medalIcon(r.place)}</td>
                                                         <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{r.name}</td>
                                                         <td>{r.rank}</td>
                                                         <td>{r.result}</td>
@@ -382,7 +381,7 @@ export default function Events() {
                                     {DOCS_MOCK.map(doc => (
                                         <div key={doc.name} className={`ev-doc-item ${doc.ok ? 'ev-doc-item--ok' : 'ev-doc-item--no'}`}>
                                             <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: doc.ok ? '#16a34a' : '#ef4444' }} />
-                                            <span className="ev-doc-item__name">{doc.icon} {doc.name}</span>
+                                            <span className="ev-doc-item__name">{doc.name}</span>
                                             {doc.ok && <button className="ev-btn ev-btn--small" onClick={() => toast(`Просмотр: ${doc.name}`)}>Просмотр</button>}
                                         </div>
                                     ))}
@@ -422,7 +421,7 @@ export default function Events() {
                                     <label className="ev-modal__label">{t('events.form.eventType')} <span>*</span></label>
                                     <select className="ev-modal__input" value={form.type} onChange={e => setField('type', e.target.value)}>
                                         <option value="">{t('common.select')}</option>
-                                        {EVENT_TYPE_DEFS.map(tp => <option key={tp.value} value={tp.value}>{tp.icon} {t(tp.labelKey)}</option>)}
+                                        {EVENT_TYPE_DEFS.map(tp => <option key={tp.value} value={tp.value}>{t(tp.labelKey)}</option>)}
                                     </select>
                                 </div>
                                 <div className="ev-modal__field">

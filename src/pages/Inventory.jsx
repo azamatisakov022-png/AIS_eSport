@@ -3,6 +3,7 @@ import { useToast } from '../context/ToastContext'
 import { MetricIcons } from '../components/CabinetIcons'
 import Portal from '../components/Portal'
 import Breadcrumbs from '../components/Breadcrumbs'
+import { PageHeader, Button, MetricCard } from '../components/ui'
 import './registries.css'
 
 /* Реестр инвентаря (ТЗ 5.2): inventory_id, name, code, category, quantity,
@@ -64,16 +65,16 @@ export default function Inventory() {
     return (
         <div className="reg-page">
             <Breadcrumbs current="Реестр инвентаря" />
-            <div className="reg-header">
-                <h1 className="reg-header__title">Реестр инвентаря</h1>
-                <button className="reg-header__btn" onClick={() => { setForm(EMPTY); setAddModal(true) }}><span>+</span> Добавить позицию</button>
-            </div>
+            <PageHeader
+                title="Реестр инвентаря"
+                actions={<Button variant="primary" onClick={() => { setForm(EMPTY); setAddModal(true) }}><span>+</span> Добавить позицию</Button>}
+            />
 
             <div className="reg-metrics">
-                <div className="reg-metric reg-metric--blue"><div className="reg-metric__icon">{MetricIcons.wrench()}</div><div><div className="reg-metric__value">{metrics.positions}</div><div className="reg-metric__label">Позиций</div></div></div>
-                <div className="reg-metric reg-metric--green"><div className="reg-metric__icon">{MetricIcons.active()}</div><div><div className="reg-metric__value">{metrics.units}</div><div className="reg-metric__label">Единиц в наличии</div></div></div>
-                <div className="reg-metric reg-metric--orange"><div className="reg-metric__icon">{MetricIcons.warning()}</div><div><div className="reg-metric__value">{metrics.repair}</div><div className="reg-metric__label">На ремонте</div></div></div>
-                <div className="reg-metric reg-metric--gray"><div className="reg-metric__icon">{MetricIcons.blocked()}</div><div><div className="reg-metric__value">{metrics.writtenOff}</div><div className="reg-metric__label">Списано</div></div></div>
+                <MetricCard tone="blue" icon={MetricIcons.wrench()} value={metrics.positions} label="Позиций" />
+                <MetricCard tone="green" icon={MetricIcons.active()} value={metrics.units} label="Единиц в наличии" />
+                <MetricCard tone="orange" icon={MetricIcons.warning()} value={metrics.repair} label="На ремонте" />
+                <MetricCard icon={MetricIcons.blocked()} value={metrics.writtenOff} label="Списано" />
             </div>
 
             <div className="reg-filters">
@@ -124,7 +125,9 @@ export default function Inventory() {
                         <div className="reg-drawer" onClick={e => e.stopPropagation()}>
                             <div className="reg-drawer__header">
                                 <div className="reg-drawer__profile">
-                                    <div className="reg-drawer__avatar" style={{ background: '#0d9488', fontSize: 22 }}>📦</div>
+                                    <div className="reg-drawer__avatar" style={{ background: '#0d9488' }}>
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>
+                                    </div>
                                     <div><div className="reg-drawer__name">{cur.name}</div>{badge(cur.condition)}</div>
                                 </div>
                                 <button className="reg-drawer__close" onClick={() => setDrawer(null)}>✕</button>

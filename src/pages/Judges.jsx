@@ -6,6 +6,7 @@ import { MetricIcons } from '../components/CabinetIcons'
 import './Judges.css'
 import Portal from '../components/Portal'
 import Breadcrumbs from '../components/Breadcrumbs'
+import { PageHeader, Button, MetricCard } from '../components/ui'
 
 const SPORTS = ['Бокс', 'Борьба', 'Дзюдо', 'Футбол', 'Плавание', 'Лёгкая атлетика', 'Каратэ', 'Тхэквондо', 'Гимнастика', 'Шахматы', 'Волейбол', 'Баскетбол', 'Хоккей', 'Биатлон']
 const REGIONS = ['Бишкек', 'Ош', 'Чуйская', 'Иссык-Кульская', 'Джалал-Абадская', 'Нарынская', 'Баткенская', 'Таласская', 'Ошская']
@@ -16,7 +17,6 @@ const CATEGORY_KEYS = [
     { value: 'Судья по спорту', key: 'judges.categories.sportJudge' },
 ]
 const ORGS = ['ГАФКиС КР', 'Федерация бокса КР', 'Федерация борьбы КР', 'Федерация дзюдо КР', 'Федерация футбола КР', 'Федерация плавания КР', 'Федерация лёгкой атлетики КР', 'Федерация каратэ КР', 'Федерация тхэквондо КР', 'Федерация гимнастики КР', 'Федерация шахмат КР']
-const COLORS = ['#2563EB', '#059669', '#7c3aed', '#d97706', '#e11d48', '#0d9488']
 
 const today = new Date()
 today.setHours(0, 0, 0, 0)
@@ -29,13 +29,6 @@ function daysUntil(dateStr) {
 function fmt(dateStr) {
     return dateStr ? new Date(dateStr).toLocaleDateString('ru-RU') : '—'
 }
-
-function getInitials(name) {
-    const p = name.split(' ')
-    return (p[0]?.[0] || '') + (p[1]?.[0] || '')
-}
-
-function getColor(id) { return COLORS[id % COLORS.length] }
 
 function computeStatus(j) {
     if (j.annulled) return 'annulled'
@@ -166,50 +159,18 @@ export default function Judges() {
         <div className="jd-page">
             <Breadcrumbs current={t('judges.registryTitle')} />
             {/* Header */}
-            <div className="jd-header">
-                <h1 className="jd-header__title">{t('judges.registryTitle')}</h1>
-                <button className="jd-header__btn" onClick={() => { setForm(EMPTY_FORM); setAddModal(true) }}>
-                    <span>+</span> {t('judges.addNew')}
-                </button>
-            </div>
+            <PageHeader
+                title={t('judges.registryTitle')}
+                actions={<Button variant="primary" onClick={() => { setForm(EMPTY_FORM); setAddModal(true) }}><span>+</span> {t('judges.addNew')}</Button>}
+            />
 
             {/* Metrics */}
             <div className="jd-metrics">
-                <div className="jd-metric jd-metric--blue">
-                    <div className="jd-metric__icon">{MetricIcons.judge()}</div>
-                    <div className="jd-metric__body">
-                        <span className="jd-metric__value">{metrics.total}</span>
-                        <span className="jd-metric__label">{t('judges.metricsTotal')}</span>
-                    </div>
-                </div>
-                <div className="jd-metric jd-metric--gold">
-                    <div className="jd-metric__icon">{MetricIcons.globe()}</div>
-                    <div className="jd-metric__body">
-                        <span className="jd-metric__value">{metrics.intl}</span>
-                        <span className="jd-metric__label">{t('judges.metricsInternational')}</span>
-                    </div>
-                </div>
-                <div className="jd-metric jd-metric--purple">
-                    <div className="jd-metric__icon">{MetricIcons.medal('#d97706')}</div>
-                    <div className="jd-metric__body">
-                        <span className="jd-metric__value">{metrics.national}</span>
-                        <span className="jd-metric__label">{t('judges.metricsNational')}</span>
-                    </div>
-                </div>
-                <div className="jd-metric jd-metric--orange">
-                    <div className="jd-metric__icon">{MetricIcons.warning()}</div>
-                    <div className="jd-metric__body">
-                        <span className="jd-metric__value">{metrics.expiring}</span>
-                        <span className="jd-metric__label">{t('judges.metricsExpiring')}</span>
-                    </div>
-                </div>
-                <div className="jd-metric jd-metric--red">
-                    <div className="jd-metric__icon">{MetricIcons.blocked()}</div>
-                    <div className="jd-metric__body">
-                        <span className="jd-metric__value">{metrics.annulled}</span>
-                        <span className="jd-metric__label">{t('judges.metricsRevoked')}</span>
-                    </div>
-                </div>
+                <MetricCard tone="blue" icon={MetricIcons.judge()} value={metrics.total} label={t('judges.metricsTotal')} />
+                <MetricCard tone="amber" icon={MetricIcons.globe()} value={metrics.intl} label={t('judges.metricsInternational')} />
+                <MetricCard tone="purple" icon={MetricIcons.medal('#d97706')} value={metrics.national} label={t('judges.metricsNational')} />
+                <MetricCard tone="orange" icon={MetricIcons.warning()} value={metrics.expiring} label={t('judges.metricsExpiring')} />
+                <MetricCard tone="red" icon={MetricIcons.blocked()} value={metrics.annulled} label={t('judges.metricsRevoked')} />
             </div>
 
             {/* Filters */}
@@ -264,9 +225,6 @@ export default function Judges() {
                                 <tr key={j.id}>
                                     <td>
                                         <div className="jd-person">
-                                            <div className="jd-avatar" style={{ background: getColor(j.id) }}>
-                                                {getInitials(j.name)}
-                                            </div>
                                             <div className="jd-person__info">
                                                 <div className="jd-person__name">{j.name}</div>
                                                 <div className="jd-person__sub">{[j.sex, j.birth ? fmt(j.birth) : null].filter(Boolean).join(', ') || '—'}</div>
@@ -306,9 +264,6 @@ export default function Judges() {
                         {/* Header */}
                         <div className="jd-drawer__header">
                             <div className="jd-drawer__profile">
-                                <div className="jd-drawer__avatar" style={{ background: getColor(drawerJudge.id) }}>
-                                    {getInitials(drawerJudge.name)}
-                                </div>
                                 <div>
                                     <div className="jd-drawer__name">{drawerJudge.name}</div>
                                     <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>

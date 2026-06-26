@@ -3,6 +3,7 @@ import { useToast } from '../context/ToastContext'
 import { MetricIcons } from '../components/CabinetIcons'
 import Portal from '../components/Portal'
 import Breadcrumbs from '../components/Breadcrumbs'
+import { PageHeader, Button, MetricCard } from '../components/ui'
 import './registries.css'
 
 /* Реестр медицинских справок (ТЗ 5.2): med_id, person, issued_by, issue/valid dates,
@@ -11,13 +12,9 @@ import './registries.css'
 const TYPES = ['Допуск к соревнованиям', 'Допуск к тренировкам', 'Периодический осмотр', 'Углублённое обследование']
 const SOURCES = { minzdrav: 'Минздрав', upload: 'Загрузка', ekyzmat: 'Е-Кызмат' }
 const SOURCE_BADGE = { minzdrav: 'reg-badge--blue', upload: 'reg-badge--gray', ekyzmat: 'reg-badge--green' }
-const COLORS = ['#2563EB', '#059669', '#7c3aed', '#d97706', '#e11d48', '#0d9488']
-
 const today = new Date(); today.setHours(0, 0, 0, 0)
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '-'
 const daysUntil = (d) => Math.ceil((new Date(d) - today) / 86400000)
-const getInitials = (n) => { const p = n.split(' '); return (p[0]?.[0] || '') + (p[1]?.[0] || '') }
-const getColor = (id) => COLORS[id % COLORS.length]
 
 function statusOf(c) {
     const d = daysUntil(c.validUntil)
@@ -75,16 +72,16 @@ export default function MedicalCertificates() {
     return (
         <div className="reg-page">
             <Breadcrumbs current="Реестр медицинских справок" />
-            <div className="reg-header">
-                <h1 className="reg-header__title">Реестр медицинских справок</h1>
-                <button className="reg-header__btn" onClick={() => { setForm(EMPTY); setAddModal(true) }}><span>+</span> Добавить справку</button>
-            </div>
+            <PageHeader
+                title="Реестр медицинских справок"
+                actions={<Button variant="primary" onClick={() => { setForm(EMPTY); setAddModal(true) }}><span>+</span> Добавить справку</Button>}
+            />
 
             <div className="reg-metrics">
-                <div className="reg-metric reg-metric--blue"><div className="reg-metric__icon">{MetricIcons.hospital()}</div><div><div className="reg-metric__value">{metrics.total}</div><div className="reg-metric__label">Всего справок</div></div></div>
-                <div className="reg-metric reg-metric--green"><div className="reg-metric__icon">{MetricIcons.active()}</div><div><div className="reg-metric__value">{metrics.valid}</div><div className="reg-metric__label">Действительны</div></div></div>
-                <div className="reg-metric reg-metric--orange"><div className="reg-metric__icon">{MetricIcons.warning()}</div><div><div className="reg-metric__value">{metrics.expiring}</div><div className="reg-metric__label">Истекают (≤30 дн)</div></div></div>
-                <div className="reg-metric reg-metric--red"><div className="reg-metric__icon">{MetricIcons.rejected()}</div><div><div className="reg-metric__value">{metrics.unverified}</div><div className="reg-metric__label">Не верифицированы</div></div></div>
+                <MetricCard tone="blue" icon={MetricIcons.hospital()} value={metrics.total} label="Всего справок" />
+                <MetricCard tone="green" icon={MetricIcons.active()} value={metrics.valid} label="Действительны" />
+                <MetricCard tone="orange" icon={MetricIcons.warning()} value={metrics.expiring} label="Истекают (≤30 дн)" />
+                <MetricCard tone="red" icon={MetricIcons.rejected()} value={metrics.unverified} label="Не верифицированы" />
             </div>
 
             <div className="reg-filters">
@@ -115,7 +112,6 @@ export default function MedicalCertificates() {
                                 <tr key={c.id}>
                                     <td>
                                         <div className="reg-person">
-                                            <div className="reg-avatar" style={{ background: getColor(c.id) }}>{getInitials(c.person)}</div>
                                             <div><div className="reg-person__name">{c.person}</div><div className="reg-person__sub">{c.sport}</div></div>
                                         </div>
                                     </td>
@@ -139,7 +135,6 @@ export default function MedicalCertificates() {
                         <div className="reg-drawer" onClick={e => e.stopPropagation()}>
                             <div className="reg-drawer__header">
                                 <div className="reg-drawer__profile">
-                                    <div className="reg-drawer__avatar" style={{ background: getColor(cur.id) }}>{getInitials(cur.person)}</div>
                                     <div><div className="reg-drawer__name">{cur.person}</div>{badge(cur._status)}</div>
                                 </div>
                                 <button className="reg-drawer__close" onClick={() => setDrawer(null)}>✕</button>

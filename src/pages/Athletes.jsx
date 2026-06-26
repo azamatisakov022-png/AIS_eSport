@@ -6,6 +6,7 @@ import Breadcrumbs from '../components/Breadcrumbs'
 import { TableSkeleton, MetricSkeleton } from '../components/Skeleton'
 import './Athletes.css'
 import Portal from '../components/Portal'
+import { PageHeader, Button, MetricCard } from '../components/ui'
 import { athletesApi, VERIFICATION, LIFECYCLE } from '../api/esport'
 
 const VERIF_CHIP = {
@@ -28,11 +29,8 @@ const SPORTS = ['Бокс', 'Борьба', 'Дзюдо', 'Футбол', 'Пл�
 const REGIONS = ['Бишкек', 'Ош', 'Чуйская', 'Иссык-Кульская', 'Джалал-Абадская', 'Нарынская', 'Баткенская', 'Таласская', 'Ошская']
 const RANKS = ['ЗМС КР', 'МСМК', 'МС КР', 'КМС', 'I р.', 'II р.', 'III р.', 'I юн.р.', 'II юн.р.', 'III юн.р.']
 const ORGS = ['СДЮСШОР №3', 'ДЮСШ «Олимп»', 'Ошская СДЮСШОР', 'СК «Иссык-Куль»', 'ДЮСШ Нарынской обл.', 'СДЮСШОР «Кубат»', 'ФК «Дордой»', 'Шахматный клуб «Стратегия»', 'СДЮСШОР по гимнастике', 'ДЮСШ №5 г. Ош', 'Водный центр «Дельфин»', 'Стрелковый клуб КР']
-const COLORS = ['#2563EB', '#059669', '#7c3aed', '#d97706', '#e11d48', '#0d9488', '#6366f1', '#0891b2']
 
 function fmt(d) { return d ? new Date(d).toLocaleDateString('ru-RU') : '-' }
-function initials(n) { const p = n.split(' '); return (p[0]?.[0] || '') + (p[1]?.[0] || '') }
-function avColor(id) { return COLORS[id % COLORS.length] }
 
 function rankClass(r) {
     if (r === 'ЗМС КР') return 'ath-rank--zms'
@@ -180,12 +178,10 @@ export default function Athletes() {
         <div className="ath-page">
             <Breadcrumbs current={t('athletes.registryTitle')} />
             {/* Header */}
-            <div className="ath-header">
-                <h1 className="ath-header__title">{t('athletes.registryTitle')}</h1>
-                <button className="ath-header__btn" onClick={() => { setForm(EMPTY_FORM); setAddModal(true) }}>
-                    <span>+</span> {t('athletes.addNew')}
-                </button>
-            </div>
+            <PageHeader
+                title={t('athletes.registryTitle')}
+                actions={<Button variant="primary" onClick={() => { setForm(EMPTY_FORM); setAddModal(true) }}><span>+</span> {t('athletes.addNew')}</Button>}
+            />
 
             {isLoading ? (
                 <>
@@ -196,26 +192,11 @@ export default function Athletes() {
                 <>
             {/* Metrics */}
             <div className="ath-metrics">
-                <div className="ath-metric ath-metric--blue">
-                    <div className="ath-metric__icon">{MetricIcons.medal()}</div>
-                    <div className="ath-metric__body"><span className="ath-metric__value">{m.total}</span><span className="ath-metric__label">{t('athletes.metricsTotal')}</span></div>
-                </div>
-                <div className="ath-metric ath-metric--gold">
-                    <div className="ath-metric__icon">{MetricIcons.trophy()}</div>
-                    <div className="ath-metric__body"><span className="ath-metric__value">{m.masters}</span><span className="ath-metric__label">{t('athletes.metricsTopRanks')}</span></div>
-                </div>
-                <div className="ath-metric ath-metric--cyan">
-                    <div className="ath-metric__icon">{MetricIcons.target()}</div>
-                    <div className="ath-metric__body"><span className="ath-metric__value">{m.kms}</span><span className="ath-metric__label">{t('athletes.metricsCms')}</span></div>
-                </div>
-                <div className="ath-metric ath-metric--green">
-                    <div className="ath-metric__icon">{MetricIcons.clipboard()}</div>
-                    <div className="ath-metric__body"><span className="ath-metric__value">{m.razr}</span><span className="ath-metric__label">{t('athletes.metricsRanked')}</span></div>
-                </div>
-                <div className="ath-metric ath-metric--red">
-                    <div className="ath-metric__icon">{MetricIcons.hospital()}</div>
-                    <div className="ath-metric__body"><span className="ath-metric__value">{m.medExp}</span><span className="ath-metric__label">{t('athletes.metricsExpiredMed')}</span></div>
-                </div>
+                <MetricCard tone="blue" icon={MetricIcons.medal()} value={m.total} label={t('athletes.metricsTotal')} />
+                <MetricCard tone="amber" icon={MetricIcons.trophy()} value={m.masters} label={t('athletes.metricsTopRanks')} />
+                <MetricCard tone="cyan" icon={MetricIcons.target()} value={m.kms} label={t('athletes.metricsCms')} />
+                <MetricCard tone="green" icon={MetricIcons.clipboard()} value={m.razr} label={t('athletes.metricsRanked')} />
+                <MetricCard tone="red" icon={MetricIcons.hospital()} value={m.medExp} label={t('athletes.metricsExpiredMed')} />
             </div>
 
             {/* Filters */}
@@ -271,7 +252,6 @@ export default function Athletes() {
                             <tr key={a.id}>
                                 <td>
                                     <div className="ath-person">
-                                        <div className="ath-avatar" style={{ background: avColor(a.id) }}>{initials(a.name)}</div>
                                         <div>
                                             <div className="ath-person__name">{a.name}</div>
                                             <div className="ath-person__sub">{a.region}</div>
@@ -305,7 +285,6 @@ export default function Athletes() {
                     <div className="ath-drawer" onClick={e => e.stopPropagation()}>
                         <div className="ath-drawer__header">
                             <div className="ath-drawer__profile">
-                                <div className="ath-drawer__avatar" style={{ background: avColor(da.id) }}>{initials(da.name)}</div>
                                 <div>
                                     <div className="ath-drawer__name">{da.name}</div>
                                     <span className={`ath-rank ${rankClass(da.rank)}`}>{da.rank}</span>
