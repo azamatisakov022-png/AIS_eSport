@@ -5,6 +5,7 @@ import { useToast } from '../context/ToastContext'
 import { useRole } from '../context/RoleContext'
 import { DashboardIcons } from '../components/CabinetIcons'
 import './Dashboard.css'
+import { Button, Badge, MetricCard } from '../components/ui'
 
 /* ══════════════════════════════════════════════════════
    MOCK DATA
@@ -102,19 +103,12 @@ function useAnimatedCount(target, duration = 1500) {
     return count
 }
 
-function MetricCard({ icon, labelKey, target, subKey, subCount, color, t }) {
+const STATUS_VARIANT = { new: 'blue', review: 'amber', approved: 'green', rejected: 'red' }
+
+function DbMetric({ icon, labelKey, target, subKey, subCount, color, t }) {
     const value = useAnimatedCount(target)
     const trend = subCount !== undefined ? t(subKey, { count: subCount }) : t(subKey)
-    return (
-        <div className={`db-metric db-metric--${color}`}>
-            <div className="db-metric__icon">{icon}</div>
-            <div className="db-metric__info">
-                <span className="db-metric__value">{value.toLocaleString('ru-RU')}</span>
-                <span className="db-metric__label">{t(labelKey)}</span>
-            </div>
-            <span className={`db-metric__trend ${color === 'red' ? 'db-metric__trend--warn' : ''}`}>{trend}</span>
-        </div>
-    )
+    return <MetricCard tone={color} icon={icon} value={value.toLocaleString('ru-RU')} label={t(labelKey)} trend={trend} />
 }
 
 /* ── Live clock ── */
@@ -149,15 +143,15 @@ export default function Dashboard() {
                     </div>
                 </div>
                 <div className="db-welcome__actions">
-                    <Link to="/athletes" className="db-quick-btn db-quick-btn--blue">{t('dashboard.addAthlete')}</Link>
-                    <Link to="/applications" className="db-quick-btn db-quick-btn--green">{t('dashboard.newApplication')}</Link>
-                    <Link to="/events" className="db-quick-btn db-quick-btn--violet">{t('dashboard.newEvent')}</Link>
+                    <Button to="/athletes" variant="primary">{t('dashboard.addAthlete')}</Button>
+                    <Button to="/applications" variant="success">{t('dashboard.newApplication')}</Button>
+                    <Button to="/events" variant="outline">{t('dashboard.newEvent')}</Button>
                 </div>
             </div>
 
             {/* ── 2. Metrics grid ── */}
             <div className="db-metrics">
-                {METRICS.map(m => <MetricCard key={m.labelKey} {...m} t={t} />)}
+                {METRICS.map(m => <DbMetric key={m.labelKey} {...m} t={t} />)}
             </div>
 
             {/* ── 3. Alerts ── */}
@@ -200,7 +194,7 @@ export default function Dashboard() {
                                         <td>{a.type}</td>
                                         <td className="db-table__name">{a.name}</td>
                                         <td>{a.date}</td>
-                                        <td><span className={`db-badge db-badge--${a.statusCls}`}>{a.status}</span></td>
+                                        <td><Badge variant={STATUS_VARIANT[a.statusCls]}>{a.status}</Badge></td>
                                         <td>
                                             <button className="db-table__action" onClick={() => toast(`Открыть заявку ${a.no}`)}>
                                                 {t('dashboard.open')}

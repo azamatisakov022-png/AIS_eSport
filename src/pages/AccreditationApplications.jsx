@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { accreditationApi } from '../api/esport'
 import { MetricIcons } from '../components/CabinetIcons'
 import Breadcrumbs from '../components/Breadcrumbs'
+import { PageHeader, MetricCard } from '../components/ui'
 import './AwardApplications.css'
 
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
@@ -56,31 +57,14 @@ export default function AccreditationApplications() {
     return (
         <div className="aw-page">
             <Breadcrumbs current="Аккредитация федераций" />
-            <div className="aw-header">
-                <h1 className="aw-header__title">Аккредитация спортивных федераций</h1>
-            </div>
+            <PageHeader title="Аккредитация спортивных федераций" />
 
             <div className="aw-metrics">
-                <div className="aw-metric aw-metric--blue">
-                    <div className="aw-metric__icon">{MetricIcons.clipboard()}</div>
-                    <div className="aw-metric__body"><span className="aw-metric__value">{metrics.total}</span><span className="aw-metric__label">Всего заявок</span></div>
-                </div>
-                <div className="aw-metric aw-metric--yellow">
-                    <div className="aw-metric__icon">{MetricIcons.search()}</div>
-                    <div className="aw-metric__body"><span className="aw-metric__value">{metrics.review}</span><span className="aw-metric__label">На рассмотрении</span></div>
-                </div>
-                <div className="aw-metric aw-metric--green">
-                    <div className="aw-metric__icon">{MetricIcons.active()}</div>
-                    <div className="aw-metric__body"><span className="aw-metric__value">{metrics.accredited}</span><span className="aw-metric__label">Аккредитовано</span></div>
-                </div>
-                <div className="aw-metric aw-metric--orange">
-                    <div className="aw-metric__icon">{MetricIcons.clock()}</div>
-                    <div className="aw-metric__body"><span className="aw-metric__value">{metrics.suspended}</span><span className="aw-metric__label">Приостановлено</span></div>
-                </div>
-                <div className="aw-metric aw-metric--gray">
-                    <div className="aw-metric__icon">{MetricIcons.rejected()}</div>
-                    <div className="aw-metric__body"><span className="aw-metric__value">{metrics.rejected}</span><span className="aw-metric__label">Отказано / отозвано</span></div>
-                </div>
+                <MetricCard tone="blue" icon={MetricIcons.clipboard()} value={metrics.total} label="Всего заявок" />
+                <MetricCard tone="amber" icon={MetricIcons.search()} value={metrics.review} label="На рассмотрении" />
+                <MetricCard tone="green" icon={MetricIcons.active()} value={metrics.accredited} label="Аккредитовано" />
+                <MetricCard tone="orange" icon={MetricIcons.clock()} value={metrics.suspended} label="Приостановлено" />
+                <MetricCard icon={MetricIcons.rejected()} value={metrics.rejected} label="Отказано / отозвано" />
             </div>
 
             <div className="aw-filters">

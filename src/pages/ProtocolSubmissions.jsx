@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { protocolsApi } from '../api/esport'
 import { MetricIcons } from '../components/CabinetIcons'
 import Breadcrumbs from '../components/Breadcrumbs'
+import { PageHeader, MetricCard } from '../components/ui'
 import './AwardApplications.css'
 
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
@@ -54,27 +55,13 @@ export default function ProtocolSubmissions() {
     return (
         <div className="aw-page">
             <Breadcrumbs current="Протоколы соревнований" />
-            <div className="aw-header">
-                <h1 className="aw-header__title">Протоколы соревнований (от федераций)</h1>
-            </div>
+            <PageHeader title="Протоколы соревнований (от федераций)" />
 
             <div className="aw-metrics">
-                <div className="aw-metric aw-metric--blue">
-                    <div className="aw-metric__icon">{MetricIcons.clipboard()}</div>
-                    <div className="aw-metric__body"><span className="aw-metric__value">{metrics.total}</span><span className="aw-metric__label">Всего протоколов</span></div>
-                </div>
-                <div className="aw-metric aw-metric--yellow">
-                    <div className="aw-metric__icon">{MetricIcons.search()}</div>
-                    <div className="aw-metric__body"><span className="aw-metric__value">{metrics.review}</span><span className="aw-metric__label">На проверке</span></div>
-                </div>
-                <div className="aw-metric aw-metric--green">
-                    <div className="aw-metric__icon">{MetricIcons.active()}</div>
-                    <div className="aw-metric__body"><span className="aw-metric__value">{metrics.published}</span><span className="aw-metric__label">Опубликовано</span></div>
-                </div>
-                <div className="aw-metric aw-metric--gray">
-                    <div className="aw-metric__icon">{MetricIcons.rejected()}</div>
-                    <div className="aw-metric__body"><span className="aw-metric__value">{metrics.rejected}</span><span className="aw-metric__label">Отклонено</span></div>
-                </div>
+                <MetricCard tone="blue" icon={MetricIcons.clipboard()} value={metrics.total} label="Всего протоколов" />
+                <MetricCard tone="amber" icon={MetricIcons.search()} value={metrics.review} label="На проверке" />
+                <MetricCard tone="green" icon={MetricIcons.active()} value={metrics.published} label="Опубликовано" />
+                <MetricCard icon={MetricIcons.rejected()} value={metrics.rejected} label="Отклонено" />
             </div>
 
             <div className="aw-filters">

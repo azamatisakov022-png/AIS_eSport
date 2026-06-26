@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { judgeAppsApi } from '../api/esport'
 import { MetricIcons } from '../components/CabinetIcons'
 import Breadcrumbs from '../components/Breadcrumbs'
+import { PageHeader, MetricCard } from '../components/ui'
 import './AwardApplications.css'
 
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
@@ -68,31 +69,14 @@ export default function JudgeApplications() {
     return (
         <div className="aw-page">
             <Breadcrumbs current="Заявки на судейские категории" />
-            <div className="aw-header">
-                <h1 className="aw-header__title">Заявки на присвоение судейских категорий</h1>
-            </div>
+            <PageHeader title="Заявки на присвоение судейских категорий" />
 
             <div className="aw-metrics">
-                <div className="aw-metric aw-metric--blue">
-                    <div className="aw-metric__icon">{MetricIcons.clipboard()}</div>
-                    <div className="aw-metric__body"><span className="aw-metric__value">{metrics.total}</span><span className="aw-metric__label">Всего заявок</span></div>
-                </div>
-                <div className="aw-metric aw-metric--yellow">
-                    <div className="aw-metric__icon">{MetricIcons.search()}</div>
-                    <div className="aw-metric__body"><span className="aw-metric__value">{metrics.inProgress}</span><span className="aw-metric__label">В работе</span></div>
-                </div>
-                <div className="aw-metric aw-metric--red">
-                    <div className="aw-metric__icon">{MetricIcons.clock()}</div>
-                    <div className="aw-metric__body"><span className="aw-metric__value">{metrics.expiring}</span><span className="aw-metric__label">Истекает срок</span></div>
-                </div>
-                <div className="aw-metric aw-metric--green">
-                    <div className="aw-metric__icon">{MetricIcons.active()}</div>
-                    <div className="aw-metric__body"><span className="aw-metric__value">{metrics.issued}</span><span className="aw-metric__label">Выдано</span></div>
-                </div>
-                <div className="aw-metric aw-metric--gray">
-                    <div className="aw-metric__icon">{MetricIcons.rejected()}</div>
-                    <div className="aw-metric__body"><span className="aw-metric__value">{metrics.rejected}</span><span className="aw-metric__label">Отказано</span></div>
-                </div>
+                <MetricCard tone="blue" icon={MetricIcons.clipboard()} value={metrics.total} label="Всего заявок" />
+                <MetricCard tone="amber" icon={MetricIcons.search()} value={metrics.inProgress} label="В работе" />
+                <MetricCard tone="red" icon={MetricIcons.clock()} value={metrics.expiring} label="Истекает срок" />
+                <MetricCard tone="green" icon={MetricIcons.active()} value={metrics.issued} label="Выдано" />
+                <MetricCard icon={MetricIcons.rejected()} value={metrics.rejected} label="Отказано" />
             </div>
 
             <div className="aw-filters">

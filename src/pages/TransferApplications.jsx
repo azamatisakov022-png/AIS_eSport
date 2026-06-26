@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { transferApi } from '../api/esport'
 import { MetricIcons } from '../components/CabinetIcons'
 import Breadcrumbs from '../components/Breadcrumbs'
+import { PageHeader, MetricCard } from '../components/ui'
 import './AwardApplications.css'
 
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
@@ -55,27 +56,13 @@ export default function TransferApplications() {
     return (
         <div className="aw-page">
             <Breadcrumbs current="Переходы спортсменов" />
-            <div className="aw-header">
-                <h1 className="aw-header__title">Заявки на переход спортсменов</h1>
-            </div>
+            <PageHeader title="Заявки на переход спортсменов" />
 
             <div className="aw-metrics">
-                <div className="aw-metric aw-metric--blue">
-                    <div className="aw-metric__icon">{MetricIcons.clipboard()}</div>
-                    <div className="aw-metric__body"><span className="aw-metric__value">{metrics.total}</span><span className="aw-metric__label">Всего заявок</span></div>
-                </div>
-                <div className="aw-metric aw-metric--yellow">
-                    <div className="aw-metric__icon">{MetricIcons.search()}</div>
-                    <div className="aw-metric__body"><span className="aw-metric__value">{metrics.inProgress}</span><span className="aw-metric__label">В работе</span></div>
-                </div>
-                <div className="aw-metric aw-metric--green">
-                    <div className="aw-metric__icon">{MetricIcons.active()}</div>
-                    <div className="aw-metric__body"><span className="aw-metric__value">{metrics.completed}</span><span className="aw-metric__label">Оформлено</span></div>
-                </div>
-                <div className="aw-metric aw-metric--gray">
-                    <div className="aw-metric__icon">{MetricIcons.rejected()}</div>
-                    <div className="aw-metric__body"><span className="aw-metric__value">{metrics.rejected}</span><span className="aw-metric__label">Отклонено / отозвано</span></div>
-                </div>
+                <MetricCard tone="blue" icon={MetricIcons.clipboard()} value={metrics.total} label="Всего заявок" />
+                <MetricCard tone="amber" icon={MetricIcons.search()} value={metrics.inProgress} label="В работе" />
+                <MetricCard tone="green" icon={MetricIcons.active()} value={metrics.completed} label="Оформлено" />
+                <MetricCard icon={MetricIcons.rejected()} value={metrics.rejected} label="Отклонено / отозвано" />
             </div>
 
             <div className="aw-filters">
