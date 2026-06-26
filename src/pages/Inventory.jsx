@@ -3,7 +3,7 @@ import { useToast } from '../context/ToastContext'
 import { MetricIcons } from '../components/CabinetIcons'
 import Portal from '../components/Portal'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { PageHeader, Button, MetricCard } from '../components/ui'
+import { PageHeader, Button, MetricCard, Badge } from '../components/ui'
 import './registries.css'
 
 /* Реестр инвентаря (ТЗ 5.2): inventory_id, name, code, category, quantity,
@@ -11,7 +11,7 @@ import './registries.css'
 
 const CATEGORIES = ['Единоборства', 'Игровые виды', 'Лёгкая атлетика', 'Плавание', 'Тяжёлая атлетика', 'Общее оборудование', 'Экипировка']
 const CONDITIONS = { new: 'Новое', working: 'Рабочее', repair: 'На ремонте', written_off: 'Списано' }
-const COND_BADGE = { new: 'reg-badge--green', working: 'reg-badge--blue', repair: 'reg-badge--orange', written_off: 'reg-badge--gray' }
+const COND_BADGE = { new: 'green', working: 'blue', repair: 'amber', written_off: 'gray' }
 const LOCATIONS = ['Склад ЦА', 'СДЮСШОР №3 г. Бишкек', 'Ошская СДЮСШОР', 'Дворец спорта им. Кожомкула', 'Водный центр «Дельфин»', 'ДЮСШ Нарын']
 
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '-'
@@ -60,7 +60,7 @@ export default function Inventory() {
 
     const cur = drawer != null ? MOCK.find(i => i.id === drawer) : null
     const setField = (k, v) => setForm(p => ({ ...p, [k]: v }))
-    const badge = (c) => <span className={`reg-badge ${COND_BADGE[c]}`}>{CONDITIONS[c]}</span>
+    const badge = (c) => <Badge variant={COND_BADGE[c]}>{CONDITIONS[c]}</Badge>
 
     return (
         <div className="reg-page">

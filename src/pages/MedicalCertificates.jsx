@@ -3,7 +3,7 @@ import { useToast } from '../context/ToastContext'
 import { MetricIcons } from '../components/CabinetIcons'
 import Portal from '../components/Portal'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { PageHeader, Button, MetricCard } from '../components/ui'
+import { PageHeader, Button, MetricCard, Badge } from '../components/ui'
 import './registries.css'
 
 /* Реестр медицинских справок (ТЗ 5.2): med_id, person, issued_by, issue/valid dates,
@@ -11,7 +11,7 @@ import './registries.css'
 
 const TYPES = ['Допуск к соревнованиям', 'Допуск к тренировкам', 'Периодический осмотр', 'Углублённое обследование']
 const SOURCES = { minzdrav: 'Минздрав', upload: 'Загрузка', ekyzmat: 'Е-Кызмат' }
-const SOURCE_BADGE = { minzdrav: 'reg-badge--blue', upload: 'reg-badge--gray', ekyzmat: 'reg-badge--green' }
+const SOURCE_BADGE = { minzdrav: 'blue', upload: 'gray', ekyzmat: 'green' }
 const today = new Date(); today.setHours(0, 0, 0, 0)
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '-'
 const daysUntil = (d) => Math.ceil((new Date(d) - today) / 86400000)
@@ -23,7 +23,7 @@ function statusOf(c) {
     return 'valid'
 }
 const STATUS_LABEL = { valid: 'Действительна', expiring: 'Истекает', expired: 'Просрочена' }
-const STATUS_BADGE = { valid: 'reg-badge--green', expiring: 'reg-badge--orange', expired: 'reg-badge--red' }
+const STATUS_BADGE = { valid: 'green', expiring: 'amber', expired: 'red' }
 
 const MOCK = [
     { id: 1, person: 'Асанов Бекболот Маратович', sport: 'Дзюдо', type: 'Допуск к соревнованиям', issuedBy: 'РЦСМ г. Бишкек', issueDate: '2025-08-10', validUntil: '2026-08-10', icd: ['Z02.5'], source: 'minzdrav', verified: true },
@@ -67,7 +67,7 @@ export default function MedicalCertificates() {
 
     const cur = drawer != null ? enriched.find(c => c.id === drawer) : null
     const setField = (k, v) => setForm(p => ({ ...p, [k]: v }))
-    const badge = (s) => <span className={`reg-badge ${STATUS_BADGE[s]}`}>{STATUS_LABEL[s]}</span>
+    const badge = (s) => <Badge variant={STATUS_BADGE[s]}>{STATUS_LABEL[s]}</Badge>
 
     return (
         <div className="reg-page">
@@ -117,9 +117,9 @@ export default function MedicalCertificates() {
                                     </td>
                                     <td style={{ fontSize: 13 }}>{c.type}</td>
                                     <td style={{ fontSize: 13 }}>{c.issuedBy}</td>
-                                    <td style={{ whiteSpace: 'nowrap' }}>{fmt(c.validUntil)}{c._status !== 'expired' && d <= 30 && <span className="reg-badge reg-badge--orange" style={{ marginLeft: 6 }}>{d} дн</span>}</td>
-                                    <td><span className={`reg-badge ${SOURCE_BADGE[c.source]}`}>{SOURCES[c.source]}</span></td>
-                                    <td>{c.verified ? <span className="reg-badge reg-badge--green">✓ Да</span> : <span className="reg-badge reg-badge--gray">Нет</span>}</td>
+                                    <td style={{ whiteSpace: 'nowrap' }}>{fmt(c.validUntil)}{c._status !== 'expired' && d <= 30 && <Badge variant="amber" style={{ marginLeft: 6 }}>{d} дн</Badge>}</td>
+                                    <td><Badge variant={SOURCE_BADGE[c.source]}>{SOURCES[c.source]}</Badge></td>
+                                    <td>{c.verified ? <Badge variant="green">✓ Да</Badge> : <Badge variant="gray">Нет</Badge>}</td>
                                     <td>{badge(c._status)}</td>
                                     <td><button className="reg-btn reg-btn--primary" onClick={() => setDrawer(c.id)}>Просмотр</button></td>
                                 </tr>

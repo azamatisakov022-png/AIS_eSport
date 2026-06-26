@@ -6,7 +6,7 @@ import { MetricIcons } from '../components/CabinetIcons'
 import './Judges.css'
 import Portal from '../components/Portal'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { PageHeader, Button, MetricCard } from '../components/ui'
+import { PageHeader, Button, MetricCard, Badge } from '../components/ui'
 
 const SPORTS = ['Бокс', 'Борьба', 'Дзюдо', 'Футбол', 'Плавание', 'Лёгкая атлетика', 'Каратэ', 'Тхэквондо', 'Гимнастика', 'Шахматы', 'Волейбол', 'Баскетбол', 'Хоккей', 'Биатлон']
 const REGIONS = ['Бишкек', 'Ош', 'Чуйская', 'Иссык-Кульская', 'Джалал-Абадская', 'Нарынская', 'Баткенская', 'Таласская', 'Ошская']
@@ -150,9 +150,9 @@ export default function Judges() {
     const DOC_LABELS = DOC_LABEL_KEYS.map(key => t(key))
 
     const statusBadge = (s) => {
-        if (s === 'active')   return <span className="jd-badge jd-badge--green">{t('coaches.statusActive')}</span>
-        if (s === 'expiring') return <span className="jd-badge jd-badge--orange">{t('coaches.statusExpiring')}</span>
-        return <span className="jd-badge jd-badge--gray">{t('judges.metricsRevoked')}</span>
+        if (s === 'active')   return <Badge variant="green">{t('coaches.statusActive')}</Badge>
+        if (s === 'expiring') return <Badge variant="amber">{t('coaches.statusExpiring')}</Badge>
+        return <Badge variant="gray">{t('judges.metricsRevoked')}</Badge>
     }
 
     return (
@@ -370,9 +370,9 @@ export default function Judges() {
                                                     <td>{ev.place}</td>
                                                     <td>{ev.role}</td>
                                                     <td>
-                                                        <span className={`jd-badge ${ev.status === 'Завершено' ? 'jd-badge--gray' : ev.status === 'Подтверждён' ? 'jd-badge--green' : 'jd-badge--blue'}`}>
+                                                        <Badge variant={ev.status === 'Завершено' ? 'gray' : ev.status === 'Подтверждён' ? 'green' : 'blue'}>
                                                             {ev.status}
-                                                        </span>
+                                                        </Badge>
                                                     </td>
                                                 </tr>
                                             ))}

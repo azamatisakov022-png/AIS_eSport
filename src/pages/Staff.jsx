@@ -3,7 +3,7 @@ import { useToast } from '../context/ToastContext'
 import { MetricIcons } from '../components/CabinetIcons'
 import Portal from '../components/Portal'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { PageHeader, Button, MetricCard } from '../components/ui'
+import { PageHeader, Button, MetricCard, Badge } from '../components/ui'
 import './registries.css'
 
 /* Реестр сотрудников (ТЗ 5.2): staff_id, ФИО, должность, подразделение,
@@ -11,7 +11,7 @@ import './registries.css'
 
 const DEPARTMENTS = ['Руководство', 'Канцелярия', 'Отдел кадров', 'Юридический отдел', 'Финансовая служба', 'ИТ-служба', 'Аналитический отдел', 'Отдел спортшкол', 'Дирекция олимпийских видов']
 const STATUSES = { active: 'Активен', vacation: 'Отпуск', dismissed: 'Уволен' }
-const STATUS_BADGE = { active: 'reg-badge--green', vacation: 'reg-badge--orange', dismissed: 'reg-badge--gray' }
+const STATUS_BADGE = { active: 'green', vacation: 'amber', dismissed: 'gray' }
 const ROLES = ['superadmin', 'admin', 'employee', 'readonly']
 const ROLE_LABELS = { superadmin: 'Суперадмин', admin: 'Администратор', employee: 'Сотрудник', readonly: 'Просмотр' }
 
@@ -60,7 +60,7 @@ export default function Staff() {
 
     const cur = drawer != null ? MOCK.find(s => s.id === drawer) : null
     const setField = (k, v) => setForm(p => ({ ...p, [k]: v }))
-    const badge = (s) => <span className={`reg-badge ${STATUS_BADGE[s]}`}>{STATUSES[s]}</span>
+    const badge = (s) => <Badge variant={STATUS_BADGE[s]}>{STATUSES[s]}</Badge>
 
     return (
         <div className="reg-page">
@@ -110,7 +110,7 @@ export default function Staff() {
                                 <td>{s.position}</td>
                                 <td style={{ fontSize: 13 }}>{s.dept}</td>
                                 <td style={{ whiteSpace: 'nowrap' }}>{fmt(s.hireDate)}</td>
-                                <td><span className="reg-badge reg-badge--blue">{ROLE_LABELS[s.role]}</span></td>
+                                <td><Badge variant="blue">{ROLE_LABELS[s.role]}</Badge></td>
                                 <td>{badge(s.status)}</td>
                                 <td><button className="reg-btn reg-btn--primary" onClick={() => setDrawer(s.id)}>Просмотр</button></td>
                             </tr>

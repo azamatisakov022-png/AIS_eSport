@@ -46,10 +46,10 @@ async function publicFetch(path) {
 
 // ── Маппинг бэкенд → форма UI ──────────────────────────────────────────────
 const MED_BADGE = {
-  valid: { label: 'Действует', cls: 'ath-badge--green', key: 'valid' },
-  expiring: { label: 'Истекает', cls: 'ath-badge--orange', key: 'expiring' },
-  expired: { label: 'Истёк', cls: 'ath-badge--red', key: 'expired' },
-  unknown: { label: '-', cls: '', key: 'unknown' },
+  valid: { label: 'Действует', cls: 'ath-badge--green', variant: 'green', key: 'valid' },
+  expiring: { label: 'Истекает', cls: 'ath-badge--orange', variant: 'amber', key: 'expiring' },
+  expired: { label: 'Истёк', cls: 'ath-badge--red', variant: 'red', key: 'expired' },
+  unknown: { label: '-', cls: '', variant: 'gray', key: 'unknown' },
 }
 const medBadge = (s) => MED_BADGE[s] || MED_BADGE.unknown
 

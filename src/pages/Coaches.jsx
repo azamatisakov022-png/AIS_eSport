@@ -5,7 +5,7 @@ import { MetricIcons } from '../components/CabinetIcons'
 import './Coaches.css'
 import Portal from '../components/Portal'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { PageHeader, Button, MetricCard } from '../components/ui'
+import { PageHeader, Button, MetricCard, Badge } from '../components/ui'
 
 const SPORTS = ['Бокс', 'Борьба', 'Дзюдо', 'Футбол', 'Плавание', 'Лёгкая атлетика', 'Каратэ', 'Тхэквондо', 'Гимнастика', 'Шахматы']
 const REGIONS = ['Бишкек', 'Ош', 'Чуйская', 'Иссык-Кульская', 'Джалал-Абадская', 'Нарынская', 'Баткенская', 'Таласская', 'Ошская']
@@ -113,9 +113,9 @@ export default function Coaches() {
     const setField = (k, v) => setForm(p => ({ ...p, [k]: v }))
 
     const statusBadge = (s) => {
-        if (s === 'active')   return <span className="co-badge co-badge--green">{t('coaches.statusActive')}</span>
-        if (s === 'expiring') return <span className="co-badge co-badge--orange">{t('coaches.statusExpiring')}</span>
-        return <span className="co-badge co-badge--gray">{t('coaches.statusRevoked')}</span>
+        if (s === 'active')   return <Badge variant="green">{t('coaches.statusActive')}</Badge>
+        if (s === 'expiring') return <Badge variant="amber">{t('coaches.statusExpiring')}</Badge>
+        return <Badge variant="gray">{t('coaches.statusRevoked')}</Badge>
     }
 
     return (

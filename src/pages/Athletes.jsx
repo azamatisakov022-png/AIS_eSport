@@ -6,7 +6,7 @@ import Breadcrumbs from '../components/Breadcrumbs'
 import { TableSkeleton, MetricSkeleton } from '../components/Skeleton'
 import './Athletes.css'
 import Portal from '../components/Portal'
-import { PageHeader, Button, MetricCard } from '../components/ui'
+import { PageHeader, Button, MetricCard, Badge } from '../components/ui'
 import { athletesApi, VERIFICATION, LIFECYCLE } from '../api/esport'
 
 const VERIF_CHIP = {
@@ -45,18 +45,18 @@ function medStatus(d, t) {
     const exp = new Date(d)
     const now = new Date(); now.setHours(0,0,0,0)
     const diff = Math.ceil((exp - now) / 86400000)
-    if (diff < 0) return { label: t('status.expired'), cls: 'ath-badge--red', key: 'expired' }
-    if (diff <= 30) return { label: t('status.expiring'), cls: 'ath-badge--orange', key: 'expiring' }
-    return { label: t('status.valid'), cls: 'ath-badge--green', key: 'valid' }
+    if (diff < 0) return { label: t('status.expired'), variant: 'red', key: 'expired' }
+    if (diff <= 30) return { label: t('status.expiring'), variant: 'amber', key: 'expiring' }
+    return { label: t('status.valid'), variant: 'green', key: 'valid' }
 }
 
 function insStatus(d, t) {
     const exp = new Date(d)
     const now = new Date(); now.setHours(0,0,0,0)
     const diff = Math.ceil((exp - now) / 86400000)
-    if (diff < 0) return { label: t('status.expired'), cls: 'ath-badge--red' }
-    if (diff <= 30) return { label: t('status.expiring'), cls: 'ath-badge--orange' }
-    return { label: t('status.valid'), cls: 'ath-badge--green' }
+    if (diff < 0) return { label: t('status.expired'), variant: 'red' }
+    if (diff <= 30) return { label: t('status.expiring'), variant: 'amber' }
+    return { label: t('status.valid'), variant: 'green' }
 }
 
 const MOCK = [
@@ -262,7 +262,7 @@ export default function Athletes() {
                                 <td>{a.sport}</td>
                                 <td><span className={`ath-rank ${rankClass(a.rank)}`}>{a.rank}</span></td>
                                 <td style={{ fontSize: 12 }}>{a.coach}</td>
-                                <td><span className={`ath-badge ${a._med.cls}`}>{a._med.label}</span></td>
+                                <td><Badge variant={a._med.variant}>{a._med.label}</Badge></td>
                                 <td>{a.verificationStatusLabel
                                     ? <span style={{ background: chip(VERIF_CHIP, a.verificationStatus).bg, color: chip(VERIF_CHIP, a.verificationStatus).color, padding: '2px 8px', borderRadius: 8, fontSize: 11, fontWeight: 600, whiteSpace: 'nowrap' }}>{a.verificationStatusLabel}</span>
                                     : '-'}</td>
@@ -345,14 +345,14 @@ export default function Athletes() {
                                 <>
                                     <div className="ath-med-card">
                                         <div className="ath-med-card__title">{t('athletes.drawer.medCertificate')}</div>
-                                        <div className="ath-med-row"><span className="ath-med-row__label">{t('common.status')}</span><span className="ath-med-row__value"><span className={`ath-badge ${da._med.cls}`}>{da._med.label}</span></span></div>
+                                        <div className="ath-med-row"><span className="ath-med-row__label">{t('common.status')}</span><span className="ath-med-row__value"><Badge variant={da._med.variant}>{da._med.label}</Badge></span></div>
                                         <div className="ath-med-row"><span className="ath-med-row__label">{t('fields.issuedDate')}</span><span className="ath-med-row__value">{fmt(da.medIssued)}</span></div>
                                         <div className="ath-med-row"><span className="ath-med-row__label">{t('athletes.drawer.validUntil')}</span><span className="ath-med-row__value">{fmt(da.medExp)}</span></div>
                                         <div className="ath-med-row"><span className="ath-med-row__label">{t('athletes.drawer.issuedBy')}</span><span className="ath-med-row__value">{da.medBy}</span></div>
                                     </div>
                                     <div className="ath-med-card">
                                         <div className="ath-med-card__title">{t('athletes.drawer.insurance')}</div>
-                                        <div className="ath-med-row"><span className="ath-med-row__label">{t('common.status')}</span><span className="ath-med-row__value"><span className={`ath-badge ${da._ins.cls}`}>{da._ins.label}</span></span></div>
+                                        <div className="ath-med-row"><span className="ath-med-row__label">{t('common.status')}</span><span className="ath-med-row__value"><Badge variant={da._ins.variant}>{da._ins.label}</Badge></span></div>
                                         <div className="ath-med-row"><span className="ath-med-row__label">{t('athletes.drawer.insValidUntil')}</span><span className="ath-med-row__value">{fmt(da.insExp)}</span></div>
                                     </div>
                                 </>
