@@ -15,7 +15,7 @@ const ACTIONS = {
     'Ожидание решения Кабмина': { label: 'Передать в Кабинет Министров', cls: 'ar-btn--green' },
     'Приказ подписан':          { label: 'Подписать приказ (директор, ЭЦП)', cls: 'ar-btn--green' },
     'Присвоено':                { label: 'Звание присвоено', cls: 'ar-btn--green' },
-    'Отклонена':                { label: 'Отказать (директор)', cls: 'ar-btn--red', needReason: true },
+    'Отклонена':                { label: 'Отказать (специалист + рук. отдела)', cls: 'ar-btn--red', needReason: true },
     'Отозвана':                 { label: 'Отозвать', cls: 'ar-btn--outline' },
 }
 
@@ -140,7 +140,7 @@ export default function ApplicationReview() {
                         {t('common.cancel')}
                     </button>
                     <button className="ar-btn ar-btn--outline" onClick={() => toast('Открыт чат с заявителем')}>
-                        💬 Написать заявителю
+                        <span style={{ display: 'inline-flex', verticalAlign: 'middle', marginRight: 6 }}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg></span>Написать заявителю
                     </button>
                 </div>
             </div>
@@ -199,7 +199,7 @@ export default function ApplicationReview() {
                                             <div className="ar-doc-card__name">{doc}</div>
                                             <div className="ar-doc-card__meta">{ok ? 'Загружено • 1.2 MB' : 'Не загружено'}</div>
                                         </div>
-                                        {ok && <span style={{ color: isActive ? '#2563EB' : '#86868b' }}>👁️</span>}
+                                        {ok && <span style={{ color: isActive ? '#2563EB' : '#86868b', display: 'inline-flex' }}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" /><circle cx="12" cy="12" r="3" /></svg></span>}
                                     </div>
                                 )
                             })}
@@ -225,7 +225,7 @@ export default function ApplicationReview() {
                             </div>
                         ) : (
                             <div className="ar-viewer-placeholder">
-                                <span>📄</span>
+                                <span style={{ display: 'inline-flex' }}><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /></svg></span>
                                 <p>Выберите документ из списка слева для просмотра</p>
                             </div>
                         )}
@@ -239,6 +239,11 @@ export default function ApplicationReview() {
                             value={conclusion}
                             onChange={(e) => setConclusion(e.target.value)}
                         />
+                        {transitions.includes('Отклонена') && (
+                            <div style={{ fontSize: 12, color: '#64748b', marginBottom: 10, lineHeight: 1.4 }}>
+                                Отказ оформляется совместно ответственным специалистом и руководителем отдела. Повторная подача — через 1 месяц после отказа (осн.: ПП КР №596).
+                            </div>
+                        )}
                         <div className="ar-decision-actions">
                             {transitions.length === 0 ? (
                                 <span style={{ color: '#64748b', fontSize: 14 }}>

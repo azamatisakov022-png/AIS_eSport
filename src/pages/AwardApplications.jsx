@@ -45,6 +45,8 @@ function awardGroup(award) {
     return 'C'                                                                // разряды
 }
 function deadlineDays(group) { return group === 'A' ? 30 : group === 'B' ? 20 : 15 }
+// Кто присваивает звание/разряд по уровню (Q14): A→Агентство, B→область/город, C→спорторганизация
+const GROUP_ORGAN = { A: 'ГАФКиС', B: 'Обл./гор. управление ФКиС', C: 'Спортшкола / спорторганизация' }
 
 const BASE_DOCS = ['Копия паспорта', '2 фотографии 3х4', 'Протокол соревнований']
 const HIGH_DOCS = ['Представление от организации', 'Ходатайство федерации', 'Выписка из протокола', 'Заключение Дирекции', 'Справка об отсутствии судимости']
@@ -270,6 +272,7 @@ export default function AwardApplications() {
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                                                     <span style={{ fontWeight: 600, fontSize: 13 }}>{a.award}</span>
                                                     {groupBadge(a.group)}
+                                                    <span style={{ fontSize: 11, color: '#94a3b8' }}>Присваивает: {GROUP_ORGAN[a.group]}</span>
                                                 </div>
                                             </td>
                                             <td>{a.sport}</td>
