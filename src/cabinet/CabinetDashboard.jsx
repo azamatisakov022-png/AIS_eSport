@@ -31,7 +31,7 @@ function getDashboardData(t) {
                 [t('fields.category'), 'Высшая'],
                 [t('fields.licenseNumber'), 'ТР-2023-001245'],
                 [t('fields.issuedDate'), '15.03.2023'],
-                [t('fields.expiryDate'), '15.03.2028'],
+                [t('fields.expiryDate'), 'Бессрочно'],
                 [t('fields.organization'), 'РСДЮШОР по дзюдо'],
                 [t('fields.region'), 'Бишкек'],
                 [t('fields.athletesCount'), '12'],

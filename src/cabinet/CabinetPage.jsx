@@ -146,7 +146,7 @@ function getSectionData(t) {
                 [t('common.name'), 'Иванов Сергей Петрович'],
                 [t('fields.licenseNumber'), 'ТР-2023-001245'],
                 [t('fields.issuedDate'), '15.03.2023'],
-                [t('fields.expiryDate'), '15.03.2028'],
+                [t('fields.expiryDate'), 'Бессрочно'],
                 [t('fields.category'), 'Высшая'],
                 [t('fields.specialization'), 'Дзюдо'],
                 [t('common.status'), { text: 'Действительна', status: 'ok' }],
