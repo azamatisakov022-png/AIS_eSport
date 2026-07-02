@@ -76,8 +76,9 @@ const MOCK = [
 ]
 
 const DEPRIVE_MOCK = [
-    { id: 101, name: 'Кадыров Руслан Байышович',   award: 'МС КР',  sport: 'Каратэ', reason: 'Допинг',                   initiatedDate: '2026-02-01', appealDeadline: '2027-02-01', status: 'Лишён' },
-    { id: 102, name: 'Борубаев Марат Кулбаевич',    award: 'ЗМС КР', sport: 'Бокс',   reason: 'Недостоверные документы',   initiatedDate: '2026-03-01', appealDeadline: '2026-04-01', status: 'На рассмотрении' },
+    { id: 101, name: 'Кадыров Руслан Байышович',   award: 'МС КР',        sport: 'Каратэ', reason: 'Допинг',                   initiatedDate: '2026-02-01', appealDeadline: '2027-02-01', status: 'Лишён' },
+    { id: 102, name: 'Борубаев Марат Кулбаевич',    award: 'ЗМС КР',       sport: 'Бокс',   reason: 'Недостоверные документы',   initiatedDate: '2026-03-01', appealDeadline: '2026-04-01', status: 'На рассмотрении' },
+    { id: 103, name: 'Осмонов Тилек Азаматович',    award: 'МСМК → МС КР', sport: 'Борьба', reason: 'Пересмотр результатов',     initiatedDate: '2026-03-10', appealDeadline: '2027-03-10', status: 'Понижение' },
 ]
 
 const RESTORE_MOCK = [
@@ -310,11 +311,11 @@ export default function AwardApplications() {
                 <>
                     <div className="aw-tab-header">
                         <div>
-                            <p className="aw-tab-desc">Лишение спортивного звания по решению Комиссии ГАФКиС.</p>
+                            <p className="aw-tab-desc">Лишение или понижение спортивного звания/разряда по решению Комиссии ГАФКиС; сведения хранятся в архиве.</p>
                             <p className="aw-tab-desc">Срок апелляции: 1 месяц (ЗМС/ЗТ), 1 год (МС/МСМК).</p>
                         </div>
-                        <button className="aw-header__btn" onClick={() => toast('Инициирование лишения (демо)')}>
-                            <span>+</span> Инициировать лишение
+                        <button className="aw-header__btn" onClick={() => toast('Инициирование лишения / понижения (демо)')}>
+                            <span>+</span> Инициировать лишение / понижение
                         </button>
                     </div>
 

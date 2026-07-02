@@ -77,6 +77,11 @@ export default function MedicalCertificates() {
                 actions={<Button variant="primary" onClick={() => { setForm(EMPTY); setAddModal(true) }}><span>+</span> Добавить справку</Button>}
             />
 
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '10px 14px', margin: '0 0 16px', background: 'var(--info-bg, #EFF6FF)', border: '1px solid var(--info-border, #B0C4DE)', borderRadius: 10, fontSize: 13, color: 'var(--info-text, #1d4ed8)', lineHeight: 1.45 }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2 }}><circle cx="12" cy="12" r="9" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
+                <span>Допуск к соревнованиям выдаётся по итогам обследования <b>раз в 6 месяцев</b> в Спортивно-реабилитационном центре (пр. Манаса, 41); срок действия справки — 6 месяцев (контролирует Минздрав). Ответственные за допуск: ДЮСШ/СДЮШОР/РСК — директор, зам. по учебной части, методисты; сборные — главный тренер. <b>Планируется интеграция допуска в «Түндүк»</b> (действует 6 мес, с возможностью распечатки).</span>
+            </div>
+
             <div className="reg-metrics">
                 <MetricCard tone="blue" icon={MetricIcons.hospital()} value={metrics.total} label="Всего справок" />
                 <MetricCard tone="green" icon={MetricIcons.active()} value={metrics.valid} label="Действительны" />
@@ -152,7 +157,7 @@ export default function MedicalCertificates() {
                                     <div className="reg-info-item"><div className="reg-info-item__label">Верификация</div><div className="reg-info-item__value">{cur.verified ? 'Подтверждена' : 'Не подтверждена'}</div></div>
                                 </div>
                                 <div className="reg-section-title">Скан-копия</div>
-                                <button className="reg-btn" onClick={() => toast('Просмотр скан-копии (демо)')}>📄 Открыть скан справки</button>
+                                <button className="reg-btn" onClick={() => toast('Просмотр скан-копии (демо)')} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>Открыть скан справки</button>
                             </div>
                             <div className="reg-drawer__footer">
                                 {!cur.verified && <button className="reg-btn reg-btn--primary" onClick={() => toast('Справка верифицирована (демо)')}>Верифицировать</button>}

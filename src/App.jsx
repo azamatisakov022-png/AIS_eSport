@@ -32,6 +32,7 @@ import PublicProtocol from './public/PublicProtocol'
 import Staff from './pages/Staff'
 import MedicalCertificates from './pages/MedicalCertificates'
 import Inventory from './pages/Inventory'
+import Stipends from './pages/Stipends'
 
 // Intranet (corporate portal for staff)
 import IntranetHome from './intranet/IntranetHome'
@@ -116,6 +117,7 @@ export default function App() {
                 <Route path="/staff" element={<Staff />} />
                 <Route path="/medical-certificates" element={<MedicalCertificates />} />
                 <Route path="/inventory" element={<Inventory />} />
+                <Route path="/stipends" element={<Stipends />} />
                 <Route path="/applications" element={<Applications />} />
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/trainer-applications" element={<TrainerApplications />} />

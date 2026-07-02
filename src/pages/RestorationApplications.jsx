@@ -59,6 +59,11 @@ export default function RestorationApplications() {
             <Breadcrumbs current="Восстановление документов" />
             <PageHeader title="Заявки на восстановление документов" />
 
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', margin: '0 0 16px', background: 'var(--info-bg, #EFF6FF)', border: '1px solid var(--info-border, #B0C4DE)', borderRadius: 10, fontSize: 13, color: 'var(--info-text, #1d4ed8)' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="9" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
+                <span>Пошлина за выдачу дубликата (утеря/порча) — <b>30 сом</b>, оплата через ОАО «Элдик банк».</span>
+            </div>
+
             <div className="aw-metrics">
                 <MetricCard tone="blue" icon={MetricIcons.clipboard()} value={metrics.total} label="Всего заявок" />
                 <MetricCard tone="amber" icon={MetricIcons.search()} value={metrics.inProgress} label="В работе" />

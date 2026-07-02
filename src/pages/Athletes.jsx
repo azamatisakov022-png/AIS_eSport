@@ -86,9 +86,12 @@ const HISTORY = [
     { action: 'Включён в состав сборной', color: 'blue', user: 'Алымбеков К.Т.' },
 ]
 
+// Учебное заведение (спортшкола/ВУЗ) — доп. поле спортсмена (C2)
+const EDU = ['СДЮСШОР №3 г. Бишкек', 'КГАФКиС им. Б.Т. Турусбекова', 'Республиканский спортивный колледж им. Ш. Сыдыкова', 'ДЮСШ «Олимп»', 'Ошская СДЮСШОР', 'СДЮСШОР «Кубат»']
+
 const EMPTY_FORM = {
     name:'', birth:'', sex:'М', phone:'', email:'',
-    sport:'', rank:'', org:'', region:'', coach:'', team:'',
+    sport:'', rank:'', org:'', region:'', coach:'', team:'', school:'',
 }
 
 export default function Athletes() {
@@ -150,6 +153,7 @@ export default function Athletes() {
         ...a,
         _med: a._med || medStatus(a.medExp, t),
         _ins: a._ins || insStatus(a.insExp, t),
+        school: a.school || EDU[a.id % EDU.length],
     })), [data, t])
 
     const filtered = useMemo(() => enriched.filter(a => {
@@ -314,6 +318,7 @@ export default function Athletes() {
                                     <div className="ath-info-item"><div className="ath-info-item__label">{t('athletes.table.rank')}</div><div className="ath-info-item__value">{da.rank}</div></div>
                                     <div className="ath-info-item"><div className="ath-info-item__label">{t('fields.coach')}</div><div className="ath-info-item__value">{da.coach}</div></div>
                                     <div className="ath-info-item"><div className="ath-info-item__label">{t('fields.organization')}</div><div className="ath-info-item__value">{da.org}</div></div>
+                                    <div className="ath-info-item"><div className="ath-info-item__label">Спортшкола / ВУЗ</div><div className="ath-info-item__value">{da.school || '—'}</div></div>
                                     <div className="ath-info-item ath-info-item--full"><div className="ath-info-item__label">{t('athletes.drawer.team')}</div><div className="ath-info-item__value">{da.team || '-'}</div></div>
                                 </div>
                             )}
