@@ -1145,8 +1145,8 @@
 .intra-chat {
     display: grid;
     grid-template-columns: 320px 1fr;
-    height: calc(100vh - 256px);
-    min-height: 420px;
+    height: calc(100vh - 190px);
+    min-height: 460px;
     background: var(--theme-surface, #fff);
     border: 1px solid var(--theme-border, #e5e5ea);
     border-radius: 14px;
@@ -1184,8 +1184,9 @@
     flex: 0 0 40px;
     height: 40px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), #5e5ce6);
-    color: #fff;
+    background: var(--theme-bg, #eef1f5);
+    border: 1px solid var(--theme-border-light, #e8eaf0);
+    color: var(--theme-text-secondary, #6e6e73);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1228,7 +1229,7 @@
 }
 
 .intra-chat__item-unread {
-    background: #ff3b30;
+    background: var(--accent);
     color: #fff;
     font-size: 10px;
     font-weight: 600;
@@ -1322,19 +1323,73 @@
 .intra-chat__input:focus { border-color: var(--accent); }
 
 .intra-chat__send {
+    flex: 0 0 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: var(--accent);
     color: #fff;
     border: none;
-    border-radius: 10px;
-    padding: 10px 18px;
-    font-size: 13px;
-    font-weight: 500;
+    border-radius: 50%;
     cursor: pointer;
-    transition: background 0.15s ease;
+    transition: background 0.15s ease, opacity 0.15s ease;
 }
 
-.intra-chat__send:hover { background: var(--accent-dark); }
-.intra-chat__send:disabled { background: var(--theme-text-secondary, #8e8e93); cursor: not-allowed; }
+.intra-chat__send svg { margin-left: -2px; }
+.intra-chat__send:hover:not(:disabled) { background: var(--accent-dark); }
+.intra-chat__send:disabled { opacity: 0.35; cursor: default; }
+
+/* ── Поиск по диалогам ── */
+.intra-chat__search {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--theme-bg, #f7f7f8);
+    border-bottom: 1px solid var(--theme-border-light, #f2f2f7);
+    color: var(--theme-text-secondary, #8e8e93);
+}
+
+.intra-chat__search input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 13px;
+    color: var(--theme-text, #1c1c1e);
+}
+
+.intra-chat__empty {
+    padding: 24px 16px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--theme-text-secondary, #8e8e93);
+}
+
+/* ── Разделитель дня в ленте ── */
+.intra-chat__day {
+    align-self: center;
+    margin: 2px 0 4px;
+}
+
+.intra-chat__day span {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--theme-text-secondary, #8e8e93);
+    background: var(--theme-surface, #fff);
+    border: 1px solid var(--theme-border-light, #f2f2f7);
+    border-radius: 10px;
+    padding: 3px 10px;
+}
+
+/* ── Компактная шапка страницы чата ── */
+.intra-page-head--slim {
+    margin-bottom: 14px;
+}
 
 /* ── Routes engine ──────────────────────────────────── */
 .intra-route-list { display: flex; flex-direction: column; gap: 10px; }
