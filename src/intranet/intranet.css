@@ -394,9 +394,9 @@
 }
 
 .intra-soon__icon {
-    font-size: 40px;
     margin-bottom: 12px;
     opacity: 0.6;
+    color: var(--theme-text-secondary, #64748b);
 }
 
 .intra-soon__title {
@@ -499,7 +499,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 44px;
+    color: var(--accent, #0071E3);
     background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
 }
 
@@ -562,7 +562,10 @@
 }
 
 .intra-article__cover {
-    font-size: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent, #0071E3);
     text-align: center;
     padding: 24px;
     border-radius: 14px;

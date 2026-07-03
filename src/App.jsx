@@ -1,106 +1,121 @@
+import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 
-// Internal portal
+/* Каркасы (layout) грузим сразу — они нужны на каждом экране своей зоны.
+   Страницы — лениво (React.lazy): роут-чанки вместо одного бандла. */
 import Layout from './components/Layout'
-import Dashboard from './pages/Dashboard'
-import Athletes from './pages/Athletes'
-import Coaches from './pages/Coaches'
-import Judges from './pages/Judges'
-import Organizations from './pages/Organizations'
-import Facilities from './pages/Facilities'
-import Events from './pages/Events'
-import Teams from './pages/Teams'
-import Applications from './pages/Applications'
-import Analytics from './pages/Analytics'
-import Settings from './pages/Settings'
-import TrainerApplications from './pages/TrainerApplications'
-import AwardApplications from './pages/AwardApplications'
-import ApplicationReview from './pages/ApplicationReview'
-import JudgeApplications from './pages/JudgeApplications'
-import JudgeApplicationReview from './pages/JudgeApplicationReview'
-import RestorationApplications from './pages/RestorationApplications'
-import RestorationApplicationReview from './pages/RestorationApplicationReview'
-import AccreditationApplications from './pages/AccreditationApplications'
-import AccreditationApplicationReview from './pages/AccreditationApplicationReview'
-import PublicAccreditation from './public/PublicAccreditation'
-import TransferApplications from './pages/TransferApplications'
-import TransferApplicationReview from './pages/TransferApplicationReview'
-import PublicTransfer from './public/PublicTransfer'
-import ProtocolSubmissions from './pages/ProtocolSubmissions'
-import ProtocolReview from './pages/ProtocolReview'
-import PublicProtocol from './public/PublicProtocol'
-import Staff from './pages/Staff'
-import MedicalCertificates from './pages/MedicalCertificates'
-import Inventory from './pages/Inventory'
-import Stipends from './pages/Stipends'
-import Finance from './pages/Finance'
+import CabinetLayout from './cabinet/CabinetLayout'
+import PublicLayout from './public/PublicLayout'
+import PublicCabinetLayout from './public/PublicCabinetLayout'
+
+// Internal portal
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Athletes = lazy(() => import('./pages/Athletes'))
+const Coaches = lazy(() => import('./pages/Coaches'))
+const Judges = lazy(() => import('./pages/Judges'))
+const Organizations = lazy(() => import('./pages/Organizations'))
+const Facilities = lazy(() => import('./pages/Facilities'))
+const Events = lazy(() => import('./pages/Events'))
+const Teams = lazy(() => import('./pages/Teams'))
+const Applications = lazy(() => import('./pages/Applications'))
+const Analytics = lazy(() => import('./pages/Analytics'))
+const Settings = lazy(() => import('./pages/Settings'))
+const TrainerApplications = lazy(() => import('./pages/TrainerApplications'))
+const AwardApplications = lazy(() => import('./pages/AwardApplications'))
+const ApplicationReview = lazy(() => import('./pages/ApplicationReview'))
+const JudgeApplications = lazy(() => import('./pages/JudgeApplications'))
+const JudgeApplicationReview = lazy(() => import('./pages/JudgeApplicationReview'))
+const RestorationApplications = lazy(() => import('./pages/RestorationApplications'))
+const RestorationApplicationReview = lazy(() => import('./pages/RestorationApplicationReview'))
+const AccreditationApplications = lazy(() => import('./pages/AccreditationApplications'))
+const AccreditationApplicationReview = lazy(() => import('./pages/AccreditationApplicationReview'))
+const TransferApplications = lazy(() => import('./pages/TransferApplications'))
+const TransferApplicationReview = lazy(() => import('./pages/TransferApplicationReview'))
+const ProtocolSubmissions = lazy(() => import('./pages/ProtocolSubmissions'))
+const ProtocolReview = lazy(() => import('./pages/ProtocolReview'))
+const Staff = lazy(() => import('./pages/Staff'))
+const MedicalCertificates = lazy(() => import('./pages/MedicalCertificates'))
+const Inventory = lazy(() => import('./pages/Inventory'))
+const Stipends = lazy(() => import('./pages/Stipends'))
+const Finance = lazy(() => import('./pages/Finance'))
 
 // Intranet (corporate portal for staff)
-import IntranetHome from './intranet/IntranetHome'
-import IntranetPlaceholder from './intranet/IntranetPlaceholder'
-import { IntranetNewsList, IntranetNewsDetail } from './intranet/IntranetNews'
-import IntranetAnnouncements from './intranet/IntranetAnnouncements'
-import IntranetDirectory from './intranet/IntranetDirectory'
-import IntranetStructure from './intranet/IntranetStructure'
-import IntranetRegulations from './intranet/IntranetRegulations'
-import IntranetKnowledge from './intranet/IntranetKnowledge'
-import IntranetTemplates from './intranet/IntranetTemplates'
-import IntranetCalendar from './intranet/IntranetCalendar'
-import IntranetChat from './intranet/IntranetChat'
-import IntranetRoutes from './intranet/IntranetRoutes'
-import IntranetApprovals from './intranet/IntranetApprovals'
-import IntranetCMS from './intranet/IntranetCMS'
+const IntranetHome = lazy(() => import('./intranet/IntranetHome'))
+const IntranetNewsList = lazy(() => import('./intranet/IntranetNews').then(m => ({ default: m.IntranetNewsList })))
+const IntranetNewsDetail = lazy(() => import('./intranet/IntranetNews').then(m => ({ default: m.IntranetNewsDetail })))
+const IntranetAnnouncements = lazy(() => import('./intranet/IntranetAnnouncements'))
+const IntranetDirectory = lazy(() => import('./intranet/IntranetDirectory'))
+const IntranetStructure = lazy(() => import('./intranet/IntranetStructure'))
+const IntranetRegulations = lazy(() => import('./intranet/IntranetRegulations'))
+const IntranetKnowledge = lazy(() => import('./intranet/IntranetKnowledge'))
+const IntranetTemplates = lazy(() => import('./intranet/IntranetTemplates'))
+const IntranetCalendar = lazy(() => import('./intranet/IntranetCalendar'))
+const IntranetChat = lazy(() => import('./intranet/IntranetChat'))
+const IntranetRoutes = lazy(() => import('./intranet/IntranetRoutes'))
+const IntranetApprovals = lazy(() => import('./intranet/IntranetApprovals'))
+const IntranetCMS = lazy(() => import('./intranet/IntranetCMS'))
 
 // Cabinet (unified personal account)
-import CabinetLayout from './cabinet/CabinetLayout'
-import CabinetDashboard from './cabinet/CabinetDashboard'
-import CabinetPage from './cabinet/CabinetPage'
+const CabinetDashboard = lazy(() => import('./cabinet/CabinetDashboard'))
+const CabinetPage = lazy(() => import('./cabinet/CabinetPage'))
 
 // Public portal
-import PublicLayout from './public/PublicLayout'
-import PublicHome from './public/PublicHome'
-import PublicVerify from './public/PublicVerify'
-import PublicLogin from './public/PublicLogin'
-import PublicLoginPlayground from './public/PublicLoginPlayground'
-import PublicTickets from './public/PublicTickets'
-import PublicTicketEvent from './public/PublicTicketEvent'
-import PublicStatistics from './public/PublicStatistics'
-import PublicTrainerRegistration from './public/PublicTrainerRegistration'
-import PublicJudgeCategory from './public/PublicJudgeCategory'
-import PublicDocumentRestoration from './public/PublicDocumentRestoration'
-import PublicCoaches from './public/PublicCoaches'
-import PublicAthletes from './public/PublicAthletes'
-import PublicAthleteProfile from './public/PublicAthleteProfile'
-import PublicJudges from './public/PublicJudges'
-import PublicAwardApplication from './public/PublicAwardApplication'
-import PublicEvents from './public/PublicEvents'
-import PublicEventDetail from './public/PublicEventDetail'
-import PublicOrganizations from './public/PublicOrganizations'
-import PublicCabinet from './public/PublicCabinet'
-import PublicMyApplications from './public/PublicMyApplications'
-import PublicNotifications from './public/PublicNotifications'
-import PublicFacilities from './public/PublicFacilities'
-import PublicSchools from './public/PublicSchools'
-import PublicNPA from './public/PublicNPA'
-import PublicCabinetLayout from './public/PublicCabinetLayout'
-import PublicTeams from './public/PublicTeams'
+const PublicHome = lazy(() => import('./public/PublicHome'))
+const PublicVerify = lazy(() => import('./public/PublicVerify'))
+const PublicLogin = lazy(() => import('./public/PublicLogin'))
+const PublicLoginPlayground = lazy(() => import('./public/PublicLoginPlayground'))
+const PublicTickets = lazy(() => import('./public/PublicTickets'))
+const PublicTicketEvent = lazy(() => import('./public/PublicTicketEvent'))
+const PublicStatistics = lazy(() => import('./public/PublicStatistics'))
+const PublicTrainerRegistration = lazy(() => import('./public/PublicTrainerRegistration'))
+const PublicJudgeCategory = lazy(() => import('./public/PublicJudgeCategory'))
+const PublicDocumentRestoration = lazy(() => import('./public/PublicDocumentRestoration'))
+const PublicAccreditation = lazy(() => import('./public/PublicAccreditation'))
+const PublicTransfer = lazy(() => import('./public/PublicTransfer'))
+const PublicProtocol = lazy(() => import('./public/PublicProtocol'))
+const PublicCoaches = lazy(() => import('./public/PublicCoaches'))
+const PublicAthletes = lazy(() => import('./public/PublicAthletes'))
+const PublicAthleteProfile = lazy(() => import('./public/PublicAthleteProfile'))
+const PublicJudges = lazy(() => import('./public/PublicJudges'))
+const PublicAwardApplication = lazy(() => import('./public/PublicAwardApplication'))
+const PublicEvents = lazy(() => import('./public/PublicEvents'))
+const PublicEventDetail = lazy(() => import('./public/PublicEventDetail'))
+const PublicOrganizations = lazy(() => import('./public/PublicOrganizations'))
+const PublicCabinet = lazy(() => import('./public/PublicCabinet'))
+const PublicMyApplications = lazy(() => import('./public/PublicMyApplications'))
+const PublicNotifications = lazy(() => import('./public/PublicNotifications'))
+const PublicFacilities = lazy(() => import('./public/PublicFacilities'))
+const PublicSchools = lazy(() => import('./public/PublicSchools'))
+const PublicNPA = lazy(() => import('./public/PublicNPA'))
+const PublicTeams = lazy(() => import('./public/PublicTeams'))
 
 // Public content pages (раскрытые placeholder'ы)
-import { PublicNewsList, PublicNewsDetail } from './public/pages/PublicNews'
-import PublicAbout from './public/pages/PublicAbout'
-import PublicBudget from './public/pages/PublicBudget'
-import PublicCalendarPlan from './public/pages/PublicCalendarPlan'
-import PublicSports from './public/pages/PublicSports'
-import PublicAnnouncements from './public/pages/PublicAnnouncements'
-import PublicServices from './public/pages/PublicServices'
-import PublicAntidoping from './public/pages/PublicAntidoping'
-import PublicAnticorruption from './public/pages/PublicAnticorruption'
-import PublicReception from './public/pages/PublicReception'
-import { PublicDiscussionsList } from './public/pages/PublicDiscussions'
-import PublicLinks from './public/pages/PublicLinks'
+const PublicNewsList = lazy(() => import('./public/pages/PublicNews').then(m => ({ default: m.PublicNewsList })))
+const PublicNewsDetail = lazy(() => import('./public/pages/PublicNews').then(m => ({ default: m.PublicNewsDetail })))
+const PublicAbout = lazy(() => import('./public/pages/PublicAbout'))
+const PublicBudget = lazy(() => import('./public/pages/PublicBudget'))
+const PublicCalendarPlan = lazy(() => import('./public/pages/PublicCalendarPlan'))
+const PublicSports = lazy(() => import('./public/pages/PublicSports'))
+const PublicAnnouncements = lazy(() => import('./public/pages/PublicAnnouncements'))
+const PublicServices = lazy(() => import('./public/pages/PublicServices'))
+const PublicAntidoping = lazy(() => import('./public/pages/PublicAntidoping'))
+const PublicAnticorruption = lazy(() => import('./public/pages/PublicAnticorruption'))
+const PublicReception = lazy(() => import('./public/pages/PublicReception'))
+const PublicDiscussionsList = lazy(() => import('./public/pages/PublicDiscussions').then(m => ({ default: m.PublicDiscussionsList })))
+const PublicLinks = lazy(() => import('./public/pages/PublicLinks'))
+
+/* Нейтральный фолбэк на время загрузки роут-чанка */
+function RouteFallback() {
+    return (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '40vh' }}>
+            <div className="route-spinner" aria-label="Загрузка…" />
+        </div>
+    )
+}
 
 export default function App() {
     return (
+        <Suspense fallback={<RouteFallback />}>
         <Routes>
             {/* Root → redirect to public portal */}
             <Route path="/" element={<Navigate to="/public" replace />} />
@@ -229,5 +244,6 @@ export default function App() {
                 <Route path="links" element={<PublicLinks />} />
             </Route>
         </Routes>
+        </Suspense>
     )
 }

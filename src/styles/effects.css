@@ -237,3 +237,25 @@
         grid-template-columns: 1fr !important;
     }
 }
+
+/* ── Route-level code splitting: фолбэк-спиннер ── */
+.route-spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid var(--border-color, #e2e8f0);
+    border-top-color: var(--accent, #0071E3);
+    border-radius: 50%;
+    animation: route-spin 0.7s linear infinite;
+}
+@keyframes route-spin { to { transform: rotate(360deg); } }
+
+/* ── Доступность: единое видимое кольцо фокуса при навигации с клавиатуры.
+   :focus-visible не срабатывает по клику мыши, поэтому не мешает обычной работе. ── */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--accent, #0071E3);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+:where(input, select, textarea):focus-visible {
+    outline-offset: 0;
+}
