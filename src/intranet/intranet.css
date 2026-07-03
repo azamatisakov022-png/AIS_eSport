@@ -625,7 +625,7 @@
 }
 
 .intra-ann-card--high {
-    border-left: 3px solid #ff3b30;
+    border-color: var(--badge-red-border, #FECACA);
 }
 
 .intra-ann-card__head {
@@ -637,8 +637,9 @@
 }
 
 .intra-ann-card__priority {
-    background: #ff3b30;
-    color: #fff;
+    background: var(--badge-red-bg, #fee2e2);
+    color: var(--badge-red-text, #ef4444);
+    border: 1px solid var(--badge-red-border, #FECACA);
     font-size: 10px;
     font-weight: 600;
     padding: 2px 7px;
@@ -1143,7 +1144,7 @@
 }
 
 .intra-chat__item:hover { background: var(--theme-surface, #fff); }
-.intra-chat__item--active { background: var(--theme-surface, #fff); border-left: 3px solid var(--accent); padding-left: 13px; }
+.intra-chat__item--active { background: var(--accent-light, #EDF2FC); }
 
 .intra-chat__avatar {
     flex: 0 0 40px;

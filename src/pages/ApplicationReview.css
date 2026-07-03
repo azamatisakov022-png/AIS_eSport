@@ -139,8 +139,8 @@
 
 .ar-doc-card:hover { border-color: var(--accent); }
 .ar-doc-card--active { border-color: var(--accent); background: var(--info-bg); }
-.ar-doc-card--ok { border-left: 4px solid var(--green); }
-.ar-doc-card--no { border-left: 4px solid var(--rose); }
+/* Статус читается по тексту и иконке; «не загружено» — пунктир пустого слота */
+.ar-doc-card--no { border-style: dashed; opacity: 0.75; cursor: default; }
 
 .ar-doc-card__name {
     font-size: 14px;
