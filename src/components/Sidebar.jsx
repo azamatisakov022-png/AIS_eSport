@@ -169,6 +169,7 @@ function NavItem({ item, t }) {
         <NavLink
             to={item.to}
             end={item.to === '/dashboard' || item.to === '/intranet'}
+            title={t(item.textKey)}
             className={({ isActive }) =>
                 `sidebar__link ${isActive ? 'active' : ''}`
             }

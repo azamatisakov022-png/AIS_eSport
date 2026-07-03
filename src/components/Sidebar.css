@@ -266,33 +266,8 @@
     .layout--rail .sidebar__link-icon { font-size: 20px; }
     .layout--rail .sidebar__accent-bar { display: none; }
 
-    /* Наведение — временный разворот поверх контента (flyout) */
-    .layout--rail .sidebar:hover {
-        width: var(--sidebar-width);
-        padding: 24px 16px;
-    }
-
-    .layout--rail .sidebar:hover .sidebar__user-name,
-    .layout--rail .sidebar:hover .sidebar__user-role { display: block; }
-    .layout--rail .sidebar:hover .sidebar__group-toggle { display: flex; }
-    .layout--rail .sidebar:hover .sidebar__group-items { grid-template-rows: 0fr; }
-    .layout--rail .sidebar:hover .sidebar__group--open .sidebar__group-items { grid-template-rows: 1fr; }
-
-    .layout--rail .sidebar:hover .sidebar__avatar {
-        width: 52px;
-        height: 52px;
-        font-size: 18px;
-    }
-
-    .layout--rail .sidebar:hover .sidebar__link,
-    .layout--rail .sidebar:hover .sidebar__collapse-btn {
-        justify-content: flex-start;
-        padding: 10px 14px;
-        font-size: 13px;
-        gap: 10px;
-    }
-
-    .layout--rail .sidebar:hover .sidebar__accent-bar { display: block; }
+    /* Без hover-флайаута: разворот только кнопкой (предсказуемо, как VS Code).
+       Названия пунктов в рельсе — нативные тултипы (title). */
 }
 
 /* На планшете/мобиле рельса автоматическая — тумблер не нужен */
