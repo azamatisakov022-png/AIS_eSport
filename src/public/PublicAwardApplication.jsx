@@ -6,7 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { awardsApi } from '../api/esport'
 
-/* Сдержанные иконки вместо эмодзи (✅ / ⬜ / 📎) */
+/* Сдержанные SVG-иконки вместо эмодзи */
 const CheckMark = ({ done }) => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
         <circle cx="12" cy="12" r="9" />
@@ -214,7 +214,7 @@ export default function PublicAwardApplication() {
             <div className="pub-section">
                 <div className="pub-container">
                     <div style={s.successCard}>
-                        <div style={s.successIcon}>📥</div>
+                        <div style={s.successIcon}><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
                         <h2 style={s.successTitle}>{t('public.applicationSubmitted')}</h2>
                         <div style={s.successTable}>
                             {[
@@ -574,7 +574,7 @@ export default function PublicAwardApplication() {
 
                         {/* Warning: 4 years */}
                         <div style={s.warnBanner}>
-                            <span style={{ fontSize: 20, flexShrink: 0 }}>⚠️</span>
+                            <span style={{ flexShrink: 0, display: 'inline-flex', marginTop: 2 }}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>
                             <div>
                                 <strong>{t('public.warnTermTitle')}</strong> {t('public.warnTermDesc')}
                             </div>
@@ -583,7 +583,7 @@ export default function PublicAwardApplication() {
                         {/* MS KR additional warning */}
                         {award === 'МС КР' && (
                             <div style={{ ...s.warnBanner, background: '#fef3c7', borderColor: '#f59e0b' }}>
-                                <span style={{ fontSize: 20, flexShrink: 0 }}>📋</span>
+                                <span style={{ flexShrink: 0, display: 'inline-flex', marginTop: 2 }}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></span>
                                 <div>
                                     <strong>{t('public.msKrReqTitle')}</strong><br />
                                     {t('public.msKrReqText')}

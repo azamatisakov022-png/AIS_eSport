@@ -5,7 +5,9 @@ import './intranet.css'
  * содержательное наполнение которых придёт в следующих этапах.
  * Сохраняет полную навигацию интранета работоспособной уже сейчас.
  */
-export default function IntranetPlaceholder({ icon = '🛠️', title, description }) {
+const DEFAULT_ICON = <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2-2 2.5-2.5Z"/></svg>
+
+export default function IntranetPlaceholder({ icon = DEFAULT_ICON, title, description }) {
     return (
         <div className="intra">
             <div className="intra-page-head">

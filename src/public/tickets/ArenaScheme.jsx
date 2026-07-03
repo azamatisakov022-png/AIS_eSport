@@ -14,7 +14,7 @@ import { sectorAvailable } from './ticketsData'
 /* Sector zone positions per scheme (percentages within the 16:10 stage). */
 const LAYOUTS = {
     stadium: {
-        field: { label: '⚽ ПОЛЕ', x: 30, y: 34, w: 40, h: 32 },
+        field: { label: 'ПОЛЕ', x: 30, y: 34, w: 40, h: 32 },
         zones: {
             north: { x: 30, y: 6, w: 40, h: 22 },
             south: { x: 30, y: 72, w: 40, h: 22 },
@@ -24,7 +24,7 @@ const LAYOUTS = {
         },
     },
     arena: {
-        field: { label: '🟩 АРЕНА', x: 34, y: 38, w: 32, h: 24 },
+        field: { label: 'АРЕНА', x: 34, y: 38, w: 32, h: 24 },
         zones: {
             vip: { x: 34, y: 30, w: 32, h: 6 },
             parter: { x: 30, y: 64, w: 40, h: 10 },
@@ -34,7 +34,7 @@ const LAYOUTS = {
         },
     },
     hippodrome: {
-        field: { label: '🏟 ПОЛЕ', x: 8, y: 30, w: 84, h: 34 },
+        field: { label: 'ПОЛЕ', x: 8, y: 30, w: 84, h: 34 },
         zones: {
             vip: { x: 30, y: 70, w: 40, h: 6 },
             central: { x: 26, y: 78, w: 48, h: 14 },

@@ -10,7 +10,7 @@ const LEVEL_DOT = { 'Международный': '#2563eb', 'Республик
 const MONTHS = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь']
 const MON_SHORT = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']
 
-/* outline-иконки вместо эмодзи 📍 🎯 */
+/* outline-иконки вместо эмодзи */
 const ib = { viewBox: '0 0 24 24', width: 14, height: 14, fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }
 const IconPin = () => <svg {...ib}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
 const IconSport = () => <svg {...ib}><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="4" /></svg>

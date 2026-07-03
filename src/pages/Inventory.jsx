@@ -145,7 +145,7 @@ export default function Inventory() {
                                     <div className="reg-info-item"><div className="reg-info-item__label">Гарантия до</div><div className="reg-info-item__value">{fmt(cur.warrantyEnd)}</div></div>
                                 </div>
                                 <div className="reg-section-title">Документы</div>
-                                <button className="reg-btn" onClick={() => toast('Просмотр накладной (демо)')}>📄 Накладная / акт приёма</button>
+                                <button className="reg-btn" onClick={() => toast('Просмотр накладной (демо)')}>Накладная / акт приёма</button>
                             </div>
                             <div className="reg-drawer__footer">
                                 <button className="reg-btn reg-btn--primary" onClick={() => toast('Редактирование (демо)')}>Редактировать</button>

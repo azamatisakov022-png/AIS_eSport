@@ -15,7 +15,6 @@ export const TICKET_EVENTS = [
         date: '2026-05-15',
         time: '18:00',
         schemeType: 'stadium',
-        emoji: '⚽',
         sectors: [
             { id: 'vip', name: 'VIP-ложа', price: 2500, color: '#a855f7', total: 60, sold: 41 },
             { id: 'west', name: 'Западная трибуна', price: 900, color: '#2563eb', total: 1800, sold: 980 },
@@ -33,7 +32,6 @@ export const TICKET_EVENTS = [
         date: '2026-09-01',
         time: '14:00',
         schemeType: 'hippodrome',
-        emoji: '🐎',
         sectors: [
             { id: 'vip', name: 'Почётная трибуна (VIP)', price: 3000, color: '#a855f7', total: 100, sold: 70 },
             { id: 'central', name: 'Центральная трибуна', price: 1200, color: '#2563eb', total: 1500, sold: 820 },
@@ -50,7 +48,6 @@ export const TICKET_EVENTS = [
         date: '2026-04-20',
         time: '16:00',
         schemeType: 'arena',
-        emoji: '🤼',
         sectors: [
             { id: 'vip', name: 'VIP (у ковра)', price: 1800, color: '#a855f7', total: 40, sold: 22 },
             { id: 'parter', name: 'Партер', price: 800, color: '#2563eb', total: 400, sold: 210 },
@@ -68,7 +65,6 @@ export const TICKET_EVENTS = [
         date: '2026-06-15',
         time: '17:00',
         schemeType: 'arena',
-        emoji: '🥋',
         sectors: [
             { id: 'vip', name: 'VIP', price: 1500, color: '#a855f7', total: 40, sold: 12 },
             { id: 'parter', name: 'Партер', price: 700, color: '#2563eb', total: 400, sold: 150 },
@@ -85,7 +81,6 @@ export const TICKET_EVENTS = [
         date: '2026-03-22',
         time: '19:00',
         schemeType: 'arena',
-        emoji: '🥊',
         sectors: [
             { id: 'vip', name: 'VIP (ринг-сайд)', price: 2000, color: '#a855f7', total: 30, sold: 18 },
             { id: 'parter', name: 'Партер', price: 900, color: '#2563eb', total: 300, sold: 140 },
@@ -102,7 +97,6 @@ export const TICKET_EVENTS = [
         date: '2026-03-15',
         time: '15:00',
         schemeType: 'arena',
-        emoji: '🥋',
         sectors: [
             { id: 'vip', name: 'VIP', price: 1200, color: '#a855f7', total: 40, sold: 8 },
             { id: 'parter', name: 'Партер', price: 600, color: '#2563eb', total: 400, sold: 110 },

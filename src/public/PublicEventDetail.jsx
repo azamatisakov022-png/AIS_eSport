@@ -4,12 +4,12 @@ import { EVENTS_DATA } from './PublicEvents'
 import { getTicketEvent } from './tickets/ticketsData'
 
 const TYPES = {
-    international: { label: 'Международные', icon: '🌍', color: '#F59E0B' },
-    championship:  { label: 'Чемпионат КР',  icon: '🏆', color: '#1a1a1a' },
-    premier:       { label: 'Первенство КР',  icon: '🥇', color: '#7C3AED' },
-    spartakiad:    { label: 'Спартакиада',     icon: '⚽', color: '#16A34A' },
-    tournament:    { label: 'Респ. турнир',    icon: '🏅', color: '#0EA5E9' },
-    other:         { label: 'Иное',            icon: '📋', color: '#9ca3af' },
+    international: { label: 'Международные', color: '#F59E0B' },
+    championship:  { label: 'Чемпионат КР',  color: '#1a1a1a' },
+    premier:       { label: 'Первенство КР',  color: '#7C3AED' },
+    spartakiad:    { label: 'Спартакиада',     color: '#16A34A' },
+    tournament:    { label: 'Респ. турнир',    color: '#0EA5E9' },
+    other:         { label: 'Иное',            color: '#9ca3af' },
 }
 
 const today = new Date()
@@ -39,18 +39,18 @@ const PARTICIPANTS = [
 
 /* Mock results */
 const RESULTS = [
-    { place: 1, medal: '🥇', name: 'Асанов Бакыт', region: 'Бишкек', result: '1-е место' },
-    { place: 2, medal: '🥈', name: 'Джумабаев Эрлан', region: 'Ош', result: '2-е место' },
-    { place: 3, medal: '🥉', name: 'Бейшеналиев Данияр', region: 'Нарын', result: '3-е место' },
-    { place: 3, medal: '🥉', name: 'Ормонов Алмаз', region: 'Чуй', result: '3-е место' },
-    { place: 5, medal: '',   name: 'Турдалиев Марат', region: 'Ош', result: '5-е место' },
-    { place: 5, medal: '',   name: 'Кулматова Айгерим', region: 'Бишкек', result: '5-е место' },
+    { place: 1, name: 'Асанов Бакыт', region: 'Бишкек', result: '1-е место' },
+    { place: 2, name: 'Джумабаев Эрлан', region: 'Ош', result: '2-е место' },
+    { place: 3, name: 'Бейшеналиев Данияр', region: 'Нарын', result: '3-е место' },
+    { place: 3, name: 'Ормонов Алмаз', region: 'Чуй', result: '3-е место' },
+    { place: 5, name: 'Турдалиев Марат', region: 'Ош', result: '5-е место' },
+    { place: 5, name: 'Кулматова Айгерим', region: 'Бишкек', result: '5-е место' },
 ]
 
 const DOCS = [
-    { name: 'Положение о соревновании', icon: '📄', type: 'PDF' },
-    { name: 'Протокол результатов', icon: '📋', type: 'PDF' },
-    { name: 'Приказ о проведении', icon: '📑', type: 'PDF' },
+    { name: 'Положение о соревновании', type: 'PDF' },
+    { name: 'Протокол результатов', type: 'PDF' },
+    { name: 'Приказ о проведении', type: 'PDF' },
 ]
 
 export default function PublicEventDetail() {
@@ -62,7 +62,7 @@ export default function PublicEventDetail() {
         return (
             <div className="pub-section">
                 <div className="pub-container" style={{ textAlign: 'center', padding: '60px 0' }}>
-                    <div style={{ fontSize: 56, marginBottom: 16 }}>🔍</div>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16, color: '#94a3b8' }}><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
                     <h2 style={{ fontSize: 22, color: '#1a1a1a', marginBottom: 8 }}>{t('public.eventNotFound')}</h2>
                     <p style={{ color: 'var(--theme-text-secondary)', marginBottom: 20 }}>Мероприятие с ID {id} отсутствует в системе.</p>
                     <Link to="/public/events" className="pub-login-btn">{t('public.backToEvents')}</Link>
@@ -85,7 +85,7 @@ export default function PublicEventDetail() {
                 <div style={{ ...d.headerCard, borderTopColor: tp.color }}>
                     <div style={d.headerTop}>
                         <span style={{ ...d.typeBadge, background: tp.color + '18', color: tp.color, borderColor: tp.color + '40' }}>
-                            {tp.icon} {tp.label}
+                            {tp.label}
                         </span>
                         {status === 'upcoming' && <span style={d.statusUpcoming}>Предстоящее</span>}
                         {status === 'live' && <span style={d.statusLive}>Идёт сейчас</span>}
@@ -93,17 +93,17 @@ export default function PublicEventDetail() {
                     </div>
                     <h1 style={d.title}>{event.title}</h1>
                     <div style={d.metaRow}>
-                        <span>📅 {fmt(event.start)}{event.start !== event.end ? ` - ${fmt(event.end)}` : ''}</span>
-                        <span>📍 {event.city}, {event.venue}</span>
-                        <span>🏅 {event.sport}</span>
-                        <span>👥 {event.age}</span>
+                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: '-2px', marginRight: 5 }}><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>{fmt(event.start)}{event.start !== event.end ? ` - ${fmt(event.end)}` : ''}</span>
+                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: '-2px', marginRight: 5 }}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>{event.city}, {event.venue}</span>
+                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: '-2px', marginRight: 5 }}><circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/></svg>{event.sport}</span>
+                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: '-2px', marginRight: 5 }}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>{event.age}</span>
                     </div>
                     {getTicketEvent(event.id) && status !== 'finished' && (
                         <Link
                             to={`/public/tickets/${event.id}`}
                             style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 16, padding: '11px 22px', background: 'linear-gradient(135deg,#1B3A6B,#2563eb)', color: '#fff', borderRadius: 10, fontWeight: 700, fontSize: 14, textDecoration: 'none' }}
                         >
-                            🎟 Купить билеты
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 7v2a2 2 0 0 1 0 6v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2a2 2 0 0 1 0-6V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"/><path d="M13 5v14"/></svg> Купить билеты
                         </Link>
                     )}
                 </div>
@@ -180,7 +180,7 @@ export default function PublicEventDetail() {
                                     {RESULTS.map((r, i) => (
                                         <tr key={i} style={r.place <= 3 ? { background: r.place === 1 ? '#fffbeb' : r.place === 2 ? '#f5f5f7' : '#fefce8' } : {}}>
                                             <td style={{ ...d.td, fontWeight: 800, fontSize: 16 }}>{r.place}</td>
-                                            <td style={{ ...d.td, fontSize: 24 }}>{r.medal}</td>
+                                            <td style={d.td}>{r.place <= 3 && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={r.place === 1 ? '#D4AF37' : r.place === 2 ? '#9AA0A6' : '#B08D57'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/></svg>}</td>
                                             <td style={{ ...d.td, fontWeight: 700, color: '#1a1a1a' }}>{r.name}</td>
                                             <td style={d.td}>{r.region}</td>
                                             <td style={d.td}>{r.result}</td>
@@ -198,7 +198,7 @@ export default function PublicEventDetail() {
                     <div style={d.docList}>
                         {DOCS.map(doc => (
                             <div key={doc.name} style={d.docItem}>
-                                <span style={{ fontSize: 20 }}>{doc.icon}</span>
+                                <span style={{ display: 'inline-flex', color: '#64748b' }}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
                                 <div style={{ flex: 1 }}>
                                     <div style={{ fontSize: 14, fontWeight: 500, color: '#1a1a1a' }}>{doc.name}</div>
                                     <div style={{ fontSize: 11, color: 'var(--theme-text-secondary)' }}>{doc.type}</div>

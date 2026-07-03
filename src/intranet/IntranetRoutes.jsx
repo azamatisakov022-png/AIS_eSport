@@ -4,7 +4,7 @@ import './intranet.css'
 
 const STAGE_TYPE = {
     approve: { label: 'Согласование', icon: '✓', color: '#1565c0', bg: '#e3f2fd' },
-    attach: { label: 'Прикрепление документа', icon: '📎', color: '#ef6c00', bg: '#fff3e0' },
+    attach: { label: 'Прикрепление документа', icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: '-1px' }}><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>, color: '#ef6c00', bg: '#fff3e0' },
     final: { label: 'Исполнение', icon: '◉', color: '#2e7d32', bg: '#e8f5e9' },
 }
 

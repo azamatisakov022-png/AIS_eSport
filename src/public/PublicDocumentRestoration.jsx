@@ -121,7 +121,7 @@ export default function PublicDocumentRestoration() {
                                             <span style={{ cursor: 'pointer' }} onClick={() => setDocs(p => ({ ...p, [d.key]: null }))}>✕</span>
                                         </div>
                                     ) : (
-                                        <button type="button" className="pp-row__action" onClick={() => fileRefs.current[d.key]?.click()}>📎 Прикрепить файл</button>
+                                        <button type="button" className="pp-row__action" onClick={() => fileRefs.current[d.key]?.click()}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: '-2px', marginRight: 6 }}><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>Прикрепить файл</button>
                                     )}
                                     <input ref={el => fileRefs.current[d.key] = el} type="file" accept=".pdf,.jpg,.jpeg,.png" style={{ display: 'none' }} onChange={e => handleFile(d.key, e.target.files[0])} />
                                 </div>

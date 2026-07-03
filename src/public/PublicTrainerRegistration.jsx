@@ -267,7 +267,7 @@ export default function PublicTrainerRegistration() {
                                                 onDrop={e => handleDrop(doc.key, e)}
                                                 onClick={() => fileRefs.current[doc.key]?.click()}
                                             >
-                                                <span style={styles.dropIcon}>📎</span>
+                                                <span style={styles.dropIcon}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></span>
                                                 <span>{t('public.dragFileOrClick')}</span>
                                                 <span style={styles.dropHint}>{t('public.fileHint')}</span>
                                                 <input

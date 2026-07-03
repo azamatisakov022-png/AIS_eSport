@@ -85,7 +85,7 @@ function ruleBasedResponse(message, context) {
 
     /* Gratitude */
     if (has(m, 'спасибо', 'благодар', 'рахмат', 'thank')) {
-        return { text: 'Пожалуйста! Обращайтесь, если понадобится что-то ещё. 🙂' }
+        return { text: 'Пожалуйста! Обращайтесь, если понадобится что-то ещё.' }
     }
 
     /* Document verification */

@@ -224,7 +224,6 @@ const s = {
     resetBtn: { padding: '10px 20px', background: 'transparent', border: '1px solid var(--theme-border)', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', color: 'var(--theme-text-secondary)', cursor: 'pointer' },
     resultsCount: { fontSize: 13, color: 'var(--theme-text-secondary)', marginBottom: 16 },
     grid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 },
-    grid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 },
     cardTop: { display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 },
     avatar: { width: 44, height: 44, borderRadius: '50%', background: 'var(--theme-bg-panel)', color: '#1B3A6B', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 500, flexShrink: 0 },
     cardInfo: { flex: 1, minWidth: 0 },

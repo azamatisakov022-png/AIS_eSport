@@ -20,7 +20,7 @@ export default function PublicStatistics() {
         <div className="pub-section">
             <div className="pub-container">
                 <div className="st-head">
-                    <h1 className="st-head__title">📊 Статистика посещаемости</h1>
+                    <h1 className="st-head__title">Статистика посещаемости</h1>
                     <p className="st-head__sub">Открытые данные о посещаемости портала ГАФКиС. Обновляется в реальном времени.</p>
                 </div>
 

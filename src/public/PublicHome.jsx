@@ -26,6 +26,13 @@ const IconVacancy = () => <svg {..._ic}><rect x="2" y="7" width="20" height="14"
 
 /** Помощник для фотографий - placeholder picsum по seed-у id+категория. */
 /* Брендовая градиент-обложка по категории (когда нет реального фото) */
+/* SVG-обложка по категории (на градиенте) вместо эмодзи */
+const COVER_ICON = {
+    sport: <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/></svg>,
+    gov: <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 9h.01"/><path d="M15 9h.01"/><path d="M9 13h.01"/><path d="M15 13h.01"/><path d="M9 17h.01"/><path d="M15 17h.01"/></svg>,
+    events: <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
+}
+
 const NEWS_COVER_GRADIENT = {
     sport: 'linear-gradient(150deg, #1d3557 0%, #0f1b2d 100%)',
     gov: 'linear-gradient(150deg, #2a4d7a 0%, #1d3557 100%)',
@@ -414,7 +421,7 @@ export default function PublicHome() {
                                 <div className="pn-card__img-wrap">
                                     {n.photo
                                         ? <img className="pn-card__img" src={n.photo} alt="" loading="lazy" />
-                                        : <span className="pn-card__cover" style={{ background: NEWS_COVER_GRADIENT[n.cat] || NEWS_COVER_GRADIENT.sport }}>{n.cover}</span>
+                                        : <span className="pn-card__cover" style={{ background: NEWS_COVER_GRADIENT[n.cat] || NEWS_COVER_GRADIENT.sport }}>{COVER_ICON[n.cat] || COVER_ICON.sport}</span>
                                     }
                                 </div>
                                 <div className="pn-card__meta">

@@ -531,7 +531,7 @@ export default function Analytics() {
                                     <td className={r.revoked > 0 ? 'an-table__warn' : ''}>{r.revoked}</td>
                                     <td>
                                         {r.expiring ? (
-                                            <span className="an-expiring-badge">⚠ {r.expiring}</span>
+                                            <span className="an-expiring-badge">{r.expiring}</span>
                                         ) : '-'}
                                     </td>
                                 </tr>
