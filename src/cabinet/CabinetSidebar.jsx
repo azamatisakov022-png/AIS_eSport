@@ -127,6 +127,7 @@ const s = {
     sidebar: {
         position: 'fixed', top: 0, left: 0, width: 240, height: '100vh',
         background: 'var(--bg-sidebar)',
+        borderRight: '1px solid var(--border-color)',
         boxShadow: 'var(--shadow-sm)',
         display: 'flex', flexDirection: 'column', zIndex: 100,
         padding: '24px 16px',

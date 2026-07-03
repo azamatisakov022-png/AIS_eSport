@@ -9,7 +9,7 @@
   --bg-secondary: #F5F5F7;
   --bg-panel: #EDEDF0;
   --bg-card: #ffffff;
-  --bg-sidebar: #F5F5F7;
+  --bg-sidebar: #ffffff;       /* белая «рама» вместе с шапкой; контент — серый холст */
 
   /* ── Accent Colors ── */
   --accent: #0071E3;
@@ -122,7 +122,7 @@
   --bg-secondary: #000000;
   --bg-panel: #2C2C2E;
   --bg-card: #1C1C1E;
-  --bg-sidebar: #0a0a0a;
+  --bg-sidebar: #1C1C1E;       /* в dark: как шапка/карточки, холст — #000 */
 
   --accent: #0A84FF;
   --accent-light: rgba(10, 132, 255, 0.22);
