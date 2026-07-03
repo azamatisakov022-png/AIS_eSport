@@ -202,6 +202,104 @@
     display: none;
 }
 
+
+/* ── Тумблер «Свернуть меню» ── */
+.sidebar__collapse-wrap {
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+}
+
+.sidebar__collapse-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 10px;
+    background: none;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sidebar__collapse-btn:hover {
+    background: rgba(120, 120, 128, 0.08);
+    color: var(--text-secondary);
+}
+
+/* ── Рельса на десктопе (класс layout--rail, по кнопке) ── */
+@media (min-width: 1025px) {
+    .layout--rail .sidebar {
+        width: var(--sidebar-collapsed-width);
+        padding: 16px 8px;
+        transition: width 0.2s ease;
+    }
+
+    .layout--rail .sidebar__user-header { padding-bottom: 12px; }
+
+    .layout--rail .sidebar__user-name,
+    .layout--rail .sidebar__user-role,
+    .layout--rail .sidebar__group-toggle {
+        display: none;
+    }
+
+    .layout--rail .sidebar__group-items { grid-template-rows: 1fr; }
+
+    .layout--rail .sidebar__avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 13px;
+    }
+
+    .layout--rail .sidebar__link,
+    .layout--rail .sidebar__collapse-btn {
+        justify-content: center;
+        padding: 12px;
+        font-size: 0;
+        gap: 0;
+    }
+
+    .layout--rail .sidebar__link-icon { font-size: 20px; }
+    .layout--rail .sidebar__accent-bar { display: none; }
+
+    /* Наведение — временный разворот поверх контента (flyout) */
+    .layout--rail .sidebar:hover {
+        width: var(--sidebar-width);
+        padding: 24px 16px;
+    }
+
+    .layout--rail .sidebar:hover .sidebar__user-name,
+    .layout--rail .sidebar:hover .sidebar__user-role { display: block; }
+    .layout--rail .sidebar:hover .sidebar__group-toggle { display: flex; }
+    .layout--rail .sidebar:hover .sidebar__group-items { grid-template-rows: 0fr; }
+    .layout--rail .sidebar:hover .sidebar__group--open .sidebar__group-items { grid-template-rows: 1fr; }
+
+    .layout--rail .sidebar:hover .sidebar__avatar {
+        width: 52px;
+        height: 52px;
+        font-size: 18px;
+    }
+
+    .layout--rail .sidebar:hover .sidebar__link,
+    .layout--rail .sidebar:hover .sidebar__collapse-btn {
+        justify-content: flex-start;
+        padding: 10px 14px;
+        font-size: 13px;
+        gap: 10px;
+    }
+
+    .layout--rail .sidebar:hover .sidebar__accent-bar { display: block; }
+}
+
+/* На планшете/мобиле рельса автоматическая — тумблер не нужен */
+@media (max-width: 1024px) {
+    .sidebar__collapse-wrap { display: none; }
+}
+
 /* ── Tablet: Collapsed sidebar (icons only) ── */
 @media (max-width: 1024px) and (min-width: 769px) {
     .sidebar {

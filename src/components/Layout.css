@@ -43,6 +43,13 @@
     animation: fadeIn 0.3s ease;
 }
 
+/* ── Свёрнутый сайдбар-рельса (десктоп, по кнопке) ── */
+@media (min-width: 1025px) {
+    .layout--rail .layout__main {
+        margin-left: var(--sidebar-collapsed-width);
+    }
+}
+
 /* ── Tablet ── */
 @media (max-width: 1024px) {
     .layout__main {

@@ -184,7 +184,7 @@ function NavItem({ item, t }) {
     )
 }
 
-export default function Sidebar({ isOpen, onClose }) {
+export default function Sidebar({ isOpen, onClose, collapsed = false, onToggleCollapse }) {
     const { t } = useTranslation()
     const { currentRole, hasAccess, logout } = useRole()
     const navigate = useNavigate()
@@ -274,6 +274,25 @@ export default function Sidebar({ isOpen, onClose }) {
                 })}
             </nav>
 
+            {/* Тумблер рельсы: свернуть до иконок / развернуть (десктоп) */}
+            {onToggleCollapse && (
+                <div className="sidebar__collapse-wrap">
+                    <button
+                        type="button"
+                        className="sidebar__collapse-btn"
+                        onClick={onToggleCollapse}
+                        aria-label={collapsed ? 'Развернуть меню' : 'Свернуть меню'}
+                        title={collapsed ? 'Развернуть меню' : 'Свернуть меню'}
+                    >
+                        <span className="sidebar__link-icon">
+                            {collapsed
+                                ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="13 17 18 12 13 7" /><polyline points="6 17 11 12 6 7" /></svg>
+                                : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="11 17 6 12 11 7" /><polyline points="18 17 13 12 18 7" /></svg>}
+                        </span>
+                        <span>Свернуть меню</span>
+                    </button>
+                </div>
+            )}
         </aside>
     )
 }

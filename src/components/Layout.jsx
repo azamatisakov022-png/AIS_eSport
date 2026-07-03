@@ -7,7 +7,16 @@ import './Layout.css'
 
 export default function Layout() {
     const [sidebarOpen, setSidebarOpen] = useState(false)
+    /* Свёрнутый сайдбар-рельса на десктопе (+~170px контенту), запоминается */
+    const [navCollapsed, setNavCollapsed] = useState(() => localStorage.getItem('sidebar-collapsed') === '1')
     const location = useLocation()
+
+    const toggleCollapsed = useCallback(() => {
+        setNavCollapsed(prev => {
+            localStorage.setItem('sidebar-collapsed', prev ? '0' : '1')
+            return !prev
+        })
+    }, [])
 
     useEffect(() => {
         setSidebarOpen(false)
@@ -30,12 +39,12 @@ export default function Layout() {
     }, [])
 
     return (
-        <div className="layout">
+        <div className={`layout${navCollapsed ? ' layout--rail' : ''}`}>
             <div
                 className={`overlay-backdrop ${sidebarOpen ? 'active' : ''}`}
                 onClick={closeSidebar}
             />
-            <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
+            <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} collapsed={navCollapsed} onToggleCollapse={toggleCollapsed} />
             <div className="layout__main">
                 <Header onToggleSidebar={toggleSidebar} />
                 <main className="layout__content">
