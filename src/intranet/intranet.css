@@ -232,19 +232,29 @@
 .intra-ann-item:last-child { border-bottom: none; }
 
 .intra-ann-item__tag {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-size: 10px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.4px;
-    padding: 2px 8px;
-    border-radius: 8px;
+    color: var(--theme-text-secondary, #6e6e73);
     margin-bottom: 6px;
 }
 
-.intra-ann-tag--hr { background: #e3f2fd; color: #1565c0; }
-.intra-ann-tag--it { background: #e8f5e9; color: #2e7d32; }
-.intra-ann-tag--mgmt { background: #fff3e0; color: #ef6c00; }
+/* Цветовое кодирование категории — маленькая точка, не заливка */
+.intra-ann-item__tag::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.intra-ann-tag--hr::before { background: #1565c0; }
+.intra-ann-tag--it::before { background: #2e7d32; }
+.intra-ann-tag--mgmt::before { background: #ef6c00; }
 
 .intra-ann-item__title {
     font-size: 14px;
@@ -514,14 +524,23 @@
 }
 
 .intra-news-card__cat {
-    background: rgba(10, 132, 255, 0.1);
-    color: var(--accent);
-    padding: 2px 8px;
-    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--theme-text-secondary, #6e6e73);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.3px;
     font-size: 10px;
+}
+
+.intra-news-card__cat::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
 }
 
 .intra-news-card__title {
@@ -637,14 +656,23 @@
 }
 
 .intra-ann-card__priority {
-    background: var(--badge-red-bg, #fee2e2);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     color: var(--badge-red-text, #ef4444);
-    border: 1px solid var(--badge-red-border, #FECACA);
     font-size: 10px;
-    font-weight: 600;
-    padding: 2px 7px;
-    border-radius: 8px;
+    font-weight: 700;
     text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.intra-ann-card__priority::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
 }
 
 .intra-ann-card__date {
