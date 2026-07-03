@@ -41,6 +41,11 @@ export default function PublicTickets() {
                     <p className="tk-head__sub">Официальная продажа билетов на спортивные мероприятия Кыргызской Республики. Электронный билет с QR-кодом — покажите его на входе.</p>
                 </div>
 
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', margin: '0 0 24px', background: '#FFF7ED', border: '1px solid #FED7AA', borderRadius: 12, fontSize: 14, color: '#9A3412' }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2-2 2.5-2.5Z" /></svg>
+                    <span><b>Раздел в разработке.</b> Онлайн-продажа билетов появится на следующем этапе — после получения нормативного основания. Ниже — демонстрационный вид раздела.</span>
+                </div>
+
                 <div className="tk-filters">
                     <select value={sport} onChange={e => setSport(e.target.value)} aria-label="Вид спорта">
                         <option value="">Все виды спорта</option>

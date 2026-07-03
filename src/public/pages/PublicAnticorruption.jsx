@@ -117,6 +117,7 @@ export default function PublicAnticorruption() {
                     </div>
                 </div>
 
+                <p className="pp-form__note" style={{ marginBottom: 4 }}>Официальный раздел «Противодействие коррупции» ГАФКиС — на портале <a href="https://egov.kg/kg/ministry/sport/3722" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--pub-navy, #1F3A5F)', fontWeight: 600 }}>egov.kg</a>.</p>
                 <p className="pp-form__note">Данные приведены в справочных целях. Статистика обращений - демонстрационная. Официальная отчётность публикуется в соответствии с законодательством Кыргызской Республики.</p>
             </div>
         </div>

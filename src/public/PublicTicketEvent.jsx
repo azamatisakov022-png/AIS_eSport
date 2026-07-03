@@ -54,6 +54,11 @@ export default function PublicTicketEvent() {
             <div className="pub-container">
                 <Link to="/public/tickets" className="tk-back">← Все билеты</Link>
 
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', margin: '12px 0 24px', background: '#FFF7ED', border: '1px solid #FED7AA', borderRadius: 12, fontSize: 14, color: '#9A3412' }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2-2 2.5-2.5Z" /></svg>
+                    <span><b>Раздел в разработке.</b> Онлайн-оплата билетов будет доступна на следующем этапе. Ниже — демонстрационный вид покупки.</span>
+                </div>
+
                 {/* Event header */}
                 <div className="tk-event-head">
                     <div className="tk-event-head__poster">
