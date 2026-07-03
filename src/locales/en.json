@@ -1016,6 +1016,7 @@
       "sportDynamic": "Dynamics by Sport (Top 10)"
     },
     "donutLabel": "applications",
+    "regionCol": "Region",
     "legends": {
       "msKr": "MS KR",
       "kms": "CMS",

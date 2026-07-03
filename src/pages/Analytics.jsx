@@ -133,7 +133,7 @@ const DATA = {
         ],
     },
     2026: {
-        kpi: { titles: 89, titlesTrend: '↑+12%', apps: 234, appsTrend: '↑+8%', avgDays: 11.3, avgDaysTrend: '↓-2.1 дня', rejected: 14, rejectedPct: 6, rejectedTrend: '↓-3%' },
+        kpi: { titles: 89, titlesTrend: '+12%', apps: 234, appsTrend: '+8%', avgDays: 11.3, avgDaysTrend: '−2.1 дня', rejected: 14, rejectedPct: 6, rejectedTrend: '−3%' },
         monthly: [
             { m: 'Янв', ms: 6, kms: 9 }, { m: 'Фев', ms: 5, kms: 8 }, { m: 'Мар', ms: 8, kms: 12 },
             { m: 'Апр', ms: 7, kms: 11 }, { m: 'Май', ms: 9, kms: 13 }, { m: 'Июн', ms: 11, kms: 16 },
@@ -235,22 +235,22 @@ function LineChart({ data }) {
             {data.map((d, i) => (
                 <text key={d.m} x={x(i)} y={H - 6} textAnchor="middle" fontSize="10" fill="#94a3b8">{d.m}</text>
             ))}
-            {/* KMS line */}
-            <polyline points={kmsPoints} fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+            {/* KMS line — значения не подписываем на каждой точке (шум); только последняя */}
+            <polyline points={kmsPoints} fill="none" stroke="#7C3AED" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
             {data.map((d, i) => (
-                <g key={`kms-${i}`}>
-                    <circle cx={x(i)} cy={y(d.kms)} r="3" fill="#7C3AED" stroke="#fff" strokeWidth="1.5" />
-                    <text x={x(i)} y={y(d.kms) - 7} textAnchor="middle" fontSize="8" fill="#7C3AED" fontWeight="600">{d.kms}</text>
-                </g>
+                <circle key={`kms-${i}`} cx={x(i)} cy={y(d.kms)} r="3" fill="#7C3AED" stroke="#fff" strokeWidth="1.5">
+                    <title>{d.m}: {d.kms}</title>
+                </circle>
             ))}
+            <text x={x(data.length - 1)} y={y(data[data.length - 1].kms) - 9} textAnchor="middle" fontSize="10" fill="#7C3AED" fontWeight="700">{data[data.length - 1].kms}</text>
             {/* MS line */}
-            <polyline points={msPoints} fill="none" stroke="#2563EB" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+            <polyline points={msPoints} fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
             {data.map((d, i) => (
-                <g key={`ms-${i}`}>
-                    <circle cx={x(i)} cy={y(d.ms)} r="3" fill="#2563EB" stroke="#fff" strokeWidth="1.5" />
-                    <text x={x(i)} y={y(d.ms) + 14} textAnchor="middle" fontSize="8" fill="#2563EB" fontWeight="600">{d.ms}</text>
-                </g>
+                <circle key={`ms-${i}`} cx={x(i)} cy={y(d.ms)} r="3" fill="#2563EB" stroke="#fff" strokeWidth="1.5">
+                    <title>{d.m}: {d.ms}</title>
+                </circle>
             ))}
+            <text x={x(data.length - 1)} y={y(data[data.length - 1].ms) + 16} textAnchor="middle" fontSize="10" fill="#2563EB" fontWeight="700">{data[data.length - 1].ms}</text>
         </svg>
     )
 }
@@ -262,10 +262,11 @@ function DonutChart({ data }) {
     let accum = 0
     const segments = data.map(d => {
         const start = accum
-        accum += (d.value / total) * 100
-        return { ...d, start, pct: ((d.value / total) * 100).toFixed(1) }
+        const pctNum = (d.value / total) * 100
+        accum += pctNum
+        return { ...d, start, pctNum, pct: Math.round(pctNum) }
     })
-    const gradient = segments.map(s => `${s.color} ${s.start}% ${s.start + parseFloat(s.pct)}%`).join(', ')
+    const gradient = segments.map(s => `${s.color} ${s.start}% ${s.start + s.pctNum}%`).join(', ')
 
     return (
         <div className="an-donut-wrap">
@@ -361,40 +362,12 @@ export default function Analytics() {
                 }
             />
 
-            {/* ── 2. KPI Metrics ── */}
+            {/* ── 2. KPI Metrics (общие MetricCard, как во всех реестрах) ── */}
             <div className="an-kpis">
-                <div className="an-kpi">
-                    <div className="an-kpi__icon an-kpi__icon--blue">{MetricIcons.medal()}</div>
-                    <div className="an-kpi__info">
-                        <span className="an-kpi__value">{kpi.titles}</span>
-                        <span className="an-kpi__label">{t('analytics.kpi.ranksAwarded')}</span>
-                    </div>
-                    {kpi.titlesTrend && <span className="an-kpi__trend an-kpi__trend--up">{kpi.titlesTrend}</span>}
-                </div>
-                <div className="an-kpi">
-                    <div className="an-kpi__icon an-kpi__icon--green">{MetricIcons.clipboard('#16a34a')}</div>
-                    <div className="an-kpi__info">
-                        <span className="an-kpi__value">{kpi.apps}</span>
-                        <span className="an-kpi__label">{t('analytics.kpi.applicationsProcessed')}</span>
-                    </div>
-                    {kpi.appsTrend && <span className="an-kpi__trend an-kpi__trend--up">{kpi.appsTrend}</span>}
-                </div>
-                <div className="an-kpi">
-                    <div className="an-kpi__icon an-kpi__icon--amber">{MetricIcons.active('#d97706')}</div>
-                    <div className="an-kpi__info">
-                        <span className="an-kpi__value">{kpi.avgDays} <small>{t('analytics.days')}</small></span>
-                        <span className="an-kpi__label">{t('analytics.kpi.avgProcessingTime')}</span>
-                    </div>
-                    {kpi.avgDaysTrend && <span className="an-kpi__trend an-kpi__trend--down-good">{kpi.avgDaysTrend}</span>}
-                </div>
-                <div className="an-kpi">
-                    <div className="an-kpi__icon an-kpi__icon--red">{MetricIcons.blocked()}</div>
-                    <div className="an-kpi__info">
-                        <span className="an-kpi__value">{kpi.rejected} <small>({kpi.rejectedPct}%)</small></span>
-                        <span className="an-kpi__label">{t('analytics.kpi.rejections')}</span>
-                    </div>
-                    {kpi.rejectedTrend && <span className="an-kpi__trend an-kpi__trend--down-good">{kpi.rejectedTrend}</span>}
-                </div>
+                <MetricCard tone="blue" icon={MetricIcons.medal()} value={kpi.titles} label={t('analytics.kpi.ranksAwarded')} trend={kpi.titlesTrend} />
+                <MetricCard tone="green" icon={MetricIcons.clipboard()} value={kpi.apps} label={t('analytics.kpi.applicationsProcessed')} trend={kpi.appsTrend} />
+                <MetricCard tone="amber" icon={MetricIcons.clock()} value={`${kpi.avgDays} ${t('analytics.days')}`} label={t('analytics.kpi.avgProcessingTime')} trend={kpi.avgDaysTrend} />
+                <MetricCard icon={MetricIcons.rejected()} value={`${kpi.rejected} (${kpi.rejectedPct}%)`} label={t('analytics.kpi.rejections')} trend={kpi.rejectedTrend} />
             </div>
 
             {/* ── 3. Line Chart + Donut ── */}
@@ -413,34 +386,39 @@ export default function Analytics() {
                 </div>
             </div>
 
-            {/* ── 4. Regions horizontal bars ── */}
+            {/* ── 4. Regions: компактная таблица — один бар (спортсмены) + числа.
+                   Три полосы на общей шкале не работали: судьи (~30) на шкале
+                   спортсменов (~1200) были невидимы. ── */}
             <div className="an-card">
                 <h2 className="an-card__title">{t('analytics.charts.sportByRegion')}</h2>
-                <div className="an-chart-legend" style={{ marginBottom: 16 }}>
-                    <span className="an-chart-legend__item"><span className="an-legend-dot" style={{ background: '#2563EB' }} /> {t('analytics.legends.athletes')}</span>
-                    <span className="an-chart-legend__item"><span className="an-legend-dot" style={{ background: '#16a34a' }} /> {t('analytics.legends.coaches')}</span>
-                    <span className="an-chart-legend__item"><span className="an-legend-dot" style={{ background: '#7C3AED' }} /> {t('analytics.legends.judges')}</span>
-                </div>
-                <div className="an-region-bars">
-                    {d.regions.map(r => (
-                        <div key={r.name} className="an-region-row">
-                            <span className="an-region-row__name">{r.name}</span>
-                            <div className="an-region-row__bars">
-                                <div className="an-region-bar-group">
-                                    <div className="an-region-bar an-region-bar--ath" style={{ width: `${(r.ath / regionsMax) * 100}%` }} />
-                                    <span className="an-region-bar__val">{r.ath}</span>
-                                </div>
-                                <div className="an-region-bar-group">
-                                    <div className="an-region-bar an-region-bar--tr" style={{ width: `${(r.tr / regionsMax) * 100}%` }} />
-                                    <span className="an-region-bar__val">{r.tr}</span>
-                                </div>
-                                <div className="an-region-bar-group">
-                                    <div className="an-region-bar an-region-bar--jd" style={{ width: `${(r.jd / regionsMax) * 100}%` }} />
-                                    <span className="an-region-bar__val">{r.jd}</span>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                <div className="an-table-wrap">
+                    <table className="an-table">
+                        <thead>
+                            <tr>
+                                <th>{t('analytics.regionCol')}</th>
+                                <th style={{ width: '45%' }}>{t('analytics.legends.athletes')}</th>
+                                <th>{t('analytics.legends.coaches')}</th>
+                                <th>{t('analytics.legends.judges')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {d.regions.map(r => (
+                                <tr key={r.name}>
+                                    <td className="an-table__bold">{r.name}</td>
+                                    <td>
+                                        <div className="an-cellbar">
+                                            <div className="an-cellbar__track">
+                                                <div className="an-cellbar__fill" style={{ width: `${(r.ath / regionsMax) * 100}%` }} />
+                                            </div>
+                                            <span className="an-cellbar__val">{r.ath.toLocaleString('ru-RU')}</span>
+                                        </div>
+                                    </td>
+                                    <td>{r.tr}</td>
+                                    <td>{r.jd}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -450,7 +428,8 @@ export default function Analytics() {
                 <SportsBarChart data={d.sports} />
             </div>
 
-            {/* ── 6. Efficiency + Region ranking ── */}
+            {/* ── 6. Эффективность + Звания рядом (рейтинг регионов удалён —
+                   дублировал таблицу регионов выше) ── */}
             <div className="an-row an-row--half">
                 <div className="an-card">
                     <h2 className="an-card__title">{t('analytics.efficiency.title')}</h2>
@@ -471,7 +450,7 @@ export default function Analytics() {
                                         <td className="an-table__bold">{e.m}</td>
                                         <td>{e.submitted}</td>
                                         <td>{e.processed}</td>
-                                        <td className={e.rejected > 1 ? 'an-table__warn' : ''}>{e.rejected}</td>
+                                        <td>{e.rejected}</td>
                                         <td>{e.avgDays} д.</td>
                                     </tr>
                                 ))}
@@ -487,57 +466,35 @@ export default function Analytics() {
                     </div>
                 </div>
                 <div className="an-card">
-                    <h2 className="an-card__title">{t('analytics.ranking.title')}</h2>
-                    <div className="an-ranking">
-                        {d.regions.map((r, i) => {
-                            const medals = ['1.', '2.', '3.']
-                            return (
-                                <div key={r.name} className="an-ranking__item">
-                                    <span className="an-ranking__pos">{medals[i] || `${i + 1}.`}</span>
-                                    <div className="an-ranking__info">
-                                        <div className="an-ranking__name">{r.name}</div>
-                                        <div className="an-ranking__stats">{r.ath.toLocaleString('ru-RU')} {t('analytics.ranking.athletes')}, {r.tr} {t('analytics.ranking.coaches')}</div>
-                                        <div className="an-ranking__track">
-                                            <div className="an-ranking__fill" style={{ width: `${(r.ath / regionsMax) * 100}%` }} />
-                                        </div>
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </div>
-                </div>
-            </div>
-
-            {/* ── 7. Ranks table ── */}
-            <div className="an-card">
-                <h2 className="an-card__title">{t('analytics.ranksTable.title', { year })}</h2>
-                <div className="an-table-wrap">
-                    <table className="an-table">
-                        <thead>
-                            <tr>
-                                <th>{t('analytics.ranksTable.rank')}</th>
-                                <th>{t('analytics.ranksTable.awardedInYear', { year })}</th>
-                                <th>{t('analytics.ranksTable.totalInRegistry')}</th>
-                                <th>{t('analytics.ranksTable.deprived')}</th>
-                                <th>{t('analytics.ranksTable.expiring')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {d.ranks.map(r => (
-                                <tr key={r.rank} className={r.expiring ? 'an-table__row-warn' : ''}>
-                                    <td className="an-table__bold">{r.rank}</td>
-                                    <td>{r.assigned}</td>
-                                    <td>{r.total.toLocaleString('ru-RU')}</td>
-                                    <td className={r.revoked > 0 ? 'an-table__warn' : ''}>{r.revoked}</td>
-                                    <td>
-                                        {r.expiring ? (
-                                            <span className="an-expiring-badge">{r.expiring}</span>
-                                        ) : '-'}
-                                    </td>
+                    <h2 className="an-card__title">{t('analytics.ranksTable.title', { year })}</h2>
+                    <div className="an-table-wrap">
+                        <table className="an-table">
+                            <thead>
+                                <tr>
+                                    <th>{t('analytics.ranksTable.rank')}</th>
+                                    <th>{t('analytics.ranksTable.awardedInYear', { year })}</th>
+                                    <th>{t('analytics.ranksTable.totalInRegistry')}</th>
+                                    <th>{t('analytics.ranksTable.deprived')}</th>
+                                    <th>{t('analytics.ranksTable.expiring')}</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {d.ranks.map(r => (
+                                    <tr key={r.rank}>
+                                        <td className="an-table__bold">{r.rank}</td>
+                                        <td>{r.assigned}</td>
+                                        <td>{r.total.toLocaleString('ru-RU')}</td>
+                                        <td>{r.revoked}</td>
+                                        <td>
+                                            {r.expiring ? (
+                                                <span className="an-expiring-badge">{r.expiring}</span>
+                                            ) : '-'}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

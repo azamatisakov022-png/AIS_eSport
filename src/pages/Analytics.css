@@ -100,84 +100,30 @@
     margin-bottom: 20px;
 }
 
-.an-kpi {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 14px 16px;
+/* ── Встроенный бар в ячейке таблицы (регионы) ── */
+.an-cellbar {
     display: flex;
     align-items: center;
-    gap: 12px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.2s, box-shadow 0.2s;
+    gap: 10px;
 }
-
-.an-kpi:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
-
-.an-kpi__icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 17px;
-    flex-shrink: 0;
-}
-
-.an-kpi__icon--blue { background: var(--accent-light); }
-.an-kpi__icon--green { background: var(--green-light); }
-.an-kpi__icon--amber { background: var(--amber-light); }
-.an-kpi__icon--red { background: var(--rose-light); }
-
-.an-kpi__info {
-    display: flex;
-    flex-direction: column;
+.an-cellbar__track {
     flex: 1;
-    min-width: 0;
+    height: 8px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    overflow: hidden;
 }
-
-.an-kpi__value {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text-primary);
-    line-height: 1.1;
+.an-cellbar__fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 4px;
 }
-
-.an-kpi__value small {
+.an-cellbar__val {
+    min-width: 46px;
+    text-align: right;
     font-size: 12px;
     font-weight: 600;
-    color: var(--text-muted);
-}
-
-.an-kpi__label {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: 2px;
-}
-
-.an-kpi__trend {
-    font-size: 11px;
-    font-weight: 700;
-    flex-shrink: 0;
-    padding: 3px 8px;
-    border-radius: 6px;
-    white-space: nowrap;
-}
-
-.an-kpi__trend--up {
-    background: var(--green-light);
-    color: var(--green);
-}
-
-.an-kpi__trend--down-good {
-    background: var(--green-light);
-    color: var(--green);
+    color: var(--text-primary);
 }
 
 /* ── Cards ── */
@@ -334,60 +280,6 @@
     color: var(--text-primary);
 }
 
-/* ── Region horizontal bars ── */
-.an-region-bars {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.an-region-row {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-}
-
-.an-region-row__name {
-    width: 130px;
-    flex-shrink: 0;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-primary);
-    padding-top: 2px;
-}
-
-.an-region-row__bars {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-
-.an-region-bar-group {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    height: 13px;
-}
-
-.an-region-bar {
-    height: 8px;
-    border-radius: 3px;
-    min-width: 3px;
-    transition: width 0.6s ease;
-}
-
-.an-region-bar--ath { background: var(--accent); }
-.an-region-bar--tr { background: var(--green); }
-.an-region-bar--jd { background: var(--purple); }
-
-.an-region-bar__val {
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--text-muted);
-    white-space: nowrap;
-}
-
 /* ── Sports SVG ── */
 .an-sports-svg {
     width: auto;
@@ -481,58 +373,6 @@
     color: var(--amber);
     font-size: 12px;
     font-weight: 600;
-}
-
-/* ── Ranking ── */
-.an-ranking {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.an-ranking__item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-}
-
-.an-ranking__pos {
-    width: 28px;
-    flex-shrink: 0;
-    font-size: 16px;
-    text-align: center;
-    padding-top: 2px;
-}
-
-.an-ranking__info {
-    flex: 1;
-}
-
-.an-ranking__name {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.an-ranking__stats {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 1px;
-}
-
-.an-ranking__track {
-    height: 6px;
-    background: var(--bg-secondary);
-    border-radius: 3px;
-    overflow: hidden;
-    margin-top: 6px;
-}
-
-.an-ranking__fill {
-    height: 100%;
-    border-radius: 3px;
-    background: var(--gradient-accent);
-    transition: width 0.6s ease;
 }
 
 /* ── Responsive ── */
