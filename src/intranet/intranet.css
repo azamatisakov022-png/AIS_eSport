@@ -677,9 +677,15 @@
 
 .intra-ann-card__date {
     margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
     font-size: 12px;
     color: var(--theme-text-secondary, #8e8e93);
 }
+
+/* В шапке карточки метка стоит в строке — вертикальный отступ не нужен */
+.intra-ann-card__head .intra-ann-item__tag { margin-bottom: 0; }
 
 .intra-ann-card__title {
     font-size: 15px;

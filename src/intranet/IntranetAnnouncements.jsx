@@ -38,8 +38,10 @@ export default function IntranetAnnouncements() {
                     <article key={a.id} className={`intra-ann-card${a.priority === 'high' ? ' intra-ann-card--high' : ''}`}>
                         <div className="intra-ann-card__head">
                             <span className={`intra-ann-item__tag intra-ann-tag--${a.tag}`}>{a.tagLabel}</span>
-                            {a.priority === 'high' && <span className="intra-ann-card__priority">Важно</span>}
-                            <span className="intra-ann-card__date">{fmtDate(a.date)}</span>
+                            <span className="intra-ann-card__date">
+                                {a.priority === 'high' && <span className="intra-ann-card__priority">Важно</span>}
+                                {fmtDate(a.date)}
+                            </span>
                         </div>
                         <h3 className="intra-ann-card__title">{a.title}</h3>
                         <p className="intra-ann-card__body">{a.body}</p>
