@@ -9,6 +9,8 @@
     "logout": "Чыгуу"
   },
   "nav": {
+    "groupServices": "Арыздар жана кызматтар",
+    "management": "Башкаруу",
     "registries": "Реестрлер",
     "dashboard": "Башкы бет",
     "athletes": "Спортчулар",

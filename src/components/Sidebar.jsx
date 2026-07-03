@@ -1,4 +1,5 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { useState, useEffect, useMemo } from 'react'
+import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useRole, ROLES, ROLE_ROUTES } from '../context/RoleContext'
 import './Sidebar.css'
@@ -95,11 +96,29 @@ function getInitials(name) {
     return (parts[0]?.[0] || '') + (parts[1]?.[0] || '')
 }
 
+/* Главная — вне групп, всегда видна */
+const HOME_ITEM = { to: '/dashboard', textKey: 'nav.dashboard' }
+
+/* Группировка по задачам сотрудника: заявки (ежедневная работа) /
+   реестры (справочные данные) / интранет / управление (руководители-админы) */
 const allNavGroups = [
+    {
+        labelKey: 'nav.groupServices',
+        items: [
+            { to: '/applications', textKey: 'nav.applications' },
+            { to: '/trainer-applications', textKey: 'nav.trainerApplications' },
+            { to: '/award-applications', textKey: 'nav.awardApplications' },
+            { to: '/judge-applications', textKey: 'nav.judgeApplications' },
+            { to: '/restoration-applications', textKey: 'nav.restorationApplications' },
+            { to: '/accreditation-applications', textKey: 'nav.accreditationApplications' },
+            { to: '/transfer-applications', textKey: 'nav.transferApplications' },
+            { to: '/protocol-submissions', textKey: 'nav.protocolSubmissions' },
+            { to: '/stipends', textKey: 'nav.stipends' },
+        ]
+    },
     {
         labelKey: 'nav.registries',
         items: [
-            { to: '/dashboard', textKey: 'nav.dashboard' },
             { to: '/athletes', textKey: 'nav.athletes' },
             { to: '/coaches', textKey: 'nav.coaches' },
             { to: '/judges', textKey: 'nav.judges' },
@@ -110,7 +129,6 @@ const allNavGroups = [
             { to: '/staff', textKey: 'nav.staff' },
             { to: '/medical-certificates', textKey: 'nav.medicalCerts' },
             { to: '/inventory', textKey: 'nav.inventory' },
-            { to: '/finance', textKey: 'nav.finance' },
         ]
     },
     {
@@ -129,21 +147,13 @@ const allNavGroups = [
         ]
     },
     {
-        labelKey: 'nav.documentation',
+        labelKey: 'nav.management',
         items: [
-            { to: '/applications', textKey: 'nav.applications' },
-            { to: '/trainer-applications', textKey: 'nav.trainerApplications' },
-            { to: '/award-applications', textKey: 'nav.awardApplications' },
-            { to: '/stipends', textKey: 'nav.stipends' },
-            { to: '/judge-applications', textKey: 'nav.judgeApplications' },
-            { to: '/restoration-applications', textKey: 'nav.restorationApplications' },
-            { to: '/accreditation-applications', textKey: 'nav.accreditationApplications' },
-            { to: '/transfer-applications', textKey: 'nav.transferApplications' },
-            { to: '/protocol-submissions', textKey: 'nav.protocolSubmissions' },
+            { to: '/analytics', textKey: 'nav.analytics' },
+            { to: '/finance', textKey: 'nav.finance' },
             { to: '/intranet/approvals', textKey: 'nav.approvals' },
             { to: '/intranet/routes', textKey: 'nav.routes' },
             { to: '/intranet/cms', textKey: 'nav.cms' },
-            { to: '/analytics', textKey: 'nav.analytics' },
         ]
     },
     {
@@ -154,10 +164,31 @@ const allNavGroups = [
     },
 ]
 
+function NavItem({ item, t }) {
+    return (
+        <NavLink
+            to={item.to}
+            end={item.to === '/dashboard' || item.to === '/intranet'}
+            className={({ isActive }) =>
+                `sidebar__link ${isActive ? 'active' : ''}`
+            }
+        >
+            {({ isActive }) => (<>
+                {isActive && <span className="sidebar__accent-bar" />}
+                <span className="sidebar__link-icon" style={{color: isActive ? '#0071E3' : '#8E8E93'}}>
+                    {icons[ICON_MAP[item.to]] || icons.dashboard}
+                </span>
+                <span>{t(item.textKey)}</span>
+            </>)}
+        </NavLink>
+    )
+}
+
 export default function Sidebar({ isOpen, onClose }) {
     const { t } = useTranslation()
     const { currentRole, hasAccess, logout } = useRole()
     const navigate = useNavigate()
+    const location = useLocation()
 
     const roleData = ROLES[currentRole] || {}
     const userName = roleData.name || ROLE_NAMES[currentRole] || 'Пользователь'
@@ -168,12 +199,39 @@ export default function Sidebar({ isOpen, onClose }) {
         navigate('/public/login')
     }
 
-    const visibleGroups = allNavGroups
+    const visibleGroups = useMemo(() => allNavGroups
         .map((group) => ({
             ...group,
             items: group.items.filter((item) => hasAccess(item.to)),
         }))
-        .filter((group) => group.items.length > 0)
+        .filter((group) => group.items.length > 0), [hasAccess])
+
+    /* Группа активного маршрута (самое длинное совпадение пути) */
+    const activeGroupKey = useMemo(() => {
+        let best = null
+        for (const g of visibleGroups) {
+            for (const i of g.items) {
+                const match = location.pathname === i.to || location.pathname.startsWith(i.to + '/')
+                if (match && (!best || i.to.length > best.len)) best = { len: i.to.length, key: g.labelKey }
+            }
+        }
+        return best?.key || null
+    }, [location.pathname, visibleGroups])
+
+    /* Аккордеон: пользовательские состояния — в localStorage,
+       группа с активной страницей раскрывается автоматически */
+    const [openGroups, setOpenGroups] = useState(() => {
+        try { return JSON.parse(localStorage.getItem('sidebar-groups') || '{}') } catch { return {} }
+    })
+    useEffect(() => {
+        localStorage.setItem('sidebar-groups', JSON.stringify(openGroups))
+    }, [openGroups])
+    useEffect(() => {
+        if (activeGroupKey) setOpenGroups(prev => prev[activeGroupKey] ? prev : { ...prev, [activeGroupKey]: true })
+    }, [activeGroupKey])
+
+    const isGroupOpen = (key) => openGroups[key] ?? (key === activeGroupKey)
+    const toggleGroup = (key) => setOpenGroups(prev => ({ ...prev, [key]: !isGroupOpen(key) }))
 
     return (
         <aside className={`sidebar ${isOpen ? 'sidebar--open' : ''}`}>
@@ -186,29 +244,34 @@ export default function Sidebar({ isOpen, onClose }) {
 
             {/* Navigation */}
             <nav className="sidebar__nav">
-                {visibleGroups.map((group) => (
-                    <div className="sidebar__group" key={group.labelKey}>
-                        <div className="sidebar__group-label">{t(group.labelKey)}</div>
-                        {group.items.map((item) => (
-                            <NavLink
-                                key={item.to}
-                                to={item.to}
-                                end={item.to === '/dashboard' || item.to === '/intranet'}
-                                className={({ isActive }) =>
-                                    `sidebar__link ${isActive ? 'active' : ''}`
-                                }
-                            >
-                                {({ isActive }) => (<>
-                                    {isActive && <span className="sidebar__accent-bar" />}
-                                    <span className="sidebar__link-icon" style={{color: isActive ? '#0071E3' : '#8E8E93'}}>
-                                        {icons[ICON_MAP[item.to]] || icons.dashboard}
-                                    </span>
-                                    <span>{t(item.textKey)}</span>
-                                </>)}
-                            </NavLink>
-                        ))}
+                {hasAccess(HOME_ITEM.to) && (
+                    <div className="sidebar__home">
+                        <NavItem item={HOME_ITEM} t={t} />
                     </div>
-                ))}
+                )}
+                {visibleGroups.map((group) => {
+                    const open = isGroupOpen(group.labelKey)
+                    return (
+                        <div className={`sidebar__group${open ? ' sidebar__group--open' : ''}`} key={group.labelKey}>
+                            <button
+                                type="button"
+                                className="sidebar__group-toggle"
+                                onClick={() => toggleGroup(group.labelKey)}
+                                aria-expanded={open}
+                            >
+                                <span className="sidebar__group-label">{t(group.labelKey)}</span>
+                                <svg className="sidebar__group-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+                            </button>
+                            <div className="sidebar__group-items">
+                                <div className="sidebar__group-items-inner">
+                                    {group.items.map((item) => (
+                                        <NavItem key={item.to} item={item} t={t} />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )
+                })}
             </nav>
 
         </aside>

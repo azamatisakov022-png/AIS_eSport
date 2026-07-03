@@ -69,14 +69,56 @@
     margin-bottom: 6px;
 }
 
-.sidebar__group-label {
+.sidebar__group-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
     padding: 10px 14px 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    color: var(--text-muted);
+    border-radius: 8px;
+}
+
+.sidebar__group-toggle:hover { color: var(--text-secondary); }
+
+.sidebar__group-label {
     font-size: 10px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    color: var(--text-muted);
+    color: inherit;
 }
+
+.sidebar__group-chevron {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+    transform: rotate(-90deg);
+}
+
+.sidebar__group--open .sidebar__group-chevron { transform: rotate(0deg); }
+
+/* Сворачивание: grid-трюк для плавной высоты */
+.sidebar__group-items {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.22s ease;
+}
+
+.sidebar__group--open .sidebar__group-items { grid-template-rows: 1fr; }
+
+.sidebar__group-items-inner {
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sidebar__home { margin-bottom: 4px; }
 
 .sidebar__link {
     display: flex;
@@ -173,10 +215,13 @@
 
     .sidebar__user-name,
     .sidebar__user-role,
-    .sidebar__group-label,
+    .sidebar__group-toggle,
     .sidebar__logout-btn span:not(:first-child) {
         display: none;
     }
+
+    /* В режиме иконок аккордеон не работает — всё раскрыто */
+    .sidebar__group-items { grid-template-rows: 1fr; }
 
     .sidebar__avatar {
         width: 36px;
@@ -211,10 +256,11 @@
     }
 
     .sidebar:hover .sidebar__user-name,
-    .sidebar:hover .sidebar__user-role,
-    .sidebar:hover .sidebar__group-label {
+    .sidebar:hover .sidebar__user-role {
         display: block;
     }
+
+    .sidebar:hover .sidebar__group-toggle { display: flex; }
 
     .sidebar:hover .sidebar__avatar {
         width: 52px;

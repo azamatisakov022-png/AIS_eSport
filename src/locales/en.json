@@ -9,6 +9,8 @@
     "logout": "Log out"
   },
   "nav": {
+    "groupServices": "Applications & Services",
+    "management": "Management",
     "registries": "Registries",
     "dashboard": "Dashboard",
     "athletes": "Athletes",

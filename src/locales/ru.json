@@ -9,6 +9,8 @@
     "logout": "Выйти"
   },
   "nav": {
+    "groupServices": "Заявки и услуги",
+    "management": "Управление",
     "registries": "Реестры",
     "dashboard": "Дашборд",
     "athletes": "Спортсмены",
