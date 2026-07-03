@@ -95,7 +95,7 @@ export const ROLE_ROUTES = {
     superadmin: [
         '/dashboard', '/athletes', '/coaches', '/judges',
         '/organizations', '/facilities', '/events', '/teams',
-        '/staff', '/medical-certificates', '/inventory', '/stipends',
+        '/staff', '/medical-certificates', '/inventory', '/stipends', '/finance',
         '/applications', '/trainer-applications', '/award-applications', '/judge-applications', '/restoration-applications', '/accreditation-applications', '/transfer-applications', '/protocol-submissions', '/analytics', '/settings',
         ...INTRANET_ROUTES,
     ],
@@ -106,7 +106,7 @@ export const ROLE_ROUTES = {
     employee: [
         '/dashboard', '/athletes', '/coaches', '/judges',
         '/organizations', '/facilities', '/events', '/teams',
-        '/staff', '/medical-certificates', '/inventory', '/stipends',
+        '/staff', '/medical-certificates', '/inventory', '/stipends', '/finance',
         '/applications', '/trainer-applications', '/award-applications', '/judge-applications', '/restoration-applications', '/accreditation-applications', '/transfer-applications', '/protocol-submissions', '/analytics',
         ...INTRANET_ROUTES,
     ],

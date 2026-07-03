@@ -33,6 +33,7 @@ import Staff from './pages/Staff'
 import MedicalCertificates from './pages/MedicalCertificates'
 import Inventory from './pages/Inventory'
 import Stipends from './pages/Stipends'
+import Finance from './pages/Finance'
 
 // Intranet (corporate portal for staff)
 import IntranetHome from './intranet/IntranetHome'
@@ -95,7 +96,7 @@ import PublicServices from './public/pages/PublicServices'
 import PublicAntidoping from './public/pages/PublicAntidoping'
 import PublicAnticorruption from './public/pages/PublicAnticorruption'
 import PublicReception from './public/pages/PublicReception'
-import { PublicDiscussionsList, PublicDiscussionDetail } from './public/pages/PublicDiscussions'
+import { PublicDiscussionsList } from './public/pages/PublicDiscussions'
 import PublicLinks from './public/pages/PublicLinks'
 
 export default function App() {
@@ -118,6 +119,7 @@ export default function App() {
                 <Route path="/medical-certificates" element={<MedicalCertificates />} />
                 <Route path="/inventory" element={<Inventory />} />
                 <Route path="/stipends" element={<Stipends />} />
+                <Route path="/finance" element={<Finance />} />
                 <Route path="/applications" element={<Applications />} />
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/trainer-applications" element={<TrainerApplications />} />
@@ -224,7 +226,6 @@ export default function App() {
                 <Route path="anticorruption" element={<PublicAnticorruption />} />
                 <Route path="reception" element={<PublicReception />} />
                 <Route path="discussions" element={<PublicDiscussionsList />} />
-                <Route path="discussions/:id" element={<PublicDiscussionDetail />} />
                 <Route path="links" element={<PublicLinks />} />
             </Route>
         </Routes>

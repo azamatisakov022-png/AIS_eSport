@@ -230,6 +230,10 @@ export default function PublicNPA() {
 
             {/* ══ Document list ══ */}
             <div className="pub-container" style={{ paddingTop: 20, paddingBottom: 48 }}>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: 16, fontSize: 13, color: 'var(--pub-text-secondary, #64748b)' }}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2 }}><circle cx="12" cy="12" r="9" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
+                    <span>Отдельные акты могут появляться в реестре с задержкой. Наиболее полная база НПА Кыргызской Республики ведётся в справочной системе «Токтом».</span>
+                </div>
                 <div style={s.list}>
                     {filtered.map(npa => {
                         const isOpen = expanded === npa.id

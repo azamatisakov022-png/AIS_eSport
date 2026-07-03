@@ -11,7 +11,7 @@ import './registries.css'
 
 const STATUS = {
     submitted: { label: 'Подана',                    variant: 'blue' },
-    collegium: { label: 'На рассмотрении коллегии',   variant: 'amber' },
+    collegium: { label: 'На рассмотрении Комиссии',    variant: 'amber' },
     granted:   { label: 'Назначена',                  variant: 'green' },
     rejected:  { label: 'Отклонена',                  variant: 'red' },
 }
@@ -20,7 +20,7 @@ const STATUS = {
 const LEVELS = [
     'Подача заявления (спортсмен или рапорт гл. тренера)',
     'Рассмотрение исполнителем',
-    'Рассмотрение коллегией',
+    'Рассмотрение Комиссией по выдаче стипендии',
     'Подготовка проекта приказа',
     'Утверждение приказа (директор ГАФКиС)',
     'Перевод средств бухгалтерией',
@@ -67,13 +67,13 @@ export default function Stipends() {
             <Breadcrumbs current="Стипендии ведущим спортсменам" />
             <PageHeader
                 title="Стипендии ведущим спортсменам"
-                subtitle="Назначаются коллегиально, приказом ГАФКиС на 1 год · осн. ПП КР №554 от 23.11.2018 · услуга бесплатна"
+                subtitle="Назначает Комиссия по выдаче стипендии (по Положению), приказом ГАФКиС на 1 год · осн. ПП КР №554 от 23.11.2018 · услуга бесплатна"
                 actions={<Button variant="primary" onClick={() => toast('Назначение стипендии (демо)')}><span>+</span> Назначить стипендию</Button>}
             />
 
             <div className="reg-metrics">
                 <MetricCard tone="blue"   icon={MetricIcons.users()}    value={metrics.total}     label="Всего получателей" />
-                <MetricCard tone="amber"  icon={MetricIcons.search()}   value={metrics.collegium} label="На рассмотрении коллегии" />
+                <MetricCard tone="amber"  icon={MetricIcons.search()}   value={metrics.collegium} label="На рассмотрении Комиссии" />
                 <MetricCard tone="green"  icon={MetricIcons.active()}   value={metrics.granted}   label="Назначено" />
                 <MetricCard tone="violet" icon={MetricIcons.building()} value={metrics.fund.toLocaleString('ru-RU')} label="Фонд, сом/мес" />
             </div>
@@ -148,7 +148,8 @@ export default function Stipends() {
                                 </div>
                             </div>
                             <div className="reg-drawer__footer">
-                                {cur.status === 'collegium' && <button className="reg-btn reg-btn--primary" onClick={() => toast('Одобрено коллегией (демо)')}>Одобрить (коллегия)</button>}
+                                {cur.status === 'collegium' && <button className="reg-btn reg-btn--primary" onClick={() => toast('Одобрено Комиссией (демо)')}>Одобрить (Комиссия)</button>}
+                                <button className="reg-btn" onClick={() => toast('Загрузка скана приказа (демо)')}>Загрузить приказ</button>
                                 <button className="reg-btn" onClick={() => toast('Печать приказа (демо)')}>Приказ</button>
                                 <button className="reg-btn reg-btn--red" onClick={() => toast('Прекращение стипендии (демо)')}>Прекратить</button>
                             </div>
