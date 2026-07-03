@@ -185,11 +185,6 @@ export default function AwardApplications() {
         return <Badge variant={map[status] || 'gray'}>{labelMap[status] || status}</Badge>
     }
 
-    const groupBadge = (group) => {
-        const cls = group === 'A' ? 'aw-group--a' : group === 'B' ? 'aw-group--b' : 'aw-group--c'
-        return <span className={`aw-group ${cls}`}>{t(GROUP_KEYS[group])}</span>
-    }
-
     const genCertNo = () => {
         const year = new Date().getFullYear()
         const num = String(Math.floor(Math.random() * 9000) + 1000)
@@ -270,14 +265,13 @@ export default function AwardApplications() {
                                                 <span className="aw-person__name">{a.name}</span>
                                             </td>
                                             <td>
-                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                                    <span style={{ fontWeight: 600, fontSize: 13 }}>{a.award}</span>
-                                                    {groupBadge(a.group)}
-                                                    <span style={{ fontSize: 11, color: '#94a3b8' }}>Присваивает: {GROUP_ORGAN[a.group]}</span>
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                                    <span style={{ fontWeight: 600, fontSize: 13, whiteSpace: 'nowrap' }}>{a.award}</span>
+                                                    <span style={{ fontSize: 11, color: '#94a3b8' }}>{t(GROUP_KEYS[a.group])}</span>
                                                 </div>
                                             </td>
                                             <td>{a.sport}</td>
-                                            <td style={{ whiteSpace: 'nowrap', fontSize: 12, color: '#475569' }}>{a.routing || '—'}</td>
+                                            <td style={{ fontSize: 12, color: '#475569', maxWidth: 150 }}>{a.routing || GROUP_ORGAN[a.group]}</td>
                                             <td style={{ whiteSpace: 'nowrap' }}>{fmt(a.submitDate)}</td>
                                             <td>
                                                 {!isTerminal ? (
