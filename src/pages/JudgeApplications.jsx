@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { judgeAppsApi } from '../api/esport'
 import { MetricIcons } from '../components/CabinetIcons'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { PageHeader, MetricCard, Badge } from '../components/ui'
+import { PageHeader, MetricCard, Badge, TableLoader } from '../components/ui'
 import './AwardApplications.css'
 
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
@@ -40,6 +40,7 @@ export default function JudgeApplications() {
     const { t } = useTranslation()
     const navigate = useNavigate()
     const [rows, setRows] = useState([])
+    const [loading, setLoading] = useState(true)
     const [search, setSearch] = useState('')
     const [statusF, setStatusF] = useState('all')
 
@@ -48,6 +49,7 @@ export default function JudgeApplications() {
         judgeAppsApi.list({ size: 200 })
             .then(({ items }) => { if (alive) setRows(items) })
             .catch(() => { /* бэкенд недоступен */ })
+            .finally(() => { if (alive) setLoading(false) })
         return () => { alive = false }
     }, [])
 
@@ -107,7 +109,8 @@ export default function JudgeApplications() {
                         </tr>
                     </thead>
                     <tbody>
-                        {filtered.length === 0 && (
+                        {loading && filtered.length === 0 && <TableLoader cols={10} />}
+                        {!loading && filtered.length === 0 && (
                             <tr><td colSpan={10} className="aw-table__empty">Заявки не найдены</td></tr>
                         )}
                         {filtered.map(a => {

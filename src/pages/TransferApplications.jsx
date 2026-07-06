@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { transferApi } from '../api/esport'
 import { MetricIcons } from '../components/CabinetIcons'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { PageHeader, MetricCard, Badge } from '../components/ui'
+import { PageHeader, MetricCard, Badge, TableLoader } from '../components/ui'
 import './AwardApplications.css'
 
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—'
@@ -28,6 +28,7 @@ function statusVariant(status) {
 export default function TransferApplications() {
     const navigate = useNavigate()
     const [rows, setRows] = useState([])
+    const [loading, setLoading] = useState(true)
     const [search, setSearch] = useState('')
     const [statusF, setStatusF] = useState('all')
 
@@ -36,6 +37,7 @@ export default function TransferApplications() {
         transferApi.list({ size: 200 })
             .then(({ items }) => { if (alive) setRows(items) })
             .catch(() => { /* бэкенд недоступен */ })
+            .finally(() => { if (alive) setLoading(false) })
         return () => { alive = false }
     }, [])
 
@@ -91,7 +93,8 @@ export default function TransferApplications() {
                         </tr>
                     </thead>
                     <tbody>
-                        {filtered.length === 0 && (
+                        {loading && filtered.length === 0 && <TableLoader cols={8} />}
+                        {!loading && filtered.length === 0 && (
                             <tr><td colSpan={8} className="aw-table__empty">Заявки не найдены</td></tr>
                         )}
                         {filtered.map(a => (

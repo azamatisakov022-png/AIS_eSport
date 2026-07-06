@@ -106,3 +106,14 @@
     text-align: center; padding: 40px 16px !important;
     color: var(--text-muted); font-size: 14px;
 }
+
+/* ── Скелетон загрузки таблиц ── */
+.ui-skel-tr td { padding: 13px 14px; }
+.ui-skel-bar {
+    height: 13px;
+    border-radius: 7px;
+    background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--border-color) 50%, var(--bg-secondary) 75%);
+    background-size: 200% 100%;
+    animation: ui-skel-shimmer 1.2s linear infinite;
+}
+@keyframes ui-skel-shimmer { to { background-position: -200% 0; } }
