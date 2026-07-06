@@ -208,6 +208,24 @@
     border: 2px solid var(--bg-primary);
 }
 
+/* Числовой бейдж (непрочитанные в чате) */
+.header__badge--count {
+    width: auto;
+    height: auto;
+    min-width: 15px;
+    top: 2px;
+    right: 1px;
+    padding: 1px 4px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    border-radius: 8px;
+}
+
+
 /* ── Profile ── */
 .header__profile {
     display: flex;

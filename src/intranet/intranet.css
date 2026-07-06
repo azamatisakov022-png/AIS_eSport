@@ -1261,7 +1261,9 @@
 
 .intra-chat__body {
     flex: 1;
-    padding: 18px;
+    /* На широких экранах лента сжимается к центру — пузыри не разлетаются
+       по краям, пустого пространства меньше (как в Telegram Web) */
+    padding: 18px clamp(18px, 14%, 200px);
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -1305,7 +1307,7 @@
 .intra-chat__compose {
     display: flex;
     gap: 8px;
-    padding: 12px 14px;
+    padding: 12px clamp(14px, 14%, 200px);
     border-top: 1px solid var(--theme-border, #e5e5ea);
 }
 

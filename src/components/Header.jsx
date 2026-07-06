@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useRole } from '../context/RoleContext'
 import { useTheme } from '../context/ThemeContext'
 import { TbSun, TbMoon } from 'react-icons/tb'
+import { CHAT_CONVERSATIONS } from '../intranet/data/intranetData'
 import './Header.css'
 
 const pageTitleKeys = {
@@ -43,7 +44,8 @@ export default function Header({ onToggleSidebar }) {
     const { t, i18n } = useTranslation()
     const location = useLocation()
     const navigate = useNavigate()
-    const { role, logout } = useRole()
+    const { role, logout, hasAccess } = useRole()
+    const chatUnread = CHAT_CONVERSATIONS.reduce((s, c) => s + (c.unread || 0), 0)
     const isCabinet = location.pathname.startsWith('/cabinet')
     const [langOpen, setLangOpen] = useState(false)
     const langRef = useRef(null)
@@ -135,6 +137,19 @@ export default function Header({ onToggleSidebar }) {
                 <button className="header__icon-btn" onClick={toggleTheme} title="Theme">
                     {theme === 'dark' ? <TbSun size={20} /> : <TbMoon size={20} />}
                 </button>
+
+                {hasAccess('/intranet/chat') && (
+                    <button
+                        className="header__icon-btn"
+                        title="Внутренний чат"
+                        onClick={() => navigate('/intranet/chat')}
+                    >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" fill="currentColor" fillOpacity="0.08" />
+                        </svg>
+                        {chatUnread > 0 && <span className="header__badge header__badge--count">{chatUnread}</span>}
+                    </button>
+                )}
 
                 <button className="header__icon-btn" title={t('header.notifications')}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round">
