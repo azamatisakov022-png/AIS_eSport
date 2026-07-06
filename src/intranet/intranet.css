@@ -1142,6 +1142,30 @@
 }
 
 /* ── Chat ───────────────────────────────────────────── */
+/* ── Полноэкранный чат: съедаем паддинги layout__content и .intra,
+      панель ложится от сайдбара до краёв, высота — весь вьюпорт под шапкой ── */
+.intra--chat {
+    padding: 0;
+    max-width: none;
+    margin: -32px -36px;
+}
+
+.intra--chat .intra-chat {
+    height: calc(100vh - var(--header-height, 64px));
+    min-height: 0;
+    border: none;
+    border-radius: 0;
+}
+
+@media (max-width: 1024px) {
+    .intra--chat { margin: -24px -20px; }
+}
+
+@media (max-width: 768px) {
+    .intra--chat { margin: -16px -12px; }
+    .intra--chat .intra-chat { height: auto; min-height: calc(100vh - var(--header-height, 64px)); }
+}
+
 .intra-chat {
     display: grid;
     grid-template-columns: 320px 1fr;

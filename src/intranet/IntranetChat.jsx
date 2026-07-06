@@ -46,12 +46,8 @@ export default function IntranetChat() {
     }
 
     return (
-        <div className="intra">
-            {/* Компактная шапка: чат — рабочее пространство, высоту отдаём ленте */}
-            <div className="intra-page-head intra-page-head--slim">
-                <h1 className="intra-page-head__title">Внутренний чат</h1>
-            </div>
-
+        /* Полноэкранный режим: чат занимает всю контентную зону без полей */
+        <div className="intra intra--chat">
             <div className="intra-chat">
                 <aside className="intra-chat__list">
                     <div className="intra-chat__search">
