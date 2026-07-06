@@ -24,9 +24,9 @@ const WELCOME = {
 let msgId = 0
 const nextId = () => `m${++msgId}`
 
-export default function AiAssistant({ context = 'public' }) {
+export default function AiAssistant({ context = 'public', initialOpen = false }) {
     const navigate = useNavigate()
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(!!initialOpen)
     const [messages, setMessages] = useState([])
     const [input, setInput] = useState('')
     const [thinking, setThinking] = useState(false)

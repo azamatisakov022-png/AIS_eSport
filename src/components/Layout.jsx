@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import Sidebar from './Sidebar'
 import Header from './Header'
-import AiAssistant from './AiAssistant/AiAssistant'
+import AiAssistant from './AiAssistant/AiAssistantLazy'
+import { titleKeyForPath } from './pageTitles'
 import './Layout.css'
 
 export default function Layout() {
@@ -10,6 +12,14 @@ export default function Layout() {
     /* Свёрнутый сайдбар-рельса на десктопе (+~170px контенту), запоминается */
     const [navCollapsed, setNavCollapsed] = useState(() => localStorage.getItem('sidebar-collapsed') === '1')
     const location = useLocation()
+    const { t } = useTranslation()
+
+    /* Заголовок вкладки браузера по текущему разделу (обновляется и при смене языка) */
+    useEffect(() => {
+        const key = titleKeyForPath(location.pathname)
+        document.title = key ? `${t(key)} — АИС eSport` : 'АИС eSport — ГАФКиС'
+        return () => { document.title = 'АИС eSport — ГАФКиС' }
+    }, [location.pathname, t])
 
     const toggleCollapsed = useCallback(() => {
         setNavCollapsed(prev => {
