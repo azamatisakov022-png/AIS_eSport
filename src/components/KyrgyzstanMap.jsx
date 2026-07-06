@@ -572,7 +572,9 @@ export default function KyrgyzstanMap({
     const markerSummary = `${formatCountLabel(markers.length, MARKER_SUMMARY_LABELS)} на карте`
 
     return (
-        <div style={{ position: 'relative' }}>
+        /* z-index: 0 + isolation запирают stacking context карты: контролы
+           Leaflet (z-index до 1000) не всплывают над sticky-шапкой при скролле */
+        <div style={{ position: 'relative', zIndex: 0, isolation: 'isolate' }}>
             {/* Map container */}
             <div ref={mapRef} style={{
                 height: typeof height === 'number' ? `clamp(250px, 50vw, ${height}px)` : height,
