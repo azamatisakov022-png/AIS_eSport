@@ -157,6 +157,7 @@ export default function Events() {
             {/* Header */}
             <PageHeader
                 title={t('events.registryTitle', { year: 2026 })}
+                subtitle={t('events.registrySubtitle')}
                 actions={<Button variant="primary" onClick={() => { setForm(EMPTY_FORM); setAddModal(true) }}>+ {t('events.createEvent')}</Button>}
             />
 

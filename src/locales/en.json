@@ -488,6 +488,7 @@
     "title": "Events",
     "addNew": "Add Event",
     "registryTitle": "Events & Competitions Registry {{year}}",
+    "registrySubtitle": "The calendar plan is drafted by regional departments and entered by GAFCS staff once approved",
     "createEvent": "Create Event",
     "metricsTotal": "Total",
     "metricsUpcoming": "Upcoming",
@@ -695,6 +696,7 @@
     "title": "Sports Facilities",
     "addNew": "Add Facility",
     "registryTitle": "Sports Facilities Registry",
+    "registrySubtitle": "Data is maintained by the State Directorate for Sports Facilities and Sports Support",
     "types": {
       "stadium": "Stadium",
       "pool": "Swimming Pool",

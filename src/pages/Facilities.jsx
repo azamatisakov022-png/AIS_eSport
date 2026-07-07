@@ -152,6 +152,7 @@ export default function Facilities() {
             <Breadcrumbs current={t('facilities.registryTitle')} />
             <PageHeader
                 title={t('facilities.registryTitle')}
+                subtitle={t('facilities.registrySubtitle')}
                 actions={<>
                     <Button variant="primary" onClick={() => setShowAdd(true)}>+ {t('facilities.addNew')}</Button>
                     <div className="fc-view-toggle">
