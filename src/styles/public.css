@@ -597,28 +597,6 @@
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
-/* Красный диагональный акцент сверху-справа (как в редакторском макете) */
-.ph-hero__accent {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 4px;
-    height: 35%;
-    background: var(--pub-red);
-    z-index: 2;
-    box-shadow: 0 0 24px rgba(230, 57, 70, 0.5);
-}
-.ph-hero__accent::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    right: 0;
-    width: 80px;
-    height: 4px;
-    background: var(--pub-red);
-    box-shadow: 0 0 24px rgba(230, 57, 70, 0.5);
-}
-
 .ph-hero__inner {
     position: relative;
     z-index: 2;

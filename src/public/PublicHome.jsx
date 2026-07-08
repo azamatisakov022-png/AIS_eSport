@@ -228,7 +228,6 @@ export default function PublicHome() {
                 <div className="ph-hero__duotone" />
                 <div className="ph-hero__shade" />
                 <div className="ph-hero__grain" />
-                <div className="ph-hero__accent" />
                 <div className="pub-container ph-hero__inner">
                     <span className="ph-hero__eyebrow">{HOME_HERO.eyebrow}</span>
                     <h1 className="ph-hero__title">{HOME_HERO.title}</h1>
