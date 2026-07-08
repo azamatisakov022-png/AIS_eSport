@@ -4,13 +4,14 @@
 
 :root {
   /* ── Background ── */
-  --bg-body: #F5F5F7;
+  --bg-body: #ffffff;          /* белый холст: карточки читаются границами, без серой подложки */
   --bg-primary: #ffffff;
   --bg-secondary: #F5F5F7;
   --bg-panel: #EDEDF0;
   --bg-card: #ffffff;
   --bg-sidebar: #ffffff;       /* кабинет гражданина: светлый */
-  --sidebar-navy: #3A557F;     /* внутренний ЛК: фирменный синий сайдбар */
+  --sidebar-navy: #2E4E80;      /* внутренний ЛК: насыщенный синий (верх градиента) */
+  --sidebar-navy-deep: #203A63; /* низ градиента — глубина вместо плоской заливки */
 
   /* ── Accent Colors ── */
   --accent: #0071E3;
