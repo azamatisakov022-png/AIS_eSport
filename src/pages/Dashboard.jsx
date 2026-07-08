@@ -143,7 +143,7 @@ export default function Dashboard() {
                 </div>
                 <div className="db-welcome__actions">
                     <Button to="/athletes" variant="primary">{t('dashboard.addAthlete')}</Button>
-                    <Button to="/applications" variant="success">{t('dashboard.newApplication')}</Button>
+                    <Button to="/applications" variant="outline">{t('dashboard.newApplication')}</Button>
                     <Button to="/events" variant="outline">{t('dashboard.newEvent')}</Button>
                 </div>
             </div>

@@ -13,11 +13,11 @@
 .ui-btn--md { padding: 10px 18px; font-size: 13px; }
 .ui-btn--sm { padding: 6px 12px; font-size: 12px; }
 .ui-btn--primary { background: var(--accent); color: var(--text-inverse); }
-.ui-btn--primary:hover { background: var(--accent-dark); }
+.ui-btn--primary:hover { background: var(--accent-dark); color: var(--text-inverse); }
 .ui-btn--success { background: var(--green); color: var(--text-inverse); }
-.ui-btn--success:hover { background: var(--green-dark); }
+.ui-btn--success:hover { background: var(--green-dark); color: var(--text-inverse); }
 .ui-btn--danger { background: var(--rose); color: var(--text-inverse); }
-.ui-btn--danger:hover { background: var(--rose-dark); }
+.ui-btn--danger:hover { background: var(--rose-dark); color: var(--text-inverse); }
 .ui-btn--outline { background: transparent; border-color: var(--border-color); color: var(--text-secondary); }
 .ui-btn--outline:hover { border-color: var(--accent); color: var(--accent); }
 .ui-btn--ghost { background: var(--accent-light); color: var(--accent); }
