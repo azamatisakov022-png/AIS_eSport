@@ -160,7 +160,6 @@ export default function Header({ onToggleSidebar }) {
                 </button>
 
                 <div className="header__profile">
-                    <div className="header__avatar">{role.initials}</div>
                     <div className="header__user-info hide-mobile">
                         <span className="header__user-name">{role.name || role.shortLabel}</span>
                         <span className="header__user-role">{role.label}</span>
