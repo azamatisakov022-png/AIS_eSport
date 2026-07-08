@@ -280,29 +280,6 @@ export default function PublicLogin() {
 
             {/* ── Responsive + a11y/animation styles ── */}
             <style>{`
-                /* Logo shimmer - blik runs across logo once every ~3.5s */
-                .login-logo {
-                    position: relative;
-                    overflow: hidden;
-                    border-radius: 6px;
-                    padding: 6px 4px;
-                }
-                .login-logo::after {
-                    content: '';
-                    position: absolute;
-                    top: 0; bottom: 0;
-                    left: -40%;
-                    width: 30%;
-                    background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
-                    transform: skewX(-20deg);
-                    animation: loginLogoShimmer 3.5s ease-in-out infinite;
-                    pointer-events: none;
-                }
-                @keyframes loginLogoShimmer {
-                    0%, 60% { left: -40%; }
-                    80%, 100% { left: 130%; }
-                }
-
                 /* Pill-toggle tabs with sliding background */
                 .login-tabs {
                     position: relative;
