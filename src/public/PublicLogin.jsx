@@ -478,8 +478,9 @@ const s = {
         marginBottom: 48, position: 'relative', zIndex: 1,
     },
     leftLogoImg: {
-        width: 36, height: 36, borderRadius: '50%', objectFit: 'cover',
-        opacity: 0.8,
+        width: 46, height: 46, borderRadius: '50%', objectFit: 'contain',
+        background: '#fff', padding: 4,
+        boxShadow: '0 2px 12px rgba(0,0,0,0.18)',
     },
     leftLogoText: {
         fontSize: 16, fontWeight: 700, color: 'rgba(255,255,255,0.7)',
