@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
@@ -23,6 +23,13 @@ export default function MobileDrawer({ open, onClose, menuGroups, dark, onToggle
     const drawerRef = useRef(null)
     const closeBtnRef = useRef(null)
     const previouslyFocused = useRef(null)
+
+    /* До первого открытия не монтируем вовсе: панель спрятана только
+       CSS-трансформом, и при поздней загрузке CSS-чанка успевала
+       мигнуть у правого края экрана. После первого открытия остаётся
+       смонтированной ради slide-анимации закрытия. */
+    const [everOpened, setEverOpened] = useState(open)
+    useEffect(() => { if (open) setEverOpened(true) }, [open])
 
     /* Body scroll lock + Escape + focus management */
     useEffect(() => {
@@ -67,6 +74,8 @@ export default function MobileDrawer({ open, onClose, menuGroups, dark, onToggle
             previouslyFocused.current?.focus?.()
         }
     }, [open, onClose])
+
+    if (!everOpened) return null
 
     return (
         <>
