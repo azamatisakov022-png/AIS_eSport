@@ -176,7 +176,7 @@ function NavItem({ item, t }) {
         >
             {({ isActive }) => (<>
                 {isActive && <span className="sidebar__accent-bar" />}
-                <span className="sidebar__link-icon" style={{color: isActive ? '#0071E3' : '#8E8E93'}}>
+                <span className="sidebar__link-icon">
                     {icons[ICON_MAP[item.to]] || icons.dashboard}
                 </span>
                 <span>{t(item.textKey)}</span>

@@ -9,7 +9,8 @@
   --bg-secondary: #F5F5F7;
   --bg-panel: #EDEDF0;
   --bg-card: #ffffff;
-  --bg-sidebar: #ffffff;       /* белая «рама» вместе с шапкой; контент — серый холст */
+  --bg-sidebar: #ffffff;       /* кабинет гражданина: светлый */
+  --sidebar-navy: #1B2A44;     /* внутренний ЛК: фирменный тёмно-синий сайдбар */
 
   /* ── Accent Colors ── */
   --accent: #0071E3;
