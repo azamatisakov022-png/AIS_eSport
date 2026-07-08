@@ -5,6 +5,10 @@ import { MetricIcons } from '../components/CabinetIcons'
 import './Analytics.css'
 import Breadcrumbs from '../components/Breadcrumbs'
 import { PageHeader, Button, MetricCard } from '../components/ui'
+import {
+    ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
+    PieChart, Pie, Cell, BarChart, Bar, LabelList, ComposedChart, Line,
+} from 'recharts'
 
 /* ══════════════════════════════════════════════════════
    MOCK DATA - 3 years
@@ -204,84 +208,70 @@ const QUARTER_KEYS = [
     { key: 'Q4', labelKey: 'analytics.quarters.q4' },
 ]
 
-/* ── SVG Line Chart ── */
-function LineChart({ data }) {
-    const W = 520, H = 240, PAD_L = 36, PAD_R = 16, PAD_T = 28, PAD_B = 30
-    const cW = W - PAD_L - PAD_R, cH = H - PAD_T - PAD_B
-    const maxVal = Math.max(...data.map(d => Math.max(d.ms, d.kms))) + 3
+/* ── Общая палитра графиков (читается в светлой и тёмной теме) ── */
+const CH = {
+    blue: '#3B82F6', violet: '#8B5CF6', green: '#22A06B', amber: '#F59E0B',
+    axis: '#8A94A6', grid: 'rgba(138, 148, 166, 0.22)',
+}
+const TOOLTIP_STYLE = {
+    background: 'var(--bg-card)', border: '1px solid var(--border-color)',
+    borderRadius: 10, fontSize: 12, color: 'var(--text-primary)',
+    boxShadow: '0 6px 20px rgba(0,0,0,0.10)',
+}
 
-    const x = (i) => PAD_L + (i / (data.length - 1)) * cW
-    const y = (v) => PAD_T + (1 - v / maxVal) * cH
-
-    const msPoints = data.map((d, i) => `${x(i)},${y(d.ms)}`).join(' ')
-    const kmsPoints = data.map((d, i) => `${x(i)},${y(d.kms)}`).join(' ')
-
-    const gridLines = []
-    const gridStep = Math.ceil(maxVal / 4)
-    for (let v = 0; v <= maxVal; v += gridStep) {
-        gridLines.push(v)
-    }
-
+/* ── Динамика присвоений: плавные area-кривые с градиентной заливкой ── */
+function RanksAreaChart({ data, msLabel, kmsLabel }) {
     return (
-        <svg viewBox={`0 0 ${W} ${H}`} className="an-line-svg">
-            {/* Grid lines */}
-            {gridLines.map(v => (
-                <g key={v}>
-                    <line x1={PAD_L} y1={y(v)} x2={W - PAD_R} y2={y(v)} stroke="#e2e8f0" strokeWidth="1" />
-                    <text x={PAD_L - 6} y={y(v) + 4} textAnchor="end" fontSize="10" fill="#94a3b8">{v}</text>
-                </g>
-            ))}
-            {/* X labels */}
-            {data.map((d, i) => (
-                <text key={d.m} x={x(i)} y={H - 6} textAnchor="middle" fontSize="10" fill="#94a3b8">{d.m}</text>
-            ))}
-            {/* KMS line — значения не подписываем на каждой точке (шум); только последняя */}
-            <polyline points={kmsPoints} fill="none" stroke="#7C3AED" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
-            {data.map((d, i) => (
-                <circle key={`kms-${i}`} cx={x(i)} cy={y(d.kms)} r="3" fill="#7C3AED" stroke="#fff" strokeWidth="1.5">
-                    <title>{d.m}: {d.kms}</title>
-                </circle>
-            ))}
-            <text x={x(data.length - 1)} y={y(data[data.length - 1].kms) - 9} textAnchor="middle" fontSize="10" fill="#7C3AED" fontWeight="700">{data[data.length - 1].kms}</text>
-            {/* MS line */}
-            <polyline points={msPoints} fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
-            {data.map((d, i) => (
-                <circle key={`ms-${i}`} cx={x(i)} cy={y(d.ms)} r="3" fill="#2563EB" stroke="#fff" strokeWidth="1.5">
-                    <title>{d.m}: {d.ms}</title>
-                </circle>
-            ))}
-            <text x={x(data.length - 1)} y={y(data[data.length - 1].ms) + 16} textAnchor="middle" fontSize="10" fill="#2563EB" fontWeight="700">{data[data.length - 1].ms}</text>
-        </svg>
+        <ResponsiveContainer width="100%" height={280}>
+            <AreaChart data={data} margin={{ top: 8, right: 12, left: -16, bottom: 0 }}>
+                <defs>
+                    <linearGradient id="anGradMs" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={CH.blue} stopOpacity={0.28} />
+                        <stop offset="100%" stopColor={CH.blue} stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="anGradKms" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={CH.violet} stopOpacity={0.24} />
+                        <stop offset="100%" stopColor={CH.violet} stopOpacity={0} />
+                    </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke={CH.grid} vertical={false} />
+                <XAxis dataKey="m" tick={{ fontSize: 11, fill: CH.axis }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: CH.axis }} axisLine={false} tickLine={false} allowDecimals={false} width={34} />
+                <Tooltip contentStyle={TOOLTIP_STYLE} />
+                <Area type="monotone" dataKey="kms" name={kmsLabel} stroke={CH.violet} strokeWidth={2.5} fill="url(#anGradKms)" dot={false} activeDot={{ r: 4 }} />
+                <Area type="monotone" dataKey="ms" name={msLabel} stroke={CH.blue} strokeWidth={2.5} fill="url(#anGradMs)" dot={false} activeDot={{ r: 4 }} />
+            </AreaChart>
+        </ResponsiveContainer>
     )
 }
 
-/* ── Donut Chart ── */
-function DonutChart({ data }) {
+/* ── Структура заявлений: пончик с итогом в центре ── */
+function AppStructureDonut({ data }) {
     const { t } = useTranslation()
-    const total = data.reduce((s, d) => s + d.value, 0)
-    let accum = 0
-    const segments = data.map(d => {
-        const start = accum
-        const pctNum = (d.value / total) * 100
-        accum += pctNum
-        return { ...d, start, pctNum, pct: Math.round(pctNum) }
-    })
-    const gradient = segments.map(s => `${s.color} ${s.start}% ${s.start + s.pctNum}%`).join(', ')
-
+    const total = data.reduce((s, x) => s + x.value, 0)
     return (
         <div className="an-donut-wrap">
-            <div className="an-donut" style={{ background: `conic-gradient(${gradient})` }}>
-                <div className="an-donut__center">
-                    <span className="an-donut__total">{total}</span>
-                    <span className="an-donut__label">{t('analytics.donutLabel')}</span>
+            <div style={{ position: 'relative', width: 200, height: 200, flexShrink: 0 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                        <Pie data={data} dataKey="value" nameKey="label" innerRadius={64} outerRadius={94}
+                            paddingAngle={2} cornerRadius={5} strokeWidth={0} isAnimationActive={false}>
+                            {data.map((s) => <Cell key={s.label} fill={s.color} />)}
+                        </Pie>
+                        <Tooltip contentStyle={TOOLTIP_STYLE} />
+                    </PieChart>
+                </ResponsiveContainer>
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
+                    <span style={{ fontSize: 26, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.1 }}>{total}</span>
+                    <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{t('analytics.donutLabel')}</span>
                 </div>
             </div>
             <div className="an-donut-legend">
-                {segments.map(s => (
+                {data.map(s => (
                     <div key={s.label} className="an-donut-legend__item">
                         <span className="an-donut-legend__color" style={{ background: s.color }} />
                         <span className="an-donut-legend__text">{s.label}</span>
-                        <span className="an-donut-legend__pct">{s.pct}%</span>
+                        <span className="an-donut-legend__pct">{Math.round((s.value / total) * 100)}%</span>
                     </div>
                 ))}
             </div>
@@ -289,27 +279,38 @@ function DonutChart({ data }) {
     )
 }
 
-/* ── Vertical Bar Chart (SVG) ── */
-function SportsBarChart({ data }) {
-    const W = 560, H = 220, PAD_L = 120, PAD_R = 50, PAD_T = 6, PAD_B = 10
-    const cW = W - PAD_L - PAD_R, cH = H - PAD_T - PAD_B
-    const maxVal = Math.max(...data.map(d => d.total))
-    const barH = cH / data.length - 2
-
+/* ── Топ видов спорта: горизонтальные бары со скруглением ── */
+function SportsBar({ data, valueLabel }) {
     return (
-        <svg viewBox={`0 0 ${W} ${H}`} className="an-sports-svg">
-            {data.map((d, i) => {
-                const barY = PAD_T + i * (cH / data.length) + 1
-                const barW = (d.total / maxVal) * cW
-                return (
-                    <g key={d.name}>
-                        <text x={PAD_L - 8} y={barY + barH / 2 + 4} textAnchor="end" fontSize="10" fill="#1e293b" fontWeight="600">{d.name}</text>
-                        <rect x={PAD_L} y={barY} width={barW} height={barH} rx="3" fill="#2563EB" opacity="0.85" />
-                        <text x={PAD_L + barW + 6} y={barY + barH / 2 + 4} fontSize="10" fill="#64748b" fontWeight="700">{d.total}</text>
-                    </g>
-                )
-            })}
-        </svg>
+        <ResponsiveContainer width="100%" height={320}>
+            <BarChart data={data} layout="vertical" margin={{ top: 4, right: 48, left: 12, bottom: 4 }} barCategoryGap={6}>
+                <CartesianGrid strokeDasharray="3 3" stroke={CH.grid} horizontal={false} />
+                <XAxis type="number" hide />
+                <YAxis type="category" dataKey="name" width={126} tick={{ fontSize: 12, fill: CH.axis }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(138,148,166,0.08)' }} />
+                <Bar dataKey="total" name={valueLabel} fill={CH.blue} radius={[0, 6, 6, 0]} barSize={16}>
+                    <LabelList dataKey="total" position="right" style={{ fontSize: 11, fontWeight: 700, fill: CH.axis }} />
+                </Bar>
+            </BarChart>
+        </ResponsiveContainer>
+    )
+}
+
+/* ── Эффективность: подано/обработано (бары) + средний срок (линия) ── */
+function EfficiencyChart({ data, submittedLabel, processedLabel, daysLabel }) {
+    return (
+        <ResponsiveContainer width="100%" height={280}>
+            <ComposedChart data={data} margin={{ top: 8, right: 0, left: -16, bottom: 0 }} barCategoryGap="28%">
+                <CartesianGrid strokeDasharray="3 3" stroke={CH.grid} vertical={false} />
+                <XAxis dataKey="m" tick={{ fontSize: 11, fill: CH.axis }} axisLine={false} tickLine={false} />
+                <YAxis yAxisId="l" tick={{ fontSize: 11, fill: CH.axis }} axisLine={false} tickLine={false} allowDecimals={false} width={34} />
+                <YAxis yAxisId="r" orientation="right" tick={{ fontSize: 11, fill: CH.amber }} axisLine={false} tickLine={false} width={40} />
+                <Tooltip contentStyle={TOOLTIP_STYLE} />
+                <Bar yAxisId="l" dataKey="submitted" name={submittedLabel} fill={CH.blue} fillOpacity={0.8} radius={[4, 4, 0, 0]} />
+                <Bar yAxisId="l" dataKey="processed" name={processedLabel} fill={CH.green} fillOpacity={0.8} radius={[4, 4, 0, 0]} />
+                <Line yAxisId="r" type="monotone" dataKey="avgDays" name={daysLabel} stroke={CH.amber} strokeWidth={2.5} dot={false} />
+            </ComposedChart>
+        </ResponsiveContainer>
     )
 }
 
@@ -378,11 +379,11 @@ export default function Analytics() {
                         <span className="an-chart-legend__item"><span className="an-legend-dot" style={{ background: '#2563EB' }} /> {t('analytics.legends.msKr')}</span>
                         <span className="an-chart-legend__item"><span className="an-legend-dot" style={{ background: '#7C3AED' }} /> {t('analytics.legends.kms')}</span>
                     </div>
-                    <LineChart data={monthly} />
+                    <RanksAreaChart data={monthly} msLabel={t('analytics.legends.msKr')} kmsLabel={t('analytics.legends.kms')} />
                 </div>
                 <div className="an-card">
                     <h2 className="an-card__title">{t('analytics.charts.applicationStructure')}</h2>
-                    <DonutChart data={d.appTypes} />
+                    <AppStructureDonut data={d.appTypes} />
                 </div>
             </div>
 
@@ -396,7 +397,7 @@ export default function Analytics() {
                         <thead>
                             <tr>
                                 <th>{t('analytics.regionCol')}</th>
-                                <th style={{ width: '45%' }}>{t('analytics.legends.athletes')}</th>
+                                <th style={{ width: '32%' }}>{t('analytics.legends.athletes')}</th>
                                 <th>{t('analytics.legends.coaches')}</th>
                                 <th>{t('analytics.legends.judges')}</th>
                             </tr>
@@ -425,7 +426,7 @@ export default function Analytics() {
             {/* ── 5. Sports vertical bars ── */}
             <div className="an-card">
                 <h2 className="an-card__title">{t('analytics.charts.sportDynamic')}</h2>
-                <SportsBarChart data={d.sports} />
+                <SportsBar data={d.sports} valueLabel={t('analytics.legends.athletes')} />
             </div>
 
             {/* ── 6. Эффективность + Звания рядом (рейтинг регионов удалён —
@@ -433,36 +434,17 @@ export default function Analytics() {
             <div className="an-row an-row--half">
                 <div className="an-card">
                     <h2 className="an-card__title">{t('analytics.efficiency.title')}</h2>
-                    <div className="an-table-wrap">
-                        <table className="an-table">
-                            <thead>
-                                <tr>
-                                    <th>{t('analytics.efficiencyTable.month')}</th>
-                                    <th>{t('analytics.efficiencyTable.submitted')}</th>
-                                    <th>{t('analytics.efficiencyTable.processed')}</th>
-                                    <th>{t('analytics.efficiencyTable.rejected')}</th>
-                                    <th>{t('analytics.efficiencyTable.avgTime')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {efficiency.map(e => (
-                                    <tr key={e.m}>
-                                        <td className="an-table__bold">{e.m}</td>
-                                        <td>{e.submitted}</td>
-                                        <td>{e.processed}</td>
-                                        <td>{e.rejected}</td>
-                                        <td>{e.avgDays} д.</td>
-                                    </tr>
-                                ))}
-                                <tr className="an-table__total">
-                                    <td>{t('analytics.totalRow')}</td>
-                                    <td>{effTotals.submitted}</td>
-                                    <td>{effTotals.processed}</td>
-                                    <td>{effTotals.rejected}</td>
-                                    <td>{effAvgDays} д.</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <EfficiencyChart
+                        data={efficiency}
+                        submittedLabel={t('analytics.efficiencyTable.submitted')}
+                        processedLabel={t('analytics.efficiencyTable.processed')}
+                        daysLabel={t('analytics.efficiencyTable.avgTime')}
+                    />
+                    <div className="an-eff-summary">
+                        <span>{t('analytics.efficiencyTable.submitted')}: <b>{effTotals.submitted}</b></span>
+                        <span>{t('analytics.efficiencyTable.processed')}: <b>{effTotals.processed}</b></span>
+                        <span>{t('analytics.efficiencyTable.rejected')}: <b>{effTotals.rejected}</b></span>
+                        <span>{t('analytics.efficiencyTable.avgTime')}: <b>{effAvgDays} д.</b></span>
                     </div>
                 </div>
                 <div className="an-card">
