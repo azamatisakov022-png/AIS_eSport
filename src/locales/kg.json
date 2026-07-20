@@ -892,8 +892,7 @@
     "roles": {
       "superadmin": "Суперадмин",
       "admin": "Администратор",
-      "employee": "Кызматкер",
-      "readonly": "Окуу гана"
+      "employee": "Кызматкер"
     },
     "userStatus": {
       "active": "Активдүү",

@@ -263,6 +263,20 @@ export default function Coaches() {
                                         <div className="co-info-item__label">{t('fields.region')}</div>
                                         <div className="co-info-item__value">{drawerCoach.region}</div>
                                     </div>
+
+                                    {/* Ученики и достижения — храним по решению УРФКиМС 16.07.2026 (демо-данные) */}
+                                    <div className="co-info-item" style={{ gridColumn: '1 / -1' }}>
+                                        <div className="co-info-item__label">Ученики (спортсмены тренера)</div>
+                                        <div className="co-info-item__value">
+                                            {(drawerCoach.students || ['Асанов Б.М. (I разряд)', 'Кулматова А.С. (КМС)', 'Джумабаев Э.К. (МС КР)']).join(' · ')}
+                                        </div>
+                                    </div>
+                                    <div className="co-info-item" style={{ gridColumn: '1 / -1' }}>
+                                        <div className="co-info-item__label">Достижения тренера</div>
+                                        <div className="co-info-item__value">
+                                            {(drawerCoach.achievements || [`Подготовил 2 мастеров спорта (${drawerCoach.sport})`, 'Ученик — чемпион КР 2025']).join(' · ')}
+                                        </div>
+                                    </div>
                                 </div>
                             )}
 

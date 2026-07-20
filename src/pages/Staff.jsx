@@ -12,8 +12,8 @@ import './registries.css'
 const DEPARTMENTS = ['Руководство', 'Канцелярия', 'Отдел кадров', 'Юридический отдел', 'Финансовая служба', 'ИТ-служба', 'Аналитический отдел', 'Отдел спортшкол', 'Дирекция олимпийских видов']
 const STATUSES = { active: 'Активен', vacation: 'Отпуск', dismissed: 'Уволен' }
 const STATUS_BADGE = { active: 'green', vacation: 'amber', dismissed: 'gray' }
-const ROLES = ['superadmin', 'admin', 'employee', 'readonly']
-const ROLE_LABELS = { superadmin: 'Суперадмин', admin: 'Администратор', employee: 'Сотрудник', readonly: 'Просмотр' }
+const ROLES = ['superadmin', 'admin', 'employee']
+const ROLE_LABELS = { superadmin: 'Суперадмин', admin: 'Администратор', employee: 'Сотрудник' }
 
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '-'
 
@@ -25,7 +25,7 @@ const MOCK = [
     { id: 5, empNo: 'СТ-0026', name: 'Бекбоев Нурлан Турдубекович', birth: '1990-07-30', phone: '+996 312 21-00-26', email: 'bekboev@gafkis.gov.kg', position: 'Системный администратор', dept: 'ИТ-служба', hireDate: '2022-04-20', status: 'vacation', role: 'admin', adAccount: 'GAFKIS\\n.bekboev' },
     { id: 6, empNo: 'СТ-0035', name: 'Кулбаева Айдай Кубанычбековна', birth: '1980-02-12', phone: '+996 312 21-00-35', email: 'kulbaeva@gafkis.gov.kg', position: 'Главный бухгалтер', dept: 'Финансовая служба', hireDate: '2021-09-01', status: 'active', role: 'employee', adAccount: 'GAFKIS\\a.kulbaeva' },
     { id: 7, empNo: 'СТ-0045', name: 'Осмонова Гульнара Асылбековна', birth: '1987-12-25', phone: '+996 312 21-00-45', email: 'osmonova@gafkis.gov.kg', position: 'Юрисконсульт', dept: 'Юридический отдел', hireDate: '2022-03-14', status: 'active', role: 'employee', adAccount: 'GAFKIS\\g.osmonova' },
-    { id: 8, empNo: 'СТ-0050', name: 'Турсунова Назгуль Анарбековна', birth: '1992-06-08', phone: '+996 312 21-00-50', email: 'tursunova@gafkis.gov.kg', position: 'Аналитик', dept: 'Аналитический отдел', hireDate: '2023-02-01', status: 'active', role: 'readonly', adAccount: 'GAFKIS\\n.tursunova' },
+    { id: 8, empNo: 'СТ-0050', name: 'Турсунова Назгуль Анарбековна', birth: '1992-06-08', phone: '+996 312 21-00-50', email: 'tursunova@gafkis.gov.kg', position: 'Аналитик', dept: 'Аналитический отдел', hireDate: '2023-02-01', status: 'active', role: 'employee', adAccount: 'GAFKIS\\n.tursunova' },
     { id: 9, empNo: 'СТ-0055', name: 'Асанов Мирлан Болотбекович', birth: '1995-03-19', phone: '+996 312 21-00-55', email: 'asanov@gafkis.gov.kg', position: 'Специалист', dept: 'Канцелярия', hireDate: '2026-04-01', status: 'active', role: 'employee', adAccount: 'GAFKIS\\m.asanov' },
     { id: 10, empNo: 'СТ-0060', name: 'Сатыбеков Нурлан Кубанычбекович', birth: '1976-08-11', phone: '+996 312 21-00-60', email: 'satybekov@gafkis.gov.kg', position: 'Начальник отдела спортшкол', dept: 'Отдел спортшкол', hireDate: '2021-05-12', status: 'active', role: 'employee', adAccount: 'GAFKIS\\n.satybekov' },
     { id: 11, empNo: 'СТ-0061', name: 'Усонова Айжамал Бекбоевна', birth: '1989-10-02', phone: '+996 312 21-00-61', email: 'usonova@gafkis.gov.kg', position: 'Методист', dept: 'Отдел спортшкол', hireDate: '2022-08-20', status: 'vacation', role: 'employee', adAccount: 'GAFKIS\\a.usonova' },

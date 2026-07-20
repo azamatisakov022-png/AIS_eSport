@@ -14,7 +14,6 @@ export const NAV_TITLE_KEYS = {
     '/teams': 'nav.teams',
     '/staff': 'nav.staff',
     '/medical-certificates': 'nav.medicalCerts',
-    '/inventory': 'nav.inventory',
     '/stipends': 'nav.stipends',
     '/finance': 'nav.finance',
     '/applications': 'nav.applications',

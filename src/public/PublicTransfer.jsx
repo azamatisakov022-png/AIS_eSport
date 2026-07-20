@@ -1,3 +1,4 @@
+import AuthBanner from '../components/AuthBanner'
 import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import PublicHero from './components/PublicHero'
@@ -76,6 +77,7 @@ export default function PublicTransfer() {
     return (
         <div className="pub-section">
             <PublicHero title="Переход спортсмена в другой клуб" description="Онлайн-подача заявления на переход (смену клуба/спортшколы). Переход подтверждают старый клуб, новый клуб и федерация по виду спорта." variant="indigo" layoutMode="abstract" />
+            <div className="pub-container" style={{ marginTop: 16 }}><AuthBanner /></div>
 
             <div className="pub-container pp-wrap">
                 <div className="pp-cols">

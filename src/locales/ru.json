@@ -892,8 +892,7 @@
     "roles": {
       "superadmin": "Суперадмин",
       "admin": "Администратор",
-      "employee": "Сотрудник",
-      "readonly": "Только чтение"
+      "employee": "Сотрудник"
     },
     "userStatus": {
       "active": "Активен",

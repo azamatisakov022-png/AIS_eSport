@@ -1,3 +1,4 @@
+import AuthBanner from '../components/AuthBanner'
 import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import PublicHero from './components/PublicHero'
@@ -89,6 +90,7 @@ export default function PublicJudgeCategory() {
     return (
         <div className="pub-section">
             <PublicHero title="Заявление на присвоение судейской категории" description="Онлайн-подача заявления на присвоение или повышение судейской категории. Рассмотрение - аттестационная комиссия ГАФКиС." variant="indigo" layoutMode="abstract" />
+            <div className="pub-container" style={{ marginTop: 16 }}><AuthBanner /></div>
 
             <div className="pub-container pp-wrap">
                 <div className="pp-cols">

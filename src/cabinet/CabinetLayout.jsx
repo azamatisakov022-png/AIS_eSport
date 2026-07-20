@@ -1,12 +1,18 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useLocation, Navigate } from 'react-router-dom'
 import CabinetSidebar from './CabinetSidebar'
 import Header from '../components/Header'
+import { useRole } from '../context/RoleContext'
 import './cabinet.css'
+
+// Спортивный личный кабинет — только для граждан. Служебные роли работают
+// в основном портале (/dashboard, /settings, интранет), а не здесь.
+const CABINET_ROLES = ['athlete', 'coach', 'judge', 'org']
 
 export default function CabinetLayout() {
     const { t } = useTranslation()
+    const { currentRole } = useRole()
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const location = useLocation()
 
@@ -29,6 +35,11 @@ export default function CabinetLayout() {
     const closeSidebar = useCallback(() => {
         setSidebarOpen(false)
     }, [])
+
+    // Служебные роли не имеют спортивного кабинета — уводим в основной портал.
+    if (!CABINET_ROLES.includes(currentRole)) {
+        return <Navigate to="/dashboard" replace />
+    }
 
     return (
         <div className="cab-layout">

@@ -10,8 +10,8 @@ import './registries.css'
    certificate_type, diagnosis_codes (ICD10), file_ref, verified, source_system. */
 
 const TYPES = ['Допуск к соревнованиям', 'Допуск к тренировкам', 'Периодический осмотр', 'Углублённое обследование']
-const SOURCES = { minzdrav: 'Минздрав', upload: 'Загрузка', ekyzmat: 'Е-Кызмат' }
-const SOURCE_BADGE = { minzdrav: 'blue', upload: 'gray', ekyzmat: 'green' }
+const SOURCES = { minzdrav: 'Минздрав', upload: 'Загрузка' }
+const SOURCE_BADGE = { minzdrav: 'blue', upload: 'gray' }
 const today = new Date(); today.setHours(0, 0, 0, 0)
 const fmt = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '-'
 const daysUntil = (d) => Math.ceil((new Date(d) - today) / 86400000)
@@ -29,12 +29,12 @@ const MOCK = [
     { id: 1, person: 'Асанов Бекболот Маратович', sport: 'Дзюдо', type: 'Допуск к соревнованиям', issuedBy: 'РЦСМ г. Бишкек', issueDate: '2025-08-10', validUntil: '2026-08-10', icd: ['Z02.5'], source: 'minzdrav', verified: true },
     { id: 2, person: 'Кулматова Айгерим Сагынбековна', sport: 'Лёгкая атлетика', type: 'Допуск к тренировкам', issuedBy: 'Городская поликлиника №3', issueDate: '2025-11-01', validUntil: '2026-06-15', icd: ['Z02.5'], source: 'upload', verified: true },
     { id: 3, person: 'Джумабаев Эрлан Калыкович', sport: 'Бокс', type: 'Углублённое обследование', issuedBy: 'РЦСМ г. Бишкек', issueDate: '2026-01-20', validUntil: '2027-01-20', icd: ['Z02.5', 'Z00.0'], source: 'minzdrav', verified: true },
-    { id: 4, person: 'Токтогулова Назира Асылбековна', sport: 'Плавание', type: 'Допуск к соревнованиям', issuedBy: 'Е-Кызмат (импорт)', issueDate: '2025-06-05', validUntil: '2026-06-05', icd: ['Z02.5'], source: 'ekyzmat', verified: false },
+    { id: 4, person: 'Токтогулова Назира Асылбековна', sport: 'Плавание', type: 'Допуск к соревнованиям', issuedBy: 'Минздрав (импорт по ИНН)', issueDate: '2025-06-05', validUntil: '2026-06-05', icd: ['Z02.5'], source: 'minzdrav', verified: false },
     { id: 5, person: 'Бейшеналиев Данияр Кубатович', sport: 'Борьба', type: 'Периодический осмотр', issuedBy: 'Областная больница Нарын', issueDate: '2025-03-12', validUntil: '2026-03-12', icd: ['Z00.0'], source: 'upload', verified: true },
     { id: 6, person: 'Сатыбалдиева Мээрим Акжолтоевна', sport: 'Каратэ', type: 'Допуск к соревнованиям', issuedBy: 'РЦСМ г. Бишкек', issueDate: '2025-09-25', validUntil: '2026-09-25', icd: ['Z02.5'], source: 'minzdrav', verified: true },
     { id: 7, person: 'Ормонов Алмаз Кайратович', sport: 'Футбол', type: 'Допуск к тренировкам', issuedBy: 'Медцентр «Дордой»', issueDate: '2025-12-01', validUntil: '2026-06-08', icd: ['Z02.5'], source: 'upload', verified: false },
     { id: 8, person: 'Касымова Жылдыз Болотбековна', sport: 'Гимнастика', type: 'Допуск к соревнованиям', issuedBy: 'РЦСМ г. Бишкек', issueDate: '2024-05-15', validUntil: '2025-05-15', icd: ['Z02.5'], source: 'minzdrav', verified: true },
-    { id: 9, person: 'Турдалиев Марат Сапарбекович', sport: 'Дзюдо', type: 'Периодический осмотр', issuedBy: 'Ошская поликлиника №1', issueDate: '2026-02-10', validUntil: '2027-02-10', icd: ['Z00.0'], source: 'ekyzmat', verified: true },
+    { id: 9, person: 'Турдалиев Марат Сапарбекович', sport: 'Дзюдо', type: 'Периодический осмотр', issuedBy: 'Ошская поликлиника №1', issueDate: '2026-02-10', validUntil: '2027-02-10', icd: ['Z00.0'], source: 'upload', verified: true },
     { id: 10, person: 'Эсенгулова Айчурок Таалайбековна', sport: 'Плавание', type: 'Допуск к соревнованиям', issuedBy: 'РЦСМ г. Бишкек', issueDate: '2025-10-30', validUntil: '2026-10-30', icd: ['Z02.5'], source: 'minzdrav', verified: true },
 ]
 

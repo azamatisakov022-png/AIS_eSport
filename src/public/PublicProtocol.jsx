@@ -1,3 +1,4 @@
+import AuthBanner from '../components/AuthBanner'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import PublicHero from './components/PublicHero'
@@ -80,6 +81,7 @@ export default function PublicProtocol() {
     return (
         <div className="pub-section">
             <PublicHero title="Загрузка протокола соревнования" description="Федерация загружает протокол с результатами соревнования напрямую в систему. После проверки специалистом результаты публикуются." variant="indigo" layoutMode="abstract" />
+            <div className="pub-container" style={{ marginTop: 16 }}><AuthBanner /></div>
 
             <div className="pub-container pp-wrap">
                 <form className="pp-form" style={{ maxWidth: 'none' }} onSubmit={e => { e.preventDefault(); submit() }}>

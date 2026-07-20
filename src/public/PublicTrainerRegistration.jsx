@@ -1,3 +1,4 @@
+import AuthBanner from '../components/AuthBanner'
 import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -5,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { trainerAppsApi } from '../api/esport'
+import EsiPassportField from '../components/EsiPassportField'
 
 const SPORTS = [
     'Дзюдо', 'Бокс', 'Борьба', 'Тхэквондо', 'Каратэ', 'Лёгкая атлетика',
@@ -46,7 +48,7 @@ export default function PublicTrainerRegistration() {
         sport: yup.string().required(t('validation.required')),
     })
 
-    const { register, handleSubmit, formState: { errors, isValid } } = useForm({
+    const { register, handleSubmit, setValue, formState: { errors, isValid } } = useForm({
         resolver: yupResolver(schema),
         mode: 'onChange',
         defaultValues: {
@@ -59,6 +61,7 @@ export default function PublicTrainerRegistration() {
         passport: null, diploma: null, sportRank: null, noCriminal: null,
     })
     const [tunduk, setTunduk] = useState(false)
+    const [esiData, setEsiData] = useState(null)
     const [dragOver, setDragOver] = useState(null)
     const [submitted, setSubmitted] = useState(null)
     const [sending, setSending] = useState(false)
@@ -166,6 +169,8 @@ export default function PublicTrainerRegistration() {
                 {/* Page header */}
                 <h2 className="pub-section__title">{t('public.trainerRegTitle')}</h2>
 
+                <AuthBanner />
+
                 {/* Info banner */}
                 <div style={styles.infoBanner}>
                     <span style={styles.infoBannerIcon}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
@@ -177,6 +182,19 @@ export default function PublicTrainerRegistration() {
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)}>
+                    {/* Паспорт из ЕСИ — заполняет ФИО/ИНН/дату рождения автоматически (Этап 1) */}
+                    <div style={{ marginBottom: 18 }}>
+                        <EsiPassportField value={esiData} onChange={(d) => {
+                            setEsiData(d)
+                            if (d) {
+                                setValue('inn', d.inn, { shouldValidate: true })
+                                setValue('lastName', d.lastName, { shouldValidate: true })
+                                setValue('firstName', d.firstName, { shouldValidate: true })
+                                setValue('middleName', d.middleName, { shouldValidate: true })
+                                setValue('birthDate', '1998-04-15', { shouldValidate: true })
+                            }
+                        }} />
+                    </div>
                     <div className="pub-two-col" style={{ alignItems: 'start' }}>
                         {/* LEFT - Personal data */}
                         <div>

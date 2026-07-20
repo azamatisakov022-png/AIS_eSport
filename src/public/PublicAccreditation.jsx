@@ -1,3 +1,4 @@
+import AuthBanner from '../components/AuthBanner'
 import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import PublicHero from './components/PublicHero'
@@ -77,6 +78,7 @@ export default function PublicAccreditation() {
     return (
         <div className="pub-section">
             <PublicHero title="Аккредитация спортивной федерации" description="Онлайн-подача заявления на государственную аккредитацию спортивной федерации (по виду спорта). Рассмотрение — Государственное агентство, срок 14 рабочих дней." variant="slate" layoutMode="abstract" />
+            <div className="pub-container" style={{ marginTop: 16 }}><AuthBanner /></div>
 
             <div className="pub-container pp-wrap">
                 <div className="pp-cols">

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useToast } from '../context/ToastContext'
 import { MetricIcons } from '../components/CabinetIcons'
@@ -15,16 +15,21 @@ const USERS = [
     { id: 3, name: 'Сидоров Максим Борисович', login: 'm.sidorov', email: 'm.sidorov@sport.gov.kg', phone: '+996 312 62-34-12', role: 'employee', dept: 'Отдел реестров', lastLogin: '12.03.2026 08:58', ip: '192.168.1.102', status: 'active', created: '01.03.2024' },
     { id: 4, name: 'Кадырова Айгуль Маратовна', login: 'a.kadyrova', email: 'a.kadyrova@sport.gov.kg', phone: '+996 312 62-34-13', role: 'employee', dept: 'Отдел мероприятий', lastLogin: '11.03.2026 17:45', ip: '192.168.1.103', status: 'active', created: '10.04.2024' },
     { id: 5, name: 'Асанов Мирлан Бакытович', login: 'm.asanov', email: 'm.asanov@sport.gov.kg', phone: '+996 312 62-34-14', role: 'employee', dept: 'Отдел реестров', lastLogin: '10.03.2026 14:12', ip: '192.168.1.104', status: 'active', created: '20.05.2024' },
-    { id: 6, name: 'Турсунова Назгуль Акматовна', login: 'n.tursunova', email: 'n.tursunova@sport.gov.kg', phone: '+996 312 62-34-15', role: 'readonly', dept: 'Юридический отдел', lastLogin: '08.03.2026 11:30', ip: '192.168.1.105', status: 'active', created: '01.06.2024' },
+    { id: 6, name: 'Турсунова Назгуль Акматовна', login: 'n.tursunova', email: 'n.tursunova@sport.gov.kg', phone: '+996 312 62-34-15', role: 'employee', dept: 'Юридический отдел', lastLogin: '08.03.2026 11:30', ip: '192.168.1.105', status: 'active', created: '01.06.2024' },
     { id: 7, name: 'Жумабеков Эрлан Канатович', login: 'e.zhumabekov', email: 'e.zhumabekov@sport.gov.kg', phone: '+996 312 62-34-16', role: 'employee', dept: 'Отдел мероприятий', lastLogin: '01.02.2026 09:00', ip: '192.168.1.106', status: 'blocked', created: '15.07.2024' },
-    { id: 8, name: 'Бакиров Данияр Толонович', login: 'd.bakirov', email: 'd.bakirov@sport.gov.kg', phone: '+996 312 62-34-17', role: 'readonly', dept: 'Приёмная', lastLogin: '-', ip: '-', status: 'inactive', created: '01.03.2026' },
+    { id: 8, name: 'Бакиров Данияр Толонович', login: 'd.bakirov', email: 'd.bakirov@sport.gov.kg', phone: '+996 312 62-34-17', role: 'employee', dept: 'Приёмная', lastLogin: '-', ip: '-', status: 'inactive', created: '01.03.2026' },
 ]
+
+/* Демо региональной модели доступа (§10 ТЗ): у каждого пользователя есть регион.
+   Суперадмин видит все регионы; админ — региональный, работает только со своим. */
+const REGIONS = ['Главное управление (Бишкек)', 'Баткенская область', 'Джалал-Абадская область', 'Иссык-Кульская область', 'Нарынская область', 'Ошская область', 'Таласская область', 'Чуйская область']
+const USER_REGIONS = { 1: 'Главное управление (Бишкек)', 2: 'Главное управление (Бишкек)', 3: 'Чуйская область', 4: 'Ошская область', 5: 'Чуйская область', 6: 'Иссык-Кульская область', 7: 'Ошская область', 8: 'Нарынская область' }
+const DEMO_ADMIN_REGION = 'Чуйская область'  // демо: текущий вошедший админ — региональный (Чуйская обл.)
 
 const ROLE_LABELS = {
     superadmin: { labelKey: 'settings.roles.superadmin', cls: 'st-role--super' },
     admin: { labelKey: 'settings.roles.admin', cls: 'st-role--admin' },
     employee: { labelKey: 'settings.roles.employee', cls: 'st-role--employee' },
-    readonly: { labelKey: 'settings.roles.readonly', cls: 'st-role--readonly' },
 }
 
 const STATUS_LABELS = {
@@ -52,8 +57,8 @@ const MODULE_I18N_KEYS = {
     'Администрирование': 'settings.modules.system',
 }
 
-const PERM_ROLES = ['superadmin', 'admin', 'employee', 'readonly']
-const PERM_ROLE_LABEL_KEYS = { superadmin: 'settings.roles.superadmin', admin: 'settings.roles.admin', employee: 'settings.roles.employee', readonly: 'settings.roles.readonly' }
+const PERM_ROLES = ['superadmin', 'admin', 'employee']
+const PERM_ROLE_LABEL_KEYS = { superadmin: 'settings.roles.superadmin', admin: 'settings.roles.admin', employee: 'settings.roles.employee' }
 
 function initPerms() {
     const p = {}
@@ -62,8 +67,7 @@ function initPerms() {
         PERM_ROLES.forEach(r => {
             if (r === 'superadmin') p[m][r] = { view: true, edit: true, del: true }
             else if (r === 'admin') p[m][r] = { view: true, edit: m === 'Администрирование', del: m === 'Администрирование' }
-            else if (r === 'employee') p[m][r] = { view: m !== 'Администрирование', edit: !['Аналитика', 'Администрирование'].includes(m), del: false }
-            else p[m][r] = { view: !['Администрирование'].includes(m), edit: false, del: false }
+            else p[m][r] = { view: m !== 'Администрирование', edit: !['Аналитика', 'Администрирование'].includes(m), del: false }
         })
     })
     return p
@@ -112,6 +116,9 @@ const TABS = [
     { key: 'system', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>, labelKey: 'settings.tabs.system' },
 ]
 
+/** Вкладки только для суперадмина: определение прав ролей и критичные системные настройки (см. §10 ТЗ — матрица RBAC). */
+const SUPERADMIN_ONLY_TABS = ['roles', 'system']
+
 export default function Settings() {
     const { t } = useTranslation()
     const toast = useToast()
@@ -150,6 +157,19 @@ export default function Settings() {
         )
     }
 
+    // Матрица ролей (§10 ТЗ): суперадмин — глобально, назначает региональных админов;
+    // админ — региональный: управляет сотрудниками ТОЛЬКО своего региона и выдаёт только роль employee.
+    const visibleTabs = TABS.filter(tb => currentRole === 'superadmin' || !SUPERADMIN_ONLY_TABS.includes(tb.key))
+    // Суперадмин в системе один и задаётся при развёртывании (seed) — через интерфейс его не создают.
+    const assignableRoleKeys = currentRole === 'superadmin'
+        ? ['admin', 'employee']
+        : ['employee']
+    const adminRegion = currentRole === 'admin' ? DEMO_ADMIN_REGION : null
+    const inScope = (u) => currentRole === 'superadmin' || USER_REGIONS[u.id] === adminRegion
+    const visibleUsers = USERS.filter(inScope)
+    // Правило scope + эскалации: админ управляет только не-админами своего региона.
+    const canManageUser = (u) => currentRole === 'superadmin' || (!['superadmin', 'admin'].includes(u.role) && USER_REGIONS[u.id] === adminRegion)
+
     const togglePerm = (mod, role, perm) => {
         if (role === 'superadmin') return
         setPerms(prev => {
@@ -166,16 +186,16 @@ export default function Settings() {
         return true
     })
 
-    const activeUsers = USERS.filter(u => u.status === 'active').length
-    const blockedUsers = USERS.filter(u => u.status === 'blocked').length
-    const onlineNow = 3
+    const activeUsers = visibleUsers.filter(u => u.status === 'active').length
+    const blockedUsers = visibleUsers.filter(u => u.status === 'blocked').length
+    const onlineNow = currentRole === 'superadmin' ? 3 : 1
 
     return (
         <div className="st">
             <Breadcrumbs current={t('settings.title')} />
             {/* ── Tabs ── */}
             <div className="st-tabs">
-                {TABS.map(tb => (
+                {visibleTabs.map(tb => (
                     <button key={tb.key}
                         className={`st-tab ${tab === tb.key ? 'st-tab--active' : ''}`}
                         onClick={() => setTab(tb.key)}>
@@ -194,8 +214,14 @@ export default function Settings() {
                         <button className="st-add-btn" onClick={() => setShowAddUser(true)}>{t('settings.users.addUser')}</button>
                     </div>
 
+                    {currentRole === 'admin' && (
+                        <div style={{ background: '#eef4ff', border: '1px solid #cddcff', borderRadius: 10, padding: '10px 14px', margin: '0 0 16px', fontSize: 13.5, color: '#1B3A6B', lineHeight: 1.45 }}>
+                            Вы вошли как <b>региональный администратор</b>. Регион: <b>{DEMO_ADMIN_REGION}</b>. Вы видите и заводите сотрудников только своего региона; назначение админов — прерогатива суперадмина.
+                        </div>
+                    )}
+
                     <div className="st-metrics">
-                        <div className="st-metric"><span className="st-metric__icon st-metric__icon--blue">{MetricIcons.users()}</span><div className="st-metric__info"><span className="st-metric__val">{USERS.length}</span><span className="st-metric__lbl">{t('settings.users.total')}</span></div></div>
+                        <div className="st-metric"><span className="st-metric__icon st-metric__icon--blue">{MetricIcons.users()}</span><div className="st-metric__info"><span className="st-metric__val">{visibleUsers.length}</span><span className="st-metric__lbl">{t('settings.users.total')}</span></div></div>
                         <div className="st-metric"><span className="st-metric__icon st-metric__icon--green">{MetricIcons.active()}</span><div className="st-metric__info"><span className="st-metric__val">{activeUsers}</span><span className="st-metric__lbl">{t('settings.users.active')}</span></div></div>
                         <div className="st-metric"><span className="st-metric__icon st-metric__icon--red">{MetricIcons.blocked()}</span><div className="st-metric__info"><span className="st-metric__val">{blockedUsers}</span><span className="st-metric__lbl">{t('settings.users.blocked')}</span></div></div>
                         <div className="st-metric"><span className="st-metric__icon st-metric__icon--amber">{MetricIcons.online()}</span><div className="st-metric__info"><span className="st-metric__val">{onlineNow}</span><span className="st-metric__lbl">{t('settings.users.online')}</span></div></div>
@@ -209,13 +235,14 @@ export default function Settings() {
                                     <th>{t('settings.usersTable.login')}</th>
                                     <th>{t('settings.usersTable.role')}</th>
                                     <th>{t('settings.usersTable.department')}</th>
+                                    <th>Регион</th>
                                     <th>{t('settings.usersTable.lastLogin')}</th>
                                     <th>{t('common.status')}</th>
                                     <th>{t('common.actions')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {USERS.map(u => (
+                                {visibleUsers.map(u => (
                                     <tr key={u.id} className="st-table__row" onClick={() => setDrawer(u)}>
                                         <td>
                                             <div className="st-user-cell">
@@ -226,15 +253,16 @@ export default function Settings() {
                                         <td className="st-table__mono">{u.login}</td>
                                         <td><span className={`st-role ${ROLE_LABELS[u.role]?.cls || ''}`}>{ROLE_LABELS[u.role]?.labelKey ? t(ROLE_LABELS[u.role].labelKey) : u.role}</span></td>
                                         <td>{u.dept}</td>
+                                        <td>{USER_REGIONS[u.id]}</td>
                                         <td className="st-table__muted">{u.lastLogin}</td>
                                         <td><span className={`st-ustatus ${STATUS_LABELS[u.status].cls}`}>{t(STATUS_LABELS[u.status].labelKey)}</span></td>
                                         <td>
                                             <div className="st-actions-cell">
                                                 <button className="st-action-btn" onClick={e => { e.stopPropagation(); setDrawer(u) }}>{t('common.edit')}</button>
-                                                <button className="st-action-btn st-action-btn--warn" onClick={e => { e.stopPropagation(); toast(`${u.status === 'blocked' ? t('settings.userActions.unblock') : t('settings.userActions.block')}: ${u.name}`) }}>
+                                                <button className="st-action-btn st-action-btn--warn" disabled={!canManageUser(u) || u.role === 'superadmin'} title={u.role === 'superadmin' ? 'Суперадмина нельзя заблокировать' : (!canManageUser(u) ? 'Доступно только суперадмину' : undefined)} onClick={e => { e.stopPropagation(); toast(`${u.status === 'blocked' ? t('settings.userActions.unblock') : t('settings.userActions.block')}: ${u.name}`) }}>
                                                     {u.status === 'blocked' ? t('settings.userActions.unblock') : t('settings.userActions.block')}
                                                 </button>
-                                                <button className="st-action-btn" onClick={e => { e.stopPropagation(); toast(`${t('settings.userActions.resetPassword')}: ${u.name}`) }}>{t('settings.userActions.resetPassword')}</button>
+                                                <button className="st-action-btn" disabled={!canManageUser(u)} title={!canManageUser(u) ? 'Доступно только суперадмину' : undefined} onClick={e => { e.stopPropagation(); toast(`${t('settings.userActions.resetPassword')}: ${u.name}`) }}>{t('settings.userActions.resetPassword')}</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -248,7 +276,7 @@ export default function Settings() {
             {/* ═══════════════════════════════════════════
                TAB: ROLES & PERMISSIONS
                ═══════════════════════════════════════════ */}
-            {tab === 'roles' && (
+            {tab === 'roles' && currentRole === 'superadmin' && (
                 <div>
                     <h2 className="st-section-title">{t('settings.permissions.title')}</h2>
                     <div className="st-table-wrap">
@@ -263,11 +291,11 @@ export default function Settings() {
                                 <tr>
                                     <th></th>
                                     {PERM_ROLES.map(r => (
-                                        <React.Fragment key={r}>
+                                        <Fragment key={r}>
                                             <th className="st-perm-sub-th">{t('settings.permissions.view')}</th>
                                             <th className="st-perm-sub-th">{t('settings.permissions.edit')}</th>
                                             <th className="st-perm-sub-th">{t('settings.permissions.delete')}</th>
-                                        </React.Fragment>
+                                        </Fragment>
                                     ))}
                                 </tr>
                             </thead>
@@ -276,7 +304,7 @@ export default function Settings() {
                                     <tr key={mod}>
                                         <td className="st-perm-module">{MODULE_I18N_KEYS[mod] ? t(MODULE_I18N_KEYS[mod]) : mod}</td>
                                         {PERM_ROLES.map(r => (
-                                            <React.Fragment key={r}>
+                                            <Fragment key={r}>
                                                 {['view', 'edit', 'del'].map(p => (
                                                     <td key={p} className="st-perm-cell">
                                                         <input
@@ -288,7 +316,7 @@ export default function Settings() {
                                                         />
                                                     </td>
                                                 ))}
-                                            </React.Fragment>
+                                            </Fragment>
                                         ))}
                                     </tr>
                                 ))}
@@ -358,7 +386,7 @@ export default function Settings() {
             {/* ═══════════════════════════════════════════
                TAB: SYSTEM SETTINGS
                ═══════════════════════════════════════════ */}
-            {tab === 'system' && (
+            {tab === 'system' && currentRole === 'superadmin' && (
                 <div>
                     <h2 className="st-section-title">{t('settings.tabs.system')}</h2>
 
@@ -443,9 +471,7 @@ export default function Settings() {
                         <div className="st-integrations">
                             {[
                                 { name: 'СМЭВ «Түндүк» ЕСИ', status: 'connected', icon: <span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#34C759'}}></span> },
-                                { name: 'АИС Е-Кызмат', status: 'setup', icon: <span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#FF9500'}}></span> },
                                 { name: 'МЗ КР (медсправки)', status: 'disconnected', icon: <span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#FF3B30'}}></span> },
-                                { name: 'WMS Геосервис', status: 'setup', icon: <span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#FF9500'}}></span> },
                             ].map(intg => (
                                 <div key={intg.name} className="st-integration">
                                     <span className="st-integration__icon">{intg.icon}</span>
@@ -481,6 +507,7 @@ export default function Settings() {
                                 <div className="st-info-item"><div className="st-info-label">{t('fields.email')}</div><div className="st-info-value">{drawer.email}</div></div>
                                 <div className="st-info-item"><div className="st-info-label">{t('fields.phone')}</div><div className="st-info-value">{drawer.phone}</div></div>
                                 <div className="st-info-item"><div className="st-info-label">{t('settings.userDrawerInfo.department')}</div><div className="st-info-value">{drawer.dept}</div></div>
+                                <div className="st-info-item"><div className="st-info-label">Регион</div><div className="st-info-value">{USER_REGIONS[drawer.id]}</div></div>
                                 <div className="st-info-item"><div className="st-info-label">{t('settings.userDrawerInfo.createdDate')}</div><div className="st-info-value">{drawer.created}</div></div>
                                 <div className="st-info-item"><div className="st-info-label">{t('settings.userDrawerInfo.lastLogin')}</div><div className="st-info-value">{drawer.lastLogin}</div></div>
                                 <div className="st-info-item" style={{ gridColumn: '1 / -1' }}><div className="st-info-label">{t('settings.userDrawerInfo.lastIp')}</div><div className="st-info-value" style={{ fontFamily: 'monospace' }}>{drawer.ip}</div></div>
@@ -488,12 +515,21 @@ export default function Settings() {
 
                             <div className="st-form-group">
                                 <label className="st-form-label">{t('settings.usersTable.role')}</label>
-                                <select className="st-form-input" defaultValue={drawer.role}>
-                                    <option value="superadmin">{t('settings.roles.superadmin')}</option>
-                                    <option value="admin">{t('settings.roles.admin')}</option>
-                                    <option value="employee">{t('settings.roles.employee')}</option>
-                                    <option value="readonly">{t('settings.roles.readonly')}</option>
+                                <select className="st-form-input" defaultValue={drawer.role} disabled={!canManageUser(drawer) || drawer.role === 'superadmin'}>
+                                    {((canManageUser(drawer) && drawer.role !== 'superadmin') ? assignableRoleKeys : [drawer.role]).map(rk => (
+                                        <option key={rk} value={rk}>{t(`settings.roles.${rk}`)}</option>
+                                    ))}
                                 </select>
+                                {!canManageUser(drawer) && (
+                                    <p style={{ fontSize: 12, color: '#9a3412', margin: '6px 0 0', lineHeight: 1.4 }}>
+                                        Управление администраторами доступно только суперадмину.
+                                    </p>
+                                )}
+                                {canManageUser(drawer) && drawer.role === 'superadmin' && (
+                                    <p style={{ fontSize: 12, color: '#9a3412', margin: '6px 0 0', lineHeight: 1.4 }}>
+                                        Суперадмин в системе один — его роль не меняется через интерфейс (задаётся при развёртывании).
+                                    </p>
+                                )}
                             </div>
                             <div className="st-form-group">
                                 <label className="st-form-label">{t('settings.usersTable.department')}</label>
@@ -507,11 +543,11 @@ export default function Settings() {
                             </div>
                         </div>
                         <div className="st-drawer__footer">
-                            <button className="st-btn st-btn--primary" onClick={() => { toast('Сохранено (демо)'); setDrawer(null) }}>{t('common.save')}</button>
-                            <button className="st-btn st-btn--warn" onClick={() => toast(`${drawer.status === 'blocked' ? t('settings.userActions.unblock') : t('settings.userActions.block')}: ${drawer.name}`)}>
+                            <button className="st-btn st-btn--primary" disabled={!canManageUser(drawer)} onClick={() => { toast('Сохранено (демо)'); setDrawer(null) }}>{t('common.save')}</button>
+                            <button className="st-btn st-btn--warn" disabled={!canManageUser(drawer) || drawer.role === 'superadmin'} onClick={() => toast(`${drawer.status === 'blocked' ? t('settings.userActions.unblock') : t('settings.userActions.block')}: ${drawer.name}`)}>
                                 {drawer.status === 'blocked' ? t('settings.userActions.unblock') : t('settings.userActions.block')}
                             </button>
-                            <button className="st-btn st-btn--secondary" onClick={() => toast(`${t('settings.userActions.resetPassword')}: ${drawer.name}`)}>{t('settings.userActions.resetPassword')}</button>
+                            <button className="st-btn st-btn--secondary" disabled={!canManageUser(drawer)} onClick={() => toast(`${t('settings.userActions.resetPassword')}: ${drawer.name}`)}>{t('settings.userActions.resetPassword')}</button>
                         </div>
                     </div>
                 </>
@@ -543,9 +579,9 @@ export default function Settings() {
                                 <div className="st-form-group">
                                     <label className="st-form-label">{t('settings.usersTable.role')} *</label>
                                     <select className="st-form-input">
-                                        <option value="employee">{t('settings.roles.employee')}</option>
-                                        <option value="admin">{t('settings.roles.admin')}</option>
-                                        <option value="readonly">{t('settings.roles.readonly')}</option>
+                                        {assignableRoleKeys.map(rk => (
+                                            <option key={rk} value={rk}>{t(`settings.roles.${rk}`)}</option>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className="st-form-group">
@@ -557,6 +593,16 @@ export default function Settings() {
                                         <option>Юридический отдел</option>
                                         <option>Приёмная</option>
                                     </select>
+                                </div>
+                                <div className="st-form-group">
+                                    <label className="st-form-label">Регион *</label>
+                                    {currentRole === 'admin' ? (
+                                        <input className="st-form-input" value={DEMO_ADMIN_REGION} readOnly title="Региональный админ создаёт сотрудников только своего региона" />
+                                    ) : (
+                                        <select className="st-form-input">
+                                            {REGIONS.map(r => <option key={r}>{r}</option>)}
+                                        </select>
+                                    )}
                                 </div>
                                 <div className="st-form-group" style={{ gridColumn: '1 / -1' }}>
                                     <label className="st-form-label">{t('settings.newUserForm.tempPassword')} *</label>

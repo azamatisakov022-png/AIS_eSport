@@ -14,12 +14,15 @@ const I = {
     mail: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg>,
     lock: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="11" width="16" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>,
     flask: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3" /><path d="M7 15h10" /></svg>,
+    shield: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l8 3v6c0 5-3.4 7.6-8 9-4.6-1.4-8-4-8-9V6z" /></svg>,
+    ext: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><path d="M15 3h6v6M10 14 21 3" /></svg>,
 }
 
+const NADC_URL = 'https://nadc.kg/'
 const CHANNELS = [
-    { ic: 'chat', t: 'Анонимная форма', d: 'Без указания личных данных' },
-    { ic: 'phone', t: '+996 (312) 62-34-99', d: 'Горячая линия, будни 9:00-18:00' },
-    { ic: 'mail', t: 'cleansport@gafkis.gov.kg', d: 'Конфиденциальное обращение' },
+    { ic: 'shield', t: 'Национальный антидопинговый центр', d: 'Подведомственная дирекция ГАФКиС', href: NADC_URL },
+    { ic: 'chat', t: 'Сообщить о нарушении', d: 'Через сервис НАДЦ на nadc.kg', href: NADC_URL },
+    { ic: 'flask', t: 'Запрос TUE и проверка препаратов', d: 'Терапевтическое использование', href: '#tue' },
 ]
 const STATS = [['142', 'обращения за год'], ['38', 'расследований'], ['11', 'санкций']]
 const FAQ = [
@@ -49,18 +52,21 @@ export default function PublicAntidoping() {
         <div className="pub-section pp-rich">
             {/* Reporting-first hero (Protect Your Sport) - flush, в стиле дома */}
             <RichHero variant="emerald">
-                <span className="pad-eyebrow"><i />PROTECT YOUR SPORT</span>
-                <h1 className="pad-hero__h">Чтобы остановить допинг,<br />нужна команда</h1>
-                <p className="pad-hero__sub">Заметили подозрительное - сообщите. Анонимно и конфиденциально. Защита заявителя гарантирована.</p>
+                <span className="pad-eyebrow"><i />ЧИСТЫЙ СПОРТ</span>
+                <h1 className="pad-hero__h">Антидопинг в Кыргызстане</h1>
+                <p className="pad-hero__sub">Тестирование, образование и обработка обращений ведёт Национальный антидопинговый центр (НАДЦ) — подведомственная дирекция ГАФКиС. Официальные сервисы — на сайте nadc.kg.</p>
                 <div className="pad-channels">
-                    {CHANNELS.map((c, i) => (
-                        <a key={i} className="pad-ch" href="#">
-                            <span className="pad-ch__ic">{I[c.ic]}</span>
-                            <b>{c.t}</b><span>{c.d}</span>
-                        </a>
-                    ))}
+                    {CHANNELS.map((c, i) => {
+                        const ext = c.href && c.href.startsWith('http')
+                        return (
+                            <a key={i} className="pad-ch" href={c.href || '#'} {...(ext ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+                                <span className="pad-ch__ic">{I[c.ic]}</span>
+                                <b>{c.t}</b><span>{c.d}</span>
+                            </a>
+                        )
+                    })}
                 </div>
-                <div className="pad-conf">{I.lock} Соединение защищено · анонимность сохраняется</div>
+                <a className="pad-nadc-cta" href={NADC_URL} target="_blank" rel="noopener noreferrer">{I.ext} Перейти на сайт НАДЦ — nadc.kg</a>
             </RichHero>
 
             <div className="pub-container pp-wrap">
@@ -92,7 +98,7 @@ export default function PublicAntidoping() {
                             </div>
                         </div>
 
-                        <div className="pp-block">
+                        <div className="pp-block" id="tue">
                             <h2 className="pp-block__title">Запрос на терапевтическое использование (TUE)</h2>
                             {tueSent ? (
                                 <div className="pp-success">

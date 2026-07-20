@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useRole } from '../context/RoleContext'
 import { TbRun, TbStopwatch, TbClipboardList, TbId, TbSettings } from 'react-icons/tb'
@@ -27,7 +27,7 @@ const ROLE_GROUPS = [
               iconBg: '#2B5EA7', glow: '43, 94, 167' },
             { key: 'judge', labelKey: 'public.loginAsJudge', subKey: 'public.loginJudgeDesc', to: '/cabinet',
               iconBg: '#4A90D9', glow: '74, 144, 217' },
-            { key: 'org', labelKey: 'Организация', subKey: 'СДЮСШОР, ДЮСШ', to: '/cabinet',
+            { key: 'org', labelKey: 'Спортивная школа', subKey: 'СДЮСШОР, ДЮСШ', to: '/cabinet',
               iconBg: '#6A5ACD', glow: '106, 90, 205' },
         ],
     },
@@ -91,10 +91,14 @@ export default function PublicLogin() {
     const [staffPassword, setStaffPassword] = useState('')
     const { setCurrentRole } = useRole()
     const navigate = useNavigate()
+    const location = useLocation()
+    // Если гостя перенаправили с защищённой страницы — после входа вернём его туда же
+    const nextPath = location.state?.next || null
+    const authRequired = location.state?.reason === 'auth-required'
 
     const handleDemoLogin = (role) => {
         setCurrentRole(role.key)
-        navigate(role.to, { state: { role: role.key } })
+        navigate(nextPath || role.to, { state: { role: role.key } })
     }
 
     /* Animated counters: 0 → target on first render */
@@ -164,6 +168,20 @@ export default function PublicLogin() {
                 <div style={s.formContainer}>
                     <h2 style={s.formTitle}>{t('public.loginFormTitle')}</h2>
 
+                    {authRequired && (
+                        <div style={{
+                            display: 'flex', gap: 10, alignItems: 'flex-start',
+                            background: '#fff7ed', border: '1px solid #fdba74', borderRadius: 10,
+                            padding: '10px 14px', marginBottom: 14, fontSize: 13.5, color: '#9a3412', lineHeight: 1.45,
+                        }}>
+                            <span>
+                                <b>Требуется авторизация.</b> Подача заявлений и работа в личном кабинете
+                                возможны только после входа: действия совершаются от вашего имени.
+                                Войдите — и вы вернётесь на страницу, с которой начали.
+                            </span>
+                        </div>
+                    )}
+
                     {/* ── Pill-toggle tabs (sliding indicator) ── */}
                     <div className="login-tabs" data-active={tab}>
                         <button
@@ -188,51 +206,54 @@ export default function PublicLogin() {
                     {/* ── CITIZEN TAB ── */}
                     {tab === 'citizen' && (
                         <form onSubmit={handleCitizenSubmit} style={s.form}>
-                            <FloatField type="email" label="Email" value={email} onChange={setEmail} autoComplete="email" />
-                            <FloatField type="password" label="Пароль" value={password} onChange={setPassword} autoComplete="current-password" />
-                            <button type="submit" style={s.btnPrimary}>Войти</button>
+                            <button
+                                type="button"
+                                style={s.btnPrimary}
+                                onClick={() => alert('Интеграция с СМЭВ «Түндүк» ЕСИ - в разработке')}
+                            >
+                                Войти через ЕСИ Түндүк
+                            </button>
+                            <p style={s.esiHint}>
+                                Основной способ входа для граждан. Отдельная регистрация не нужна —
+                                профиль создаётся автоматически при первом входе через ЕСИ.
+                            </p>
 
                             <div style={s.divider}>
                                 <span style={s.dividerLine} />
-                                <span style={s.dividerText}>или</span>
+                                <span style={s.dividerText}>или по e-mail</span>
                                 <span style={s.dividerLine} />
                             </div>
 
-                            <button
-                                type="button"
-                                style={s.btnTunduk}
-                                onClick={() => alert('Интеграция с СМЭВ «Түндүк» ЕСИ - в разработке')}
-                            >
-                                Войти через СМЭВ Түндүк ЕСИ
-                            </button>
-
-                            <p style={s.registerRow}>
-                                Нет аккаунта?{' '}
-                                <Link to="/public/register" style={s.registerLink}>Зарегистрироваться</Link>
-                            </p>
+                            <FloatField type="email" label="Email" value={email} onChange={setEmail} autoComplete="email" />
+                            <FloatField type="password" label="Пароль" value={password} onChange={setPassword} autoComplete="current-password" />
+                            <button type="submit" style={s.btnTunduk}>Войти</button>
                         </form>
                     )}
 
                     {/* ── STAFF TAB ── */}
                     {tab === 'staff' && (
                         <form onSubmit={handleStaffSubmit} style={s.form}>
-                            <FloatField type="text" label="Логин" value={staffLogin} onChange={setStaffLogin} autoComplete="username" />
-                            <FloatField type="password" label="Пароль" value={staffPassword} onChange={setStaffPassword} autoComplete="current-password" />
-                            <button type="submit" style={s.btnPrimary}>Войти</button>
+                            <button
+                                type="button"
+                                style={s.btnPrimary}
+                                onClick={() => alert('Интеграция с СМЭВ «Түндүк» ЕСИ - в разработке')}
+                            >
+                                Войти через ЕСИ Түндүк
+                            </button>
+                            <p style={s.esiHint}>
+                                Для сотрудников ГАФКиС: вход через ЕСИ, роль назначает
+                                администратор. Самостоятельная регистрация недоступна.
+                            </p>
 
                             <div style={s.divider}>
                                 <span style={s.dividerLine} />
-                                <span style={s.dividerText}>или</span>
+                                <span style={s.dividerText}>или служебный логин</span>
                                 <span style={s.dividerLine} />
                             </div>
 
-                            <button
-                                type="button"
-                                style={s.btnTunduk}
-                                onClick={() => alert('Интеграция с СМЭВ «Түндүк» ЕСИ - в разработке')}
-                            >
-                                Войти через СМЭВ Түндүк ЕСИ
-                            </button>
+                            <FloatField type="text" label="Логин" value={staffLogin} onChange={setStaffLogin} autoComplete="username" />
+                            <FloatField type="password" label="Пароль" value={staffPassword} onChange={setStaffPassword} autoComplete="current-password" />
+                            <button type="submit" style={s.btnTunduk}>Войти</button>
 
                             <p style={s.registerRow}>
                                 Нет доступа?{' '}
@@ -582,6 +603,10 @@ const s = {
     },
     registerLink: {
         color: '#2563EB', textDecoration: 'none', fontWeight: 600,
+    },
+    esiHint: {
+        fontSize: 12, color: 'var(--theme-text-secondary)',
+        textAlign: 'center', margin: '2px 0 0', lineHeight: 1.5,
     },
 
     /* Dividers */

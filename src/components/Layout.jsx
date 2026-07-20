@@ -1,13 +1,18 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useLocation, Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Sidebar from './Sidebar'
 import Header from './Header'
 import AiAssistant from './AiAssistant/AiAssistantLazy'
 import { titleKeyForPath } from './pageTitles'
+import { useRole } from '../context/RoleContext'
 import './Layout.css'
 
+// Служебный портал — только для сотрудников; граждане и спортшколы работают в /cabinet.
+const STAFF_ROLES = ['employee', 'admin', 'superadmin']
+
 export default function Layout() {
+    const { currentRole } = useRole()
     const [sidebarOpen, setSidebarOpen] = useState(false)
     /* Свёрнутый сайдбар-рельса на десктопе (+~170px контенту), запоминается */
     const [navCollapsed, setNavCollapsed] = useState(() => localStorage.getItem('sidebar-collapsed') === '1')
@@ -47,6 +52,11 @@ export default function Layout() {
     const closeSidebar = useCallback(() => {
         setSidebarOpen(false)
     }, [])
+
+    // Не сотрудник (спортсмен/тренер/судья/спортшкола) — уводим в личный кабинет.
+    if (!STAFF_ROLES.includes(currentRole)) {
+        return <Navigate to="/cabinet" replace />
+    }
 
     return (
         <div className={`layout${navCollapsed ? ' layout--rail' : ''}`}>

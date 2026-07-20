@@ -265,7 +265,6 @@
 .st-role--super { background: var(--badge-red-bg); color: var(--badge-red-text); }
 .st-role--admin { background: var(--badge-blue-bg); color: var(--badge-blue-text); }
 .st-role--employee { background: var(--green-light); color: var(--green); }
-.st-role--readonly { background: var(--badge-amber-bg); color: var(--amber); }
 
 /* ── User status ── */
 .st-ustatus {

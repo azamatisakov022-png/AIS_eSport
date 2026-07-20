@@ -5,6 +5,8 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { awardsApi } from '../api/esport'
+import { useRole } from '../context/RoleContext'
+import AuthBanner from '../components/AuthBanner'
 
 /* Сдержанные SVG-иконки вместо эмодзи */
 const CheckMark = ({ done }) => (
@@ -127,13 +129,18 @@ export default function PublicAwardApplication() {
         org: yup.string().required(t('validation.required')),
     })
 
+    // Данные заявителя предзаполняются из профиля вошедшего пользователя —
+    // имитация автозаполнения из «Түндүк» ЕСИ (подать за третье лицо нельзя)
+    const { role } = useRole()
+    const p = role.persona || {}
+
     const { register, getValues, formState: { errors, isValid } } = useForm({
         resolver: yupResolver(schema),
         mode: 'onChange',
         defaultValues: {
-            inn: '', lastName: '', firstName: '', middleName: '',
-            birthDate: '', sex: 'М', phone: '', email: '',
-            sport: '', org: ''
+            inn: p.inn || '', lastName: p.lastName || '', firstName: p.firstName || '', middleName: p.middleName || '',
+            birthDate: p.birthDate || '', sex: p.sex || 'М', phone: p.phone || '', email: p.email || '',
+            sport: p.sport || '', org: p.org || ''
         }
     })
 
@@ -287,6 +294,8 @@ export default function PublicAwardApplication() {
         <div className="pub-section">
             <div className="pub-container">
                 <h2 className="pub-section__title">{t('public.awardAppTitle')}</h2>
+
+                <AuthBanner />
 
                 {/* Info banner */}
                 <div style={s.infoBanner}>

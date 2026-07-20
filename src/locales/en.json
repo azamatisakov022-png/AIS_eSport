@@ -892,8 +892,7 @@
     "roles": {
       "superadmin": "Superadmin",
       "admin": "Administrator",
-      "employee": "Employee",
-      "readonly": "Read-only"
+      "employee": "Employee"
     },
     "userStatus": {
       "active": "Active",

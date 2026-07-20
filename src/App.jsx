@@ -5,6 +5,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
    Страницы — лениво (React.lazy): роут-чанки вместо одного бандла. */
 import Layout from './components/Layout'
 import CabinetLayout from './cabinet/CabinetLayout'
+import RequireAuth from './components/RequireAuth'
 import PublicLayout from './public/PublicLayout'
 import PublicCabinetLayout from './public/PublicCabinetLayout'
 
@@ -35,8 +36,28 @@ const ProtocolSubmissions = lazy(() => import('./pages/ProtocolSubmissions'))
 const ProtocolReview = lazy(() => import('./pages/ProtocolReview'))
 const Staff = lazy(() => import('./pages/Staff'))
 const MedicalCertificates = lazy(() => import('./pages/MedicalCertificates'))
-const Inventory = lazy(() => import('./pages/Inventory'))
 const Stipends = lazy(() => import('./pages/Stipends'))
+// Процессы УРФКиМС (16.07.2026)
+const DocApprovals = lazy(() => import('./pages/DocApprovals'))
+const DocApprovalReview = lazy(() => import('./pages/DocApprovalReview'))
+const CoachSchedules = lazy(() => import('./pages/CoachSchedules'))
+const CalendarPlans = lazy(() => import('./pages/CalendarPlans'))
+const TrainerApplicationReviewPage = lazy(() => import('./pages/TrainerApplicationReviewPage'))
+const SportsRegistry = lazy(() => import('./pages/SportsRegistry'))
+const SignerDelegation = lazy(() => import('./pages/SignerDelegation'))
+const Awards = lazy(() => import('./pages/Awards'))
+const AwardReview = lazy(() => import('./pages/AwardReview'))
+const CabinetAward = lazy(() => import('./cabinet/CabinetAward'))
+const CabinetMyAwards = lazy(() => import('./cabinet/CabinetMyAwards'))
+const ZtApplications = lazy(() => import('./pages/ZtApplications'))
+const ZtReview = lazy(() => import('./pages/ZtReview'))
+const CabinetZt = lazy(() => import('./cabinet/CabinetZt'))
+const SchoolDoc = lazy(() => import('./cabinet/SchoolDoc'))
+const SchoolCoachSchedule = lazy(() => import('./cabinet/SchoolCoachSchedule'))
+const SchoolEnrollment = lazy(() => import('./cabinet/SchoolEnrollment'))
+const Reports = lazy(() => import('./pages/Reports'))
+const ReportReview = lazy(() => import('./pages/ReportReview'))
+const CabinetReports = lazy(() => import('./cabinet/CabinetReports'))
 const Finance = lazy(() => import('./pages/Finance'))
 
 // Intranet (corporate portal for staff)
@@ -121,7 +142,7 @@ export default function App() {
             <Route path="/" element={<Navigate to="/public" replace />} />
 
             {/* Internal Portal */}
-            <Route element={<Layout />}>
+            <Route element={<RequireAuth><Layout /></RequireAuth>}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/athletes" element={<Athletes />} />
                 <Route path="/coaches" element={<Coaches />} />
@@ -132,12 +153,12 @@ export default function App() {
                 <Route path="/teams" element={<Teams />} />
                 <Route path="/staff" element={<Staff />} />
                 <Route path="/medical-certificates" element={<MedicalCertificates />} />
-                <Route path="/inventory" element={<Inventory />} />
                 <Route path="/stipends" element={<Stipends />} />
                 <Route path="/finance" element={<Finance />} />
                 <Route path="/applications" element={<Applications />} />
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/trainer-applications" element={<TrainerApplications />} />
+                <Route path="/trainer-applications/:id" element={<TrainerApplicationReviewPage />} />
                 <Route path="/award-applications" element={<AwardApplications />} />
                 <Route path="/award-applications/:id" element={<ApplicationReview />} />
                 <Route path="/judge-applications" element={<JudgeApplications />} />
@@ -150,6 +171,21 @@ export default function App() {
                 <Route path="/transfer-applications/:id" element={<TransferApplicationReview />} />
                 <Route path="/protocol-submissions" element={<ProtocolSubmissions />} />
                 <Route path="/protocol-submissions/:id" element={<ProtocolReview />} />
+                {/* УРФКиМС: тарификация, комплектование, расписания тренеров, календарные планы */}
+                <Route path="/tarifications" element={<DocApprovals type="tarif" />} />
+                <Route path="/tarifications/:id" element={<DocApprovalReview type="tarif" />} />
+                <Route path="/staffing-plans" element={<DocApprovals type="plan" />} />
+                <Route path="/staffing-plans/:id" element={<DocApprovalReview type="plan" />} />
+                <Route path="/coach-schedules" element={<CoachSchedules />} />
+                <Route path="/calendar-plans" element={<CalendarPlans />} />
+                <Route path="/sports-registry" element={<SportsRegistry />} />
+                <Route path="/signer-delegation" element={<SignerDelegation />} />
+                <Route path="/awards" element={<Awards />} />
+                <Route path="/awards/:id" element={<AwardReview />} />
+                <Route path="/zt" element={<ZtApplications />} />
+                <Route path="/zt/:id" element={<ZtReview />} />
+                <Route path="/reports" element={<Reports />} />
+                <Route path="/reports/:id" element={<ReportReview />} />
                 <Route path="/settings" element={<Settings />} />
 
                 {/* Intranet - internal corporate portal */}
@@ -170,7 +206,7 @@ export default function App() {
             </Route>
 
             {/* Cabinet - unified personal account for athlete/coach/judge */}
-            <Route path="/cabinet" element={<CabinetLayout />}>
+            <Route path="/cabinet" element={<RequireAuth><CabinetLayout /></RequireAuth>}>
                 <Route index element={<CabinetDashboard />} />
                 {/* Athlete sections */}
                 <Route path="passport" element={<CabinetPage section="passport" />} />
@@ -191,14 +227,23 @@ export default function App() {
                 <Route path="notifications" element={<CabinetPage section="notifications" />} />
                 {/* Org specific sections */}
                 <Route path="facilities" element={<CabinetPage section="facilities" />} />
+                {/* ЛК спортшколы: процессы УРФКиМС */}
+                <Route path="enrollment" element={<SchoolEnrollment />} />
+                <Route path="coach-schedule" element={<SchoolCoachSchedule />} />
+                <Route path="tarification" element={<SchoolDoc type="tarif" />} />
+                <Route path="staffing-plan" element={<SchoolDoc type="plan" />} />
+                <Route path="awards" element={<CabinetAward />} />
+                <Route path="my-awards" element={<CabinetMyAwards />} />
+                <Route path="zt" element={<CabinetZt />} />
+                <Route path="reports" element={<CabinetReports />} />
             </Route>
 
             {/* Login - standalone, no layout wrapper */}
             <Route path="/public/login" element={<PublicLogin />} />
             <Route path="/public/login-playground" element={<PublicLoginPlayground />} />
 
-            {/* Cabinet layout - personal cabinet (header + sidebar) */}
-            <Route path="/public" element={<PublicCabinetLayout />}>
+            {/* Cabinet layout - personal cabinet (header + sidebar); только после входа */}
+            <Route path="/public" element={<RequireAuth><PublicCabinetLayout /></RequireAuth>}>
                 <Route path="cabinet" element={<PublicCabinet />} />
                 <Route path="cabinet/applications" element={<PublicMyApplications />} />
                 <Route path="cabinet/notifications" element={<PublicNotifications />} />
@@ -230,13 +275,14 @@ export default function App() {
                 <Route path="facilities" element={<PublicFacilities />} />
                 <Route path="announcements" element={<PublicAnnouncements />} />
                 <Route path="services" element={<PublicServices />} />
-                <Route path="trainer-registration" element={<PublicTrainerRegistration />} />
-                <Route path="award-application" element={<PublicAwardApplication />} />
-                <Route path="judge-category" element={<PublicJudgeCategory />} />
-                <Route path="document-restoration" element={<PublicDocumentRestoration />} />
-                <Route path="accreditation" element={<PublicAccreditation />} />
-                <Route path="transfer" element={<PublicTransfer />} />
-                <Route path="protocol" element={<PublicProtocol />} />
+                {/* Подача заявлений — юридически значимые действия: только после авторизации */}
+                <Route path="trainer-registration" element={<RequireAuth><PublicTrainerRegistration /></RequireAuth>} />
+                <Route path="award-application" element={<RequireAuth><PublicAwardApplication /></RequireAuth>} />
+                <Route path="judge-category" element={<RequireAuth><PublicJudgeCategory /></RequireAuth>} />
+                <Route path="document-restoration" element={<RequireAuth><PublicDocumentRestoration /></RequireAuth>} />
+                <Route path="accreditation" element={<RequireAuth><PublicAccreditation /></RequireAuth>} />
+                <Route path="transfer" element={<RequireAuth><PublicTransfer /></RequireAuth>} />
+                <Route path="protocol" element={<RequireAuth><PublicProtocol /></RequireAuth>} />
                 <Route path="antidoping" element={<PublicAntidoping />} />
                 <Route path="anticorruption" element={<PublicAnticorruption />} />
                 <Route path="reception" element={<PublicReception />} />
