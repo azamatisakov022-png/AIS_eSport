@@ -1,0 +1,735 @@
+{
+ "AccreditationApplicationController": {
+  "base": "/accreditation-applications",
+  "endpoints": [
+   [
+    "GET",
+    "/accreditation-applications",
+    "getAll"
+   ],
+   [
+    "GET",
+    "/accreditation-applications/{id}",
+    "getById"
+   ],
+   [
+    "POST",
+    "/accreditation-applications",
+    "create"
+   ],
+   [
+    "PUT",
+    "/accreditation-applications/{id}/status",
+    "changeStatus"
+   ]
+  ],
+  "roles": [
+   "EMPLOYEE",
+   "SUPERADMIN"
+  ]
+ },
+ "AnalyticsController": {
+  "base": "/analytics",
+  "endpoints": [
+   [
+    "GET",
+    "/analytics/kpi",
+    "getKpi"
+   ]
+  ],
+  "roles": [
+   "EMPLOYEE",
+   "SUPERADMIN"
+  ]
+ },
+ "ApplicantNotificationController": {
+  "base": "/applicant-notifications",
+  "endpoints": [
+   [
+    "GET",
+    "/applicant-notifications",
+    "getAll"
+   ]
+  ],
+  "roles": [
+   "EMPLOYEE",
+   "SUPERADMIN"
+  ]
+ },
+ "AthleteController": {
+  "base": "/athletes",
+  "endpoints": [
+   [
+    "GET",
+    "/athletes",
+    "getAll"
+   ],
+   [
+    "GET",
+    "/athletes/{id}",
+    "getById"
+   ],
+   [
+    "POST",
+    "/athletes",
+    "create"
+   ],
+   [
+    "PUT",
+    "/athletes/{id}",
+    "update"
+   ],
+   [
+    "DELETE",
+    "/athletes/{id}",
+    "archive"
+   ],
+   [
+    "POST",
+    "/athletes/{id}/submit",
+    "submit"
+   ],
+   [
+    "POST",
+    "/athletes/{id}/verify",
+    "verify"
+   ],
+   [
+    "POST",
+    "/athletes/{id}/reject",
+    "reject"
+   ],
+   [
+    "POST",
+    "/athletes/{id}/lifecycle",
+    "changeLifecycle"
+   ],
+   [
+    "POST",
+    "/athletes/{id}/medals",
+    "addMedal"
+   ]
+  ],
+  "roles": [
+   "EMPLOYEE",
+   "SUPERADMIN"
+  ]
+ },
+ "AuditLogController": {
+  "base": "/audit-log",
+  "endpoints": [
+   [
+    "GET",
+    "/audit-log",
+    "getAll"
+   ]
+  ],
+  "roles": [
+   "ADMIN",
+   "SUPERADMIN"
+  ]
+ },
+ "AuthController": {
+  "base": "/auth",
+  "endpoints": [
+   [
+    "POST",
+    "/auth/login",
+    "login"
+   ],
+   [
+    "POST",
+    "/auth/register",
+    "register"
+   ],
+   [
+    "POST",
+    "/auth/refresh",
+    "refreshToken"
+   ],
+   [
+    "POST",
+    "/auth/logout",
+    "logout"
+   ],
+   [
+    "GET",
+    "/auth/me",
+    "getCurrentUser"
+   ]
+  ],
+  "roles": []
+ },
+ "AwardApplicationController": {
+  "base": "/award-applications",
+  "endpoints": [],
+  "roles": [
+   "EMPLOYEE",
+   "SUPERADMIN"
+  ]
+ },
+ "CoachController": {
+  "base": "/coaches",
+  "endpoints": [
+   [
+    "GET",
+    "/coaches",
+    "getAll"
+   ],
+   [
+    "GET",
+    "/coaches/{id}",
+    "getById"
+   ],
+   [
+    "POST",
+    "/coaches",
+    "create"
+   ],
+   [
+    "PUT",
+    "/coaches/{id}",
+    "update"
+   ],
+   [
+    "PATCH",
+    "/coaches/{id}/annul",
+    "annul"
+   ],
+   [
+    "GET",
+    "/coaches/count",
+    "count"
+   ]
+  ],
+  "roles": [
+   "EMPLOYEE",
+   "SUPERADMIN"
+  ]
+ },
+ "DashboardController": {
+  "base": "/dashboard",
+  "endpoints": [
+   [
+    "GET",
+    "/dashboard/metrics",
+    "getMetrics"
+   ]
+  ],
+  "roles": []
+ },
+ "DocumentController": {
+  "base": "/documents",
+  "endpoints": [
+   [
+    "POST",
+    "/documents/upload",
+    "upload"
+   ],
+   [
+    "GET",
+    "/documents/{id}/download",
+    "download"
+   ],
+   [
+    "DELETE",
+    "/documents/{id}",
+    "delete"
+   ],
+   [
+    "GET",
+    "/documents/entity/{entityType}/{entityId}",
+    "getByEntity"
+   ]
+  ],
+  "roles": []
+ },
+ "EventController": {
+  "base": "/events",
+  "endpoints": [
+   [
+    "GET",
+    "/events",
+    "getAll"
+   ],
+   [
+    "GET",
+    "/events/{id}",
+    "getById"
+   ],
+   [
+    "POST",
+    "/events",
+    "create"
+   ],
+   [
+    "PUT",
+    "/events/{id}",
+    "update"
+   ],
+   [
+    "PATCH",
+    "/events/{id}/cancel",
+    "cancel"
+   ],
+   [
+    "POST",
+    "/events/{id}/participants",
+    "addParticipant"
+   ],
+   [
+    "DELETE",
+    "/events/{id}/participants/{athleteId}",
+    "removeParticipant"
+   ],
+   [
+    "GET",
+    "/events/{id}/participants",
+    "getParticipants"
+   ],
+   [
+    "POST",
+    "/events/{id}/results",
+    "addResult"
+   ],
+   [
+    "GET",
+    "/events/{id}/results",
+    "getResults"
+   ]
+  ],
+  "roles": [
+   "EMPLOYEE",
+   "SUPERADMIN"
+  ]
+ },
+ "FacilityController": {
+  "base": "/facilities",
+  "endpoints": [
+   [
+    "GET",
+    "/facilities",
+    "getAll"
+   ],
+   [
+    "GET",
+    "/facilities/{id}",
+    "getById"
+   ],
+   [
+    "POST",
+    "/facilities",
+    "create"
+   ],
+   [
+    "PUT",
+    "/facilities/{id}",
+    "update"
+   ],
+   [
+    "DELETE",
+    "/facilities/{id}",
+    "delete"
+   ]
+  ],
+  "roles": [
+   "EMPLOYEE",
+   "SUPERADMIN"
+  ]
+ },
+ "JudgeApplicationController": {
+  "base": "/judge-applications",
+  "endpoints": [
+   [
+    "GET",
+    "/judge-applications",
+    "getAll"
+   ],
+   [
+    "GET",
+    "/judge-applications/{id}",
+    "getById"
+   ],
+   [
+    "POST",
+    "/judge-applications",
+    "create"
+   ],
+   [
+    "PUT",
+    "/judge-applications/{id}/status",
+    "changeStatus"
+   ]
+  ],
+  "roles": [
+   "EMPLOYEE",
+   "SUPERADMIN"
+  ]
+ },
+ "JudgeController": {
+  "base": "/judges",
+  "endpoints": [
+   [
+    "GET",
+    "/judges",
+    "getAll"
+   ],
+   [
+    "GET",
+    "/judges/{id}",
+    "getById"
+   ],
+   [
+    "POST",
+    "/judges",
+    "create"
+   ],
+   [
+    "PUT",
+    "/judges/{id}",
+    "update"
+   ],
+   [
+    "PATCH",
+    "/judges/{id}/annul",
+    "annul"
+   ],
+   [
+    "PUT",
+    "/judges/{id}/promote",
+    "promote"
+   ],
+   [
+    "GET",
+    "/judges/count",
+    "count"
+   ]
+  ],
+  "roles": [
+   "EMPLOYEE",
+   "SUPERADMIN"
+  ]
+ },
+ "NotificationController": {
+  "base": "/notifications",
+  "endpoints": [
+   [
+    "GET",
+    "/notifications",
+    "getAll"
+   ],
+   [
+    "PUT",
+    "/notifications/{id}/read",
+    "markRead"
+   ],
+   [
+    "PUT",
+    "/notifications/read-all",
+    "markAllRead"
+   ],
+   [
+    "GET",
+    "/notifications/count",
+    "countUnread"
+   ]
+  ],
+  "roles": []
+ },
+ "OrganizationController": {
+  "base": "/organizations",
+  "endpoints": [
+   [
+    "GET",
+    "/organizations",
+    "getAll"
+   ],
+   [
+    "GET",
+    "/organizations/{id}",
+    "getById"
+   ],
+   [
+    "POST",
+    "/organizations",
+    "create"
+   ],
+   [
+    "PUT",
+    "/organizations/{id}",
+    "update"
+   ],
+   [
+    "DELETE",
+    "/organizations/{id}",
+    "archive"
+   ],
+   [
+    "PUT",
+    "/organizations/{id}/accredit",
+    "changeAccreditation"
+   ],
+   [
+    "GET",
+    "/organizations/count",
+    "count"
+   ]
+  ],
+  "roles": [
+   "EMPLOYEE",
+   "SUPERADMIN"
+  ]
+ },
+ "ProtocolSubmissionController": {
+  "base": "/protocol-submissions",
+  "endpoints": [
+   [
+    "GET",
+    "/protocol-submissions",
+    "getAll"
+   ],
+   [
+    "GET",
+    "/protocol-submissions/{id}",
+    "getById"
+   ],
+   [
+    "POST",
+    "/protocol-submissions",
+    "create"
+   ],
+   [
+    "PUT",
+    "/protocol-submissions/{id}/status",
+    "changeStatus"
+   ]
+  ],
+  "roles": [
+   "EMPLOYEE",
+   "SUPERADMIN"
+  ]
+ },
+ "PublicController": {
+  "base": "/public",
+  "endpoints": [
+   [
+    "GET",
+    "/public/athletes",
+    "getAthletes"
+   ],
+   [
+    "GET",
+    "/public/athletes/{id}",
+    "getAthlete"
+   ],
+   [
+    "GET",
+    "/public/coaches",
+    "getCoaches"
+   ],
+   [
+    "GET",
+    "/public/judges",
+    "getJudges"
+   ],
+   [
+    "GET",
+    "/public/events",
+    "getEvents"
+   ],
+   [
+    "GET",
+    "/public/events/{id}",
+    "getEvent"
+   ],
+   [
+    "GET",
+    "/public/facilities",
+    "getFacilities"
+   ],
+   [
+    "GET",
+    "/public/organizations",
+    "getOrganizations"
+   ]
+  ],
+  "roles": []
+ },
+ "RestorationApplicationController": {
+  "base": "/restoration-applications",
+  "endpoints": [
+   [
+    "GET",
+    "/restoration-applications",
+    "getAll"
+   ],
+   [
+    "GET",
+    "/restoration-applications/{id}",
+    "getById"
+   ],
+   [
+    "POST",
+    "/restoration-applications",
+    "create"
+   ],
+   [
+    "PUT",
+    "/restoration-applications/{id}/status",
+    "changeStatus"
+   ]
+  ],
+  "roles": [
+   "EMPLOYEE",
+   "SUPERADMIN"
+  ]
+ },
+ "SystemConfigController": {
+  "base": "/system-config",
+  "endpoints": [
+   [
+    "GET",
+    "/system-config",
+    "getAll"
+   ],
+   [
+    "PUT",
+    "/system-config",
+    "update"
+   ]
+  ],
+  "roles": [
+   "SUPERADMIN"
+  ]
+ },
+ "TeamController": {
+  "base": "/teams",
+  "endpoints": [
+   [
+    "GET",
+    "/teams",
+    "getAll"
+   ],
+   [
+    "GET",
+    "/teams/{id}",
+    "getById"
+   ],
+   [
+    "POST",
+    "/teams",
+    "create"
+   ],
+   [
+    "PUT",
+    "/teams/{id}",
+    "update"
+   ],
+   [
+    "PATCH",
+    "/teams/{id}/disband",
+    "disband"
+   ],
+   [
+    "POST",
+    "/teams/{id}/athletes",
+    "addAthlete"
+   ],
+   [
+    "DELETE",
+    "/teams/{id}/athletes/{athleteId}",
+    "removeAthlete"
+   ],
+   [
+    "POST",
+    "/teams/{id}/coaches",
+    "addCoach"
+   ],
+   [
+    "DELETE",
+    "/teams/{id}/coaches/{coachId}",
+    "removeCoach"
+   ]
+  ],
+  "roles": [
+   "EMPLOYEE",
+   "SUPERADMIN"
+  ]
+ },
+ "TrainerApplicationController": {
+  "base": "/trainer-applications",
+  "endpoints": [],
+  "roles": [
+   "EMPLOYEE",
+   "SUPERADMIN"
+  ]
+ },
+ "TransferApplicationController": {
+  "base": "/transfer-applications",
+  "endpoints": [
+   [
+    "GET",
+    "/transfer-applications",
+    "getAll"
+   ],
+   [
+    "GET",
+    "/transfer-applications/{id}",
+    "getById"
+   ],
+   [
+    "POST",
+    "/transfer-applications",
+    "create"
+   ],
+   [
+    "PUT",
+    "/transfer-applications/{id}/status",
+    "changeStatus"
+   ]
+  ],
+  "roles": [
+   "EMPLOYEE",
+   "SUPERADMIN"
+  ]
+ },
+ "UserController": {
+  "base": "/users",
+  "endpoints": [
+   [
+    "GET",
+    "/users",
+    "getAll"
+   ],
+   [
+    "GET",
+    "/users/{id}",
+    "getById"
+   ],
+   [
+    "POST",
+    "/users",
+    "create"
+   ],
+   [
+    "PUT",
+    "/users/{id}",
+    "update"
+   ],
+   [
+    "PUT",
+    "/users/{id}/block",
+    "block"
+   ],
+   [
+    "PUT",
+    "/users/{id}/password",
+    "resetPassword"
+   ]
+  ],
+  "roles": [
+   "ADMIN",
+   "SUPERADMIN"
+  ]
+ }
+}
